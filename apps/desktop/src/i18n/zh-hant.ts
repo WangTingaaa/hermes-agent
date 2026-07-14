@@ -308,6 +308,18 @@ export const zhHant = defineLocale({
       technicalDesc: '包含原始工具參數、結果與底層細節。',
       themeTitle: '主題',
       themeDesc: '僅限桌面端的調色盤。所選模式會套用在其上。',
+      themeSearchPlaceholder: '搜尋你的主題或 VS Code Marketplace…',
+      themeNoMatch: query => `沒有已安裝的主題符合「${query}」。`,
+      marketplaceThemes: '來自 VS Code Marketplace',
+      themes: {
+        nous: { label: 'Nous', description: '玻璃質感中性色，搭配 Nous 藍色強調色' },
+        midnight: { label: '午夜', description: '深藍紫色，搭配冷色強調色' },
+        ember: { label: '餘燼', description: '溫暖的深紅與青銅色——鍛造氛圍' },
+        mono: { label: '單色', description: '簡潔灰階——極簡且專注' },
+        cyberpunk: { label: '賽博龐克', description: '黑底霓虹綠——矩陣終端風格' },
+        slate: { label: '石板藍', description: '冷調石板藍——專注的開發者主題' },
+        wenjing: { label: '文鏡', description: '基於文鏡設計系統的清爽青色工作區' }
+      },
       themeProfileNote: profile => `已為「${profile}」設定檔儲存——每個設定檔保留各自的主題。`,
       installTitle: '從 VS Code 安裝',
       installDesc: '貼上 Marketplace 擴充功能 ID（例如 dracula-theme.theme-dracula），將其配色主題轉換為桌面調色盤。',

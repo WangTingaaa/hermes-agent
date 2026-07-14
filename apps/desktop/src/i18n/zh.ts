@@ -419,6 +419,18 @@ export const zh: Translations = {
       technicalDesc: '包含原始工具参数/结果及底层细节。',
       themeTitle: '主题',
       themeDesc: '仅桌面端调色板。所选模式叠加其上。',
+      themeSearchPlaceholder: '搜索你的主题或 VS Code Marketplace…',
+      themeNoMatch: query => `没有已安装的主题匹配“${query}”。`,
+      marketplaceThemes: '来自 VS Code Marketplace',
+      themes: {
+        nous: { label: 'Nous', description: '玻璃质感中性色，搭配 Nous 蓝色强调色' },
+        midnight: { label: '午夜', description: '深蓝紫色，搭配冷色强调色' },
+        ember: { label: '余烬', description: '温暖的深红与青铜色——锻造氛围' },
+        mono: { label: '单色', description: '简洁灰阶——极简且专注' },
+        cyberpunk: { label: '赛博朋克', description: '黑底霓虹绿——矩阵终端风格' },
+        slate: { label: '石板蓝', description: '冷调石板蓝——专注的开发者主题' },
+        wenjing: { label: '文镜', description: '基于文镜设计系统的清爽青色工作区' }
+      },
       themeProfileNote: profile => `已为「${profile}」配置文件保存——每个配置文件保留各自的主题。`,
       installTitle: '从 VS Code 安装',
       installDesc: '粘贴 Marketplace 扩展 ID（例如 dracula-theme.theme-dracula），将其配色主题转换为桌面调色板。',

@@ -345,6 +345,10 @@ export interface Translations {
       technicalDesc: string
       themeTitle: string
       themeDesc: string
+      themeSearchPlaceholder: string
+      themeNoMatch: (query: string) => string
+      marketplaceThemes: string
+      themes: Record<string, { label: string; description: string }>
       themeProfileNote: (profile: string) => string
       installTitle: string
       installDesc: string

@@ -277,16 +277,86 @@ export const slateTheme: DesktopTheme = {
   }
 }
 
+/**
+ * Wenjing — adapted from the repository-level styles/theme.less design tokens.
+ * Keeping the mapping here lets Desktop use its existing theme pipeline without
+ * importing global :root rules that would leak into every other theme.
+ */
+export const wenjingTheme: DesktopTheme = {
+  name: 'wenjing',
+  label: 'Wenjing',
+  description: 'Clean cyan workspace based on the Wenjing design system',
+  colors: {
+    background: '#ffffff',
+    foreground: '#101010',
+    card: '#ffffff',
+    cardForeground: '#101010',
+    muted: '#f5f5f5',
+    mutedForeground: '#666666',
+    popover: '#ffffff',
+    popoverForeground: '#101010',
+    primary: '#10b5c8',
+    primaryForeground: '#ffffff',
+    secondary: '#fafafa',
+    secondaryForeground: '#434343',
+    accent: '#e6f7ff',
+    accentForeground: '#0c8a9b',
+    border: '#ededed',
+    input: '#d9d9d9',
+    ring: '#10b5c8',
+    midground: '#10b5c8',
+    composerRing: '#10b5c8',
+    destructive: '#f5222d',
+    destructiveForeground: '#ffffff',
+    sidebarBackground: '#fafafa',
+    sidebarBorder: '#ededed',
+    userBubble: '#f0fcff',
+    userBubbleBorder: '#b8edf3'
+  },
+  darkColors: {
+    background: '#141414',
+    foreground: '#e0e0e0',
+    card: '#1f1f1f',
+    cardForeground: '#e0e0e0',
+    muted: '#262626',
+    mutedForeground: '#a0a0a0',
+    popover: '#1f1f1f',
+    popoverForeground: '#e0e0e0',
+    primary: '#10b5c8',
+    primaryForeground: '#ffffff',
+    secondary: '#2b2b2b',
+    secondaryForeground: '#e0e0e0',
+    accent: '#193b40',
+    accentForeground: '#d9f7fa',
+    border: '#3f3f3f',
+    input: '#595959',
+    ring: '#10b5c8',
+    midground: '#10b5c8',
+    composerRing: '#10b5c8',
+    destructive: '#f5222d',
+    destructiveForeground: '#ffffff',
+    sidebarBackground: '#1f1f1f',
+    sidebarBorder: '#3f3f3f',
+    userBubble: '#193b40',
+    userBubbleBorder: '#28626a'
+  },
+  typography: {
+    fontSans: DEFAULT_TYPOGRAPHY.fontSans,
+    fontMono: DEFAULT_TYPOGRAPHY.fontMono
+  }
+}
+
 export const BUILTIN_THEMES: Record<string, DesktopTheme> = {
   nous: nousTheme,
   midnight: midnightTheme,
   ember: emberTheme,
   mono: monoTheme,
   cyberpunk: cyberpunkTheme,
-  slate: slateTheme
+  slate: slateTheme,
+  wenjing: wenjingTheme
 }
 
 export const BUILTIN_THEME_LIST = Object.values(BUILTIN_THEMES)
 
 /** Skin used when nothing is persisted or the persisted name is retired. */
-export const DEFAULT_SKIN_NAME = 'nous'
+export const DEFAULT_SKIN_NAME = 'wenjing'

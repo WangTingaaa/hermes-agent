@@ -2,6 +2,7 @@ import { TRANSLATIONS } from './catalog'
 import { DEFAULT_LOCALE } from './languages'
 import type { Locale } from './types'
 
+const FALLBACK_LOCALE: Locale = 'en'
 let runtimeLocale: Locale = DEFAULT_LOCALE
 
 function isRecord(value: unknown): value is Record<string, unknown> {

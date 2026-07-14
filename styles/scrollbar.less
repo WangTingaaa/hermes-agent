@@ -1,0 +1,108 @@
+/**
+ * 公用浅色滚动条：默认隐藏，悬停容器时显示
+ * 用法：@import '@/styles/scrollbar.less';  .your-scroll-area { .hover-scrollbar(); }
+ */
+.hover-scrollbar(@reserve-space: true) {
+  // 始终预留滚动条位置，hover 显示滑块时内容不会横向抖动
+  & when (@reserve-space = true) {
+    scrollbar-gutter: stable;
+  }
+
+  // Firefox 回退；Chromium 设置 scrollbar-color/width 后会覆盖 WebKit
+  // 伪元素并重新绘制带箭头的系统滚动条，因此只在非 WebKit 内核启用。
+  @supports selector(::-webkit-scrollbar) {
+    // 覆盖 .ai-page * 的 scrollbar-width: none，恢复 WebKit 自定义绘制。
+    scrollbar-width: auto !important;
+    scrollbar-color: auto !important;
+  }
+
+  @supports not selector(::-webkit-scrollbar) {
+    scrollbar-width: thin !important;
+    scrollbar-color: transparent transparent !important;
+
+    &:hover {
+      scrollbar-color: rgba(0, 0, 0, 0.06) transparent !important;
+    }
+
+    html[data-theme='dark'] &:hover,
+    html[data-hermes-mode='dark'] &:hover {
+      scrollbar-color: rgba(255, 255, 255, 0.09) transparent !important;
+    }
+  }
+
+  &::-webkit-scrollbar {
+    display: block !important;
+    width: 5px !important;
+    height: 5px !important;
+  }
+
+  // 隐藏 Windows / Electron 滚动条两端的上下（左右）箭头按钮
+  &::-webkit-scrollbar-button {
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    max-width: 0 !important;
+    max-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    background-image: none !important;
+    color: transparent !important;
+  }
+
+  &::-webkit-scrollbar-button:single-button:vertical:decrement,
+  &::-webkit-scrollbar-button:single-button:vertical:increment,
+  &::-webkit-scrollbar-button:single-button:horizontal:decrement,
+  &::-webkit-scrollbar-button:single-button:horizontal:increment,
+  &::-webkit-scrollbar-button:vertical:start:decrement,
+  &::-webkit-scrollbar-button:vertical:end:increment,
+  &::-webkit-scrollbar-button:horizontal:start:decrement,
+  &::-webkit-scrollbar-button:horizontal:end:increment {
+    -webkit-appearance: none !important;
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    border: 0 !important;
+    background: transparent none !important;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent !important;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: transparent !important;
+    border-radius: 999px !important;
+    transition: background 0.18s ease;
+  }
+
+  &::-webkit-scrollbar-corner {
+    background: transparent !important;
+  }
+
+  &:hover {
+    &::-webkit-scrollbar-thumb {
+      background: rgba(0, 0, 0, 0.06) !important;
+    }
+  }
+
+  &:hover::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.1) !important;
+  }
+
+  html[data-theme='dark'] &,
+  html[data-hermes-mode='dark'] & {
+    &:hover::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.09) !important;
+    }
+
+    &:hover::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.14) !important;
+    }
+  }
+}

@@ -1,0 +1,12 @@
+/*
+ * Thin adapter for the shared Wenjing scrollbar design. #root carries
+ * .scrollbar-dt, so this reaches every renderer scroller; the portal class
+ * covers Radix overlays mounted directly under body.
+ */
+@import '../../../../styles/scrollbar.less';
+
+.scrollbar-dt,
+.scrollbar-dt *,
+.dt-portal-scrollbar {
+  .hover-scrollbar(false);
+}

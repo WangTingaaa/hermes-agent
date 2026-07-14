@@ -316,6 +316,18 @@ export const ja = defineLocale({
       technicalDesc: '生のツール引数、結果、低レベルの詳細を含めます。',
       themeTitle: 'テーマ',
       themeDesc: 'デスクトップ専用のパレットです。選択したモードの上に適用されます。',
+      themeSearchPlaceholder: 'テーマまたは VS Code Marketplace を検索…',
+      themeNoMatch: query => `「${query}」に一致するインストール済みテーマはありません。`,
+      marketplaceThemes: 'VS Code Marketplace のテーマ',
+      themes: {
+        nous: { label: 'Nous', description: 'ガラス調のニュートラルカラーと Nous ブルーのアクセント' },
+        midnight: { label: 'ミッドナイト', description: 'クールなアクセントを持つ深い青紫' },
+        ember: { label: 'エンバー', description: '暖かな深紅とブロンズの鍛造風テーマ' },
+        mono: { label: 'モノ', description: '集中しやすいミニマルなグレースケール' },
+        cyberpunk: { label: 'サイバーパンク', description: '黒地にネオングリーンのマトリックス端末風' },
+        slate: { label: 'スレート', description: '開発に集中できるクールなスレートブルー' },
+        wenjing: { label: '文鏡', description: '文鏡デザインシステムを基にした爽やかなシアンのワークスペース' }
+      },
       themeProfileNote: profile =>
         `「${profile}」プロファイルに保存されます。プロファイルごとに個別のテーマを保持します。`,
       installTitle: 'VS Code から導入',

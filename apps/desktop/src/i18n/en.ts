@@ -430,6 +430,18 @@ export const en: Translations = {
       technicalDesc: 'Include raw tool args/results and low-level details.',
       themeTitle: 'Theme',
       themeDesc: 'Desktop palettes only. The selected mode is applied on top.',
+      themeSearchPlaceholder: 'Search your themes or the VS Code Marketplace…',
+      themeNoMatch: query => `No installed themes match “${query}”.`,
+      marketplaceThemes: 'From the VS Code Marketplace',
+      themes: {
+        nous: { label: 'Nous', description: 'Glass neutrals with Nous blue accents' },
+        midnight: { label: 'Midnight', description: 'Deep blue-violet with cool accents' },
+        ember: { label: 'Ember', description: 'Warm crimson and bronze — forge vibes' },
+        mono: { label: 'Mono', description: 'Clean grayscale — minimal and focused' },
+        cyberpunk: { label: 'Cyberpunk', description: 'Neon green on black — matrix terminal' },
+        slate: { label: 'Slate', description: 'Cool slate blue — focused developer theme' },
+        wenjing: { label: 'Wenjing', description: 'Clean cyan workspace based on the Wenjing design system' }
+      },
       themeProfileNote: profile => `Saved for the ${profile} profile — each profile keeps its own theme.`,
       installTitle: 'Install from VS Code',
       installDesc:

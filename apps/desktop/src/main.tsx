@@ -1,4 +1,5 @@
 import './styles.css'
+import './styles/wenjing-scrollbar.less'
 // Side-effect: applies the persisted window translucency on load.
 import './store/translucency'
 

@@ -1,0 +1,575 @@
+/* ========================
+   智能系统主题设计系统
+   version: 2.0
+   date: 2024-03-16
+   
+   包含：颜色系统、字体系统、间距系统、动画系统、组件变量
+======================== */
+
+// ========================
+// CSS 变量定义（支持运行时切换）
+// ========================
+:root {
+  // 基础颜色系统
+  --primary-color: #10b5c8;
+  --primary-color-rgb: 16, 181, 200;
+  --primary-hover: #0ea0b3;
+  --primary-active: #0c8a9b;
+  --primary-light: #e6f7ff;
+  --primary-lighter: #f0fcff;
+
+  // 功能色彩
+  --success-color: #52c41a;
+  --success-light: #f6ffed;
+  --warning-color: #faad14;
+  --warning-light: #fffbe6;
+  --error-color: #f5222d;
+  --error-light: #fff2f0;
+  --info-color: #1890ff;
+  --info-light: #e6f7ff;
+
+  // 中性色调
+  --gray-1: #ffffff;
+  --gray-2: #fafafa;
+  --gray-3: #f5f5f5;
+  --gray-4: #f0f0f0;
+  --gray-5: #d9d9d9;
+  --gray-6: #bfbfbf;
+  --gray-7: #8c8c8c;
+  --gray-8: #595959;
+  --gray-9: #434343;
+  --gray-10: #262626;
+  --gray-11: #1f1f1f;
+  --gray-12: #141414;
+
+  // 主题相关颜色（浅色主题）
+  --bg-color: #ffffff;
+  --bg-color-secondary: #fafafa;
+  --bg-color-tertiary: #f5f5f5;
+  --bg-color-elevated: #ffffff;
+
+  --text-color: #000000;
+  --text-color-primary: #101010;
+  --text-color-secondary: #666666;
+  --text-color-tertiary: #999999;
+  --text-color-quaternary: #cccccc;
+  --text-color-inverse: #ffffff;
+
+  --border-color: #ededed;
+  --border-color-light: #f0f0f0;
+  --border-color-dark: #bfbfbf;
+
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --shadow-color-dark: rgba(0, 0, 0, 0.2);
+
+  // 侧栏打开时左侧遮罩（无模糊，仅压暗）
+  --panel-dim-overlay: rgba(0, 0, 0, 0.52);
+
+  // 玻璃态效果
+  --glass-bg: rgba(255, 255, 255, 0.8);
+  --glass-border: rgba(255, 255, 255, 0.8);
+  --glass-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+  --backdrop-blur: blur(10px);
+
+  // 字体系统
+  --font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif;
+  --font-family-mono:
+    "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+
+  --font-size-xs: 12px;
+  --font-size-sm: 12px;
+  --font-size-base: 14px;
+  --font-size-lg: 16px;
+  --font-size-xl: 18px;
+  --font-size-2xl: 18px;
+  --font-size-3xl: 18px;
+  --font-size-4xl: 18px;
+  --font-size-5xl: 18px;
+  --font-size-6xl: 18px;
+
+  --line-height-tight: 1.2;
+  --line-height-base: 1.5;
+  --line-height-relaxed: 1.75;
+
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  // 间距系统（基于8px网格）
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 20px;
+  --spacing-2xl: 24px;
+  --spacing-3xl: 32px;
+  --spacing-4xl: 40px;
+  --spacing-5xl: 48px;
+  --spacing-6xl: 64px;
+
+  // 圆角系统
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+  --radius-3xl: 24px;
+  --radius-full: 9999px;
+
+  // 阴影系统
+  --shadow-xs: 0 1px 2px var(--shadow-color);
+  --shadow-sm: 0 1px 3px var(--shadow-color), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-md:
+    0 4px 6px -1px var(--shadow-color), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg:
+    0 10px 15px -3px var(--shadow-color), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl:
+    0 20px 25px -5px var(--shadow-color), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-2xl: 0 25px 50px -12px var(--shadow-color);
+
+  // Z-index 层级
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+  --z-toast: 1080;
+
+  // 动画系统
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.3s ease;
+  --transition-slow: 0.5s ease;
+
+  --easing-linear: linear;
+  --easing-ease: ease;
+  --easing-ease-in: ease-in;
+  --easing-ease-out: ease-out;
+  --easing-ease-in-out: ease-in-out;
+  --easing-bounce: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --easing-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+
+  // 组件特定变量
+  --button-height-sm: 24px;
+  --button-height-md: 32px;
+  --button-height-lg: 40px;
+  --button-padding-sm: 0 var(--spacing-md);
+  --button-padding-md: 0 var(--spacing-lg);
+  --button-padding-lg: 0 var(--spacing-xl);
+
+  --input-height-sm: 24px;
+  --input-height-md: 32px;
+  --input-height-lg: 40px;
+  --input-padding: 0 var(--spacing-md);
+
+  --card-padding: var(--spacing-2xl);
+  --card-radius: var(--radius-lg);
+  --card-shadow: var(--shadow-sm);
+
+  --nav-height: 65px;
+  --desktop-titlebar-height: 0px;
+  --desktop-chrome-top: var(--desktop-titlebar-height);
+  /* 视口可用高度：Electron 需扣除自定义标题栏 */
+  --shell-content-height: calc(100vh - var(--desktop-titlebar-height, 0px));
+  --page-height-with-nav: calc(var(--shell-content-height) - var(--nav-height, 0px));
+  --page-height-no-nav: var(--shell-content-height);
+  --bottom-nav-height: 64px;
+  --sidebar-width: 280px;
+  --sidebar-collapsed-width: 80px;
+
+  // 响应式断点
+  --breakpoint-xs: 480px;
+  --breakpoint-sm: 576px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 992px;
+  --breakpoint-xl: 1200px;
+  --breakpoint-2xl: 1600px;
+
+  --primary-color-bule: #10b5c8;
+
+  // 背景色混合系统
+  --mix-target: #ffffff;
+  --color-blue-base: #10b5c8;
+  --color-purple-base: #722ed1;
+  --color-green-base: #52c41a;
+
+  --bg-gradient-blue: color-mix(
+    in srgb,
+    var(--color-blue-base),
+    var(--mix-target) 65%
+  );
+  --bg-gradient-purple: color-mix(
+    in srgb,
+    var(--color-purple-base),
+    var(--mix-target) 65%
+  );
+  --bg-gradient-green: color-mix(
+    in srgb,
+    var(--color-green-base),
+    var(--mix-target) 65%
+  );
+  --bg-gradient-gray: color-mix(
+    in srgb,
+    var(--primary-color),
+    var(--mix-target) 65%
+  );
+
+  // 全局常用颜色扩展
+  --text-title-tertiary: #1e293b;
+  --text-title-quaternary: #475569;
+  --text-body-primary: #878787;
+  --text-body-secondary: #94a3b8;
+  --bg-secondary-alt: #f8fafc;
+  --icon-color-primary: #667085;
+  --border-light-alt: 1px solid #cbd5e1;
+}
+
+// 笔记本电脑常见视口宽度：1280、1366、1440、1536，导航栏使用紧凑高度
+@media (max-width: 1599px) {
+  :root {
+    --nav-height: 55px; 
+  }
+}
+
+html.is-electron-desktop {
+  --desktop-titlebar-height: 36px;
+  --desktop-chrome-top: var(--desktop-titlebar-height);
+
+  /* 顶部 chrome 固定贴视口，不参与 body 1200px 最小宽度布局 */
+  .desktop-titlebar,
+  .top-navbar-wrapper {
+    width: 100vw;
+    max-width: 100vw;
+  }
+}
+
+// ========================
+// 深色主题变量
+// html 前缀提升优先级 (0,1,1)，确保始终高于第三方库 :root (0,1,0) 的变量声明
+// ========================
+html[data-theme="dark"] {
+  // 基础颜色系统（深色模式保持一致或微调）
+  --primary-color: #10b5c8;
+  --primary-color-rgb: 16, 181, 200;
+
+  // 主题相关颜色（深色主题）
+  --bg-color: #141414;
+  --bg-color-secondary: #2b2b2b;
+  --bg-color-tertiary: #262626;
+  --bg-color-elevated: #1f1f1f;
+
+  --text-color: #ffffff;
+  --text-color-primary: #e0e0e0;
+  // 如需改回“暗色 secondary 为灰色”：把下一行改回 #a0a0a0
+  --text-color-secondary: var(--text-color);
+  --text-color-tertiary: #737373;
+  --text-color-quaternary: #525252;
+  --text-color-inverse: #000000;
+
+  --border-color: #3f3f3f;
+  --border-color-light: #262626;
+  --border-color-dark: #595959;
+
+  --shadow-color: rgba(0, 0, 0, 0.5);
+  --shadow-color-dark: rgba(0, 0, 0, 0.8);
+
+  // 侧栏打开时左侧遮罩（暗色需更高不透明度才能看清压暗效果）
+  --panel-dim-overlay: rgba(0, 0, 0, 0.52);
+
+  // 玻璃态效果（深色）
+  --glass-bg: rgba(20, 20, 20, 0.8);
+  --glass-border: rgba(141, 141, 141, 0.8);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+
+  // 重新定义阴影（深色主题需要更强的阴影）
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-md:
+    0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  --shadow-lg:
+    0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+  --shadow-xl:
+    0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+
+  --mix-target: #000000;
+
+  // 全局常用颜色扩展
+  --text-title-tertiary: #d9dee6;
+  --text-title-quaternary: #bdc7d3;
+  --text-body-primary: #a3a3a3;
+  --text-body-secondary: #737373;
+  --bg-secondary-alt: #2b2828;
+  --icon-color-primary: #94a3b8; 
+  --border-light-alt: 1px solid #524c4c;
+}
+
+// ========================
+// Less 变量（向后兼容）
+// ========================
+
+// 基础颜色
+@primary-color: var(--primary-color);
+@theme-color: var(--primary-color);
+@theme-color-dark: var(--primary-hover);
+@theme-color-light: var(--primary-light);
+@success-color: var(--success-color);
+@warning-color: var(--warning-color);
+@error-color: var(--error-color);
+@info-color: var(--info-color);
+
+// 文本和背景
+@text-color: var(--text-color-primary);
+@text-color-secondary: var(--text-color-secondary);
+@bg-color: var(--bg-color);
+@bg-color-secondary: var(--bg-color-secondary);
+@border-color-base: var(--border-color);
+
+// 全局常用颜色扩展
+@text-title-tertiary: var(--text-title-tertiary);
+@text-title-quaternary: var(--text-title-quaternary);
+@text-body-primary: var(--text-body-primary);
+@text-body-secondary: var(--text-body-secondary);
+@bg-secondary-alt: var(--bg-secondary-alt);
+@icon-color-primary: var(--icon-color-primary);
+@border-light-alt: var(--border-light-alt);
+
+// 字体
+@font-family: var(--font-family);
+@font-size-base: var(--font-size-base);
+@line-height-base: var(--line-height-base);
+
+// 间距和圆角
+@border-radius-base: var(--radius-sm);
+@padding-sm: var(--spacing-sm);
+@padding-md: var(--spacing-lg);
+@padding-lg: var(--spacing-xl);
+
+// 响应式断点
+@breakpoint-xs: var(--breakpoint-xs);
+@breakpoint-sm: var(--breakpoint-sm);
+@breakpoint-md: var(--breakpoint-md);
+@breakpoint-lg: var(--breakpoint-lg);
+@breakpoint-xl: var(--breakpoint-xl);
+
+// ========================
+// 主题混合宏
+// ========================
+
+// 创建深色模式样式
+.dark-mode(@rules) {
+  [data-theme="dark"] & {
+    @rules();
+  }
+}
+
+// 创建浅色模式样式
+.light-mode(@rules) {
+  [data-theme="light"] & {
+    @rules();
+  }
+}
+
+// 玻璃态效果
+.glass-effect() {
+  background: var(--glass-bg);
+  // border: 1px solid var(--glass-border);
+  backdrop-filter: var(--backdrop-blur);
+  -webkit-backdrop-filter: var(--backdrop-blur);
+  box-shadow: var(--glass-shadow);
+}
+
+// 卡片样式
+.card-style() {
+  background: var(--bg-color-elevated);
+  // border: 1px solid var(--border-color);
+  border-radius: var(--card-radius);
+  padding: var(--card-padding);
+  box-shadow: var(--card-shadow);
+  transition: all var(--transition-base);
+
+  &:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+  }
+}
+
+// 按钮基础样式
+.button-base() {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-decoration: none;
+  user-select: none;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+// 输入框基础样式
+.input-base() {
+  width: 100%;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--input-padding);
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  background: var(--bg-color);
+  color: var(--text-color-primary);
+  transition: all var(--transition-fast);
+
+  &:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(16, 181, 200, 0.2);
+  }
+
+  &::placeholder {
+    color: var(--text-color-tertiary);
+  }
+}
+
+// 文本溢出
+.text-ellipsis() {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.multiline-ellipsis(@lines: 2) {
+  display: -webkit-box;
+  -webkit-line-clamp: @lines;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.ant-avatar {
+  border: 1px solid var(--border-color);
+}
+
+// 居中对齐
+.flex-center() {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// 响应式媒体查询
+.respond-to(@device, @rules) {
+  & when (@device = xs) {
+    @media (max-width: 479px) {
+      @rules();
+    }
+  }
+  & when (@device = sm) {
+    @media (min-width: 576px) {
+      @rules();
+    }
+  }
+  & when (@device = md) {
+    @media (min-width: 768px) {
+      @rules();
+    }
+  }
+  & when (@device = lg) {
+    @media (min-width: 992px) {
+      @rules();
+    }
+  }
+  & when (@device = xl) {
+    @media (min-width: 1200px) {
+      @rules();
+    }
+  }
+}
+
+// 动画关键帧
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// ========================
+// 主题管理工具类
+// ========================
+
+.theme-transition {
+  transition:
+    background-color var(--transition-base),
+    color var(--transition-base),
+    border-color var(--transition-base),
+    box-shadow var(--transition-base);
+}
+
+// 强制深色主题
+.force-dark {
+  --bg-color: #141414;
+  --text-color: #ffffff;
+  --border-color: #434343;
+}
+
+// 强制浅色主题
+.force-light {
+  --bg-color: #ffffff;
+  --text-color: #000000;
+  --border-color: #d9d9d9;
+}
