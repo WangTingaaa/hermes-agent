@@ -326,7 +326,7 @@ export const ja = defineLocale({
         mono: { label: 'モノ', description: '集中しやすいミニマルなグレースケール' },
         cyberpunk: { label: 'サイバーパンク', description: '黒地にネオングリーンのマトリックス端末風' },
         slate: { label: 'スレート', description: '開発に集中できるクールなスレートブルー' },
-        wenjing: { label: '文鏡', description: '文鏡デザインシステムを基にした爽やかなシアンのワークスペース' }
+        mesoInsights: { label: '文鏡', description: '文鏡デザインシステムを基にした爽やかなシアンのワークスペース' }
       },
       themeProfileNote: profile =>
         `「${profile}」プロファイルに保存されます。プロファイルごとに個別のテーマを保持します。`,

@@ -278,14 +278,14 @@ export const slateTheme: DesktopTheme = {
 }
 
 /**
- * Wenjing — adapted from the repository-level styles/theme.less design tokens.
+ * mesoInsights — adapted from the repository-level styles/theme.less design tokens.
  * Keeping the mapping here lets Desktop use its existing theme pipeline without
  * importing global :root rules that would leak into every other theme.
  */
-export const wenjingTheme: DesktopTheme = {
-  name: 'wenjing',
-  label: 'Wenjing',
-  description: 'Clean cyan workspace based on the Wenjing design system',
+export const mesoInsightsTheme: DesktopTheme = {
+  name: 'mesoInsights',
+  label: 'mesoInsights',
+  description: 'Clean cyan workspace based on the mesoInsights design system',
   colors: {
     background: '#ffffff',
     foreground: '#101010',
@@ -353,10 +353,10 @@ export const BUILTIN_THEMES: Record<string, DesktopTheme> = {
   mono: monoTheme,
   cyberpunk: cyberpunkTheme,
   slate: slateTheme,
-  wenjing: wenjingTheme
+  mesoInsights: mesoInsightsTheme
 }
 
 export const BUILTIN_THEME_LIST = Object.values(BUILTIN_THEMES)
 
 /** Skin used when nothing is persisted or the persisted name is retired. */
-export const DEFAULT_SKIN_NAME = 'wenjing'
+export const DEFAULT_SKIN_NAME = 'mesoInsights'

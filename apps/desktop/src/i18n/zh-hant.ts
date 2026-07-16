@@ -318,7 +318,7 @@ export const zhHant = defineLocale({
         mono: { label: '單色', description: '簡潔灰階——極簡且專注' },
         cyberpunk: { label: '賽博龐克', description: '黑底霓虹綠——矩陣終端風格' },
         slate: { label: '石板藍', description: '冷調石板藍——專注的開發者主題' },
-        wenjing: { label: '文鏡', description: '基於文鏡設計系統的清爽青色工作區' }
+        mesoInsights: { label: '文鏡', description: '基於文鏡設計系統的清爽青色工作區' }
       },
       themeProfileNote: profile => `已為「${profile}」設定檔儲存——每個設定檔保留各自的主題。`,
       installTitle: '從 VS Code 安裝',

@@ -440,7 +440,7 @@ export const en: Translations = {
         mono: { label: 'Mono', description: 'Clean grayscale — minimal and focused' },
         cyberpunk: { label: 'Cyberpunk', description: 'Neon green on black — matrix terminal' },
         slate: { label: 'Slate', description: 'Cool slate blue — focused developer theme' },
-        wenjing: { label: 'Wenjing', description: 'Clean cyan workspace based on the Wenjing design system' }
+        mesoInsights: { label: 'mesoInsights', description: 'Clean cyan workspace based on the mesoInsights design system' }
       },
       themeProfileNote: profile => `Saved for the ${profile} profile — each profile keeps its own theme.`,
       installTitle: 'Install from VS Code',

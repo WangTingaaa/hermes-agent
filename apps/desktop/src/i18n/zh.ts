@@ -429,7 +429,7 @@ export const zh: Translations = {
         mono: { label: '单色', description: '简洁灰阶——极简且专注' },
         cyberpunk: { label: '赛博朋克', description: '黑底霓虹绿——矩阵终端风格' },
         slate: { label: '石板蓝', description: '冷调石板蓝——专注的开发者主题' },
-        wenjing: { label: '文镜', description: '基于文镜设计系统的清爽青色工作区' }
+        mesoInsights: { label: '文镜', description: '基于文镜设计系统的清爽青色工作区' }
       },
       themeProfileNote: profile => `已为「${profile}」配置文件保存——每个配置文件保留各自的主题。`,
       installTitle: '从 VS Code 安装',
