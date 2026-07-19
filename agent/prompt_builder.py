@@ -132,12 +132,10 @@ def _strip_yaml_frontmatter(content: str) -> str:
     return content
 
 
-# =========================================================================
-# Constants
-# =========================================================================
+from hermes_constants import BRAND_AGENT_NAME
 
 DEFAULT_AGENT_IDENTITY = (
-    "You are Hermes Agent, an intelligent AI assistant created by Nous Research. "
+    f"You are {BRAND_AGENT_NAME}, an intelligent AI assistant. "
     "You are helpful, knowledgeable, and direct. You assist users with a wide "
     "range of tasks including answering questions, writing and editing code, "
     "analyzing information, creative work, and executing actions via your tools. "
@@ -147,8 +145,8 @@ DEFAULT_AGENT_IDENTITY = (
 )
 
 HERMES_AGENT_HELP_GUIDANCE = (
-    "You run on Hermes Agent (by Nous Research). When the user needs help with "
-    "Hermes itself — configuring, setting up, using, extending, or troubleshooting "
+    f"You run on {BRAND_AGENT_NAME}. When the user needs help with "
+    "the agent itself — configuring, setting up, using, extending, or troubleshooting "
     "it — or when you need to understand your own features, tools, or capabilities, "
     "the documentation at https://hermes-agent.nousresearch.com/docs is your "
     "authoritative reference and always holds the latest, most up-to-date "

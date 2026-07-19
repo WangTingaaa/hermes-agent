@@ -1258,3 +1258,8 @@ FINISH_REASON_LENGTH = "length"
 
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 OPENROUTER_MODELS_URL = f"{OPENROUTER_BASE_URL}/models"
+
+# User-facing product name (UI, CLI banner, agent identity). Internal package/cmd
+# names stay "hermes" for compatibility.
+BRAND_AGENT_NAME = "MesoInsights agent"
+BRAND_AGENT_WORDMARK = "MESOINSIGHTS AGENT"

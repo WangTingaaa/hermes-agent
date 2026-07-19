@@ -719,7 +719,7 @@ export interface SkillInfo {
   name: string
   /** Total observed activity (use + view + patch). Absent on older backends. */
   usage?: number
-  /** 'agent' = learned/local (editable), 'bundled' = ships with Hermes, 'hub' = installed. */
+  /** 'agent' = learned/local (editable), 'bundled' = ships with MesoInsights, 'hub' = installed. */
   provenance?: 'agent' | 'bundled' | 'hub'
 }
 

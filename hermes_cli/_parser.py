@@ -12,6 +12,8 @@ because its dispatch is tightly coupled to module-level ``cmd_*`` functions.
 
 import argparse
 
+from hermes_constants import BRAND_AGENT_NAME
+
 
 # `--profile` / `-p` is consumed by ``main._apply_profile_override`` before
 # argparse runs (it sets ``HERMES_HOME`` and strips itself from ``sys.argv``),
@@ -91,7 +93,7 @@ def build_top_level_parser():
     """
     parser = argparse.ArgumentParser(
         prog="hermes",
-        description="Hermes Agent - AI assistant with tool-calling capabilities",
+        description=f"{BRAND_AGENT_NAME} - AI assistant with tool-calling capabilities",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=_EPILOGUE,
     )

@@ -1,9 +1,9 @@
 {
   "name": "hermes",
-  "productName": "Hermes",
+  "productName": "MesoInsights",
   "private": true,
   "version": "0.17.0",
-  "description": "Native desktop shell for Hermes Agent.",
+  "description": "Native desktop shell for MesoInsights agent.",
   "author": "Nous Research",
   "type": "module",
   "main": "dist/electron-main.mjs",
@@ -158,17 +158,17 @@
   "build": {
     "electronVersion": "40.10.2",
     "appId": "com.nousresearch.hermes",
-    "productName": "Hermes",
-    "executableName": "Hermes",
+    "productName": "MesoInsights",
+    "executableName": "MesoInsights",
     "protocols": [
       {
-        "name": "Hermes Protocol",
+        "name": "MesoInsights Protocol",
         "schemes": [
           "hermes"
         ]
       }
     ],
-    "artifactName": "Hermes-${version}-${os}-${arch}.${ext}",
+    "artifactName": "MesoInsights-${version}-${os}-${arch}.${ext}",
     "icon": "assets/icon",
     "directories": {
       "output": "release"
@@ -204,11 +204,11 @@
       "entitlements": "electron/entitlements.mac.plist",
       "entitlementsInherit": "electron/entitlements.mac.inherit.plist",
       "extendInfo": {
-        "CFBundleDisplayName": "Hermes",
-        "CFBundleExecutable": "Hermes",
-        "CFBundleName": "Hermes",
-        "NSAudioCaptureUsageDescription": "Hermes uses audio capture for voice conversations.",
-        "NSMicrophoneUsageDescription": "Hermes uses the microphone for voice input and voice conversations."
+        "CFBundleDisplayName": "MesoInsights",
+        "CFBundleExecutable": "MesoInsights",
+        "CFBundleName": "MesoInsights",
+        "NSAudioCaptureUsageDescription": "MesoInsights uses audio capture for voice conversations.",
+        "NSMicrophoneUsageDescription": "MesoInsights uses the microphone for voice input and voice conversations."
       },
       "gatekeeperAssess": false,
       "hardenedRuntime": true,
@@ -218,7 +218,7 @@
       ]
     },
     "dmg": {
-      "title": "Install Hermes",
+      "title": "Install MesoInsights",
       "backgroundColor": "#f5f5f7",
       "iconSize": 96,
       "window": {
@@ -240,7 +240,7 @@
       ]
     },
     "win": {
-      "legalTrademarks": "Hermes",
+      "legalTrademarks": "MesoInsights",
       "target": [
         "nsis",
         "msi"
@@ -250,7 +250,7 @@
     "linux": {
       "category": "Development",
       "maintainer": "Nous Research <support@nousresearch.com>",
-      "synopsis": "Native desktop shell for Hermes Agent.",
+      "synopsis": "Native desktop shell for MesoInsights agent.",
       "target": [
         "AppImage",
         "deb",
@@ -261,8 +261,8 @@
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "perMachine": false,
-      "shortcutName": "Hermes",
-      "uninstallDisplayName": "Hermes",
+      "shortcutName": "MesoInsights",
+      "uninstallDisplayName": "MesoInsights",
       "warningsAsErrors": false
     }
   }

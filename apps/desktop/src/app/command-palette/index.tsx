@@ -24,7 +24,6 @@ import {
   GitBranch,
   Globe,
   type IconComponent,
-  Info,
   KeyRound,
   Layers3,
   MessageCircle,
@@ -260,8 +259,8 @@ const NON_CONFIG_SETTINGS: ReadonlyArray<{
     labelKey: 'keysSettings',
     tab: 'keys&kview=settings'
   },
-  { icon: Archive, keywords: ['history', 'archived'], labelKey: 'archivedChats', tab: 'sessions' },
-  { icon: Info, keywords: ['version', 'about'], labelKey: 'about', tab: 'about' }
+  { icon: Archive, keywords: ['history', 'archived'], labelKey: 'archivedChats', tab: 'sessions' }
+  // { icon: Info, keywords: ['version', 'about'], labelKey: 'about', tab: 'about' }
 ]
 
 const THEME_MODES: ReadonlyArray<{ icon: IconComponent; mode: ThemeMode }> = [

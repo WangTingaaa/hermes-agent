@@ -12,7 +12,6 @@ import {
   Bell,
   Download,
   Globe,
-  Info,
   Keyboard,
   KeyRound,
   Package,
@@ -30,7 +29,6 @@ import { OverlayMain, OverlayNav, type OverlayNavGroup, OverlaySplitLayout } fro
 import { OverlayView } from '../overlays/overlay-view'
 import { SKILLS_ROUTE } from '../routes'
 
-import { AboutSettings } from './about-settings'
 import { AppearanceSettings } from './appearance-settings'
 import { BillingSettings } from './billing'
 import { ConfigSettings } from './config-settings'
@@ -53,8 +51,8 @@ const SETTINGS_VIEWS: readonly SettingsViewId[] = [
   'notifications',
   'billing',
   'plugins',
-  'sessions',
-  'about'
+  'sessions'
+  // 'about'
 ]
 
 export function SettingsView({ onClose, onConfigSaved, onMainModelChanged }: SettingsPageProps) {
@@ -241,15 +239,16 @@ export function SettingsView({ onClose, onConfigSaved, onMainModelChanged }: Set
       id: 'sessions',
       label: t.settings.nav.archivedChats,
       onSelect: () => setActiveView('sessions')
-    },
-    {
-      active: activeView === 'about',
-      gapBefore: true,
-      icon: Info,
-      id: 'about',
-      label: t.settings.nav.about,
-      onSelect: () => setActiveView('about')
     }
+    // About panel temporarily hidden for MesoInsights branding pass.
+    // {
+    //   active: activeView === 'about',
+    //   gapBefore: true,
+    //   icon: Info,
+    //   id: 'about',
+    //   label: t.settings.nav.about,
+    //   onSelect: () => setActiveView('about')
+    // }
   ]
 
   const navFooter = (
@@ -291,8 +290,6 @@ export function SettingsView({ onClose, onConfigSaved, onMainModelChanged }: Set
         <OverlayMain className="px-0 pb-0 pt-[calc(var(--titlebar-height)+1rem)]">
           {activeView === 'config:appearance' ? (
             <AppearanceSettings />
-          ) : activeView === 'about' ? (
-            <AboutSettings />
           ) : activeView === 'gateway' ? (
             <GatewaySettings />
           ) : activeView === 'keybinds' ? (

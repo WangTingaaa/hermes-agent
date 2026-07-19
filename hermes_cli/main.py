@@ -362,8 +362,9 @@ def _read_openai_version_fast() -> str | None:
 
 def _print_fast_version_info() -> None:
     from hermes_cli import __release_date__, __version__
+    from hermes_constants import BRAND_AGENT_NAME
 
-    print(f"Hermes Agent v{__version__} ({__release_date__})")
+    print(f"{BRAND_AGENT_NAME} v{__version__} ({__release_date__})")
     print(f"Install directory: {PROJECT_ROOT}")
 
     print(f"Python: {sys.version.split()[0]}")
