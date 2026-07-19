@@ -1,0 +1,36 @@
+manifest_version: 1
+
+name: mesoInsights
+description: Import local files into the mesoInsights system through its API.
+source: https://gitee.com/wtt--3226764744/mesoInsights-mcp.git
+install:
+  type: git
+  url: https://gitee.com/wtt--3226764744/mesoInsights-mcp.git
+  bootstrap:
+    - uv
+    - sync
+
+transport:
+  type: stdio
+  command: uv
+  args:
+    - run
+    - --directory
+    - "${INSTALL_DIR}"
+    - mesoInsights-mcp
+
+auth:
+  type: api_key
+  env:
+    - name: mesoInsights_API_TOKEN
+      prompt: mesoInsights API token
+      required: true
+      secret: true
+
+tools:
+  default_enabled:
+    - import_file
+
+post_install: |
+  mesoInsights uses a manually generated API token. Replace mesoInsights_API_TOKEN
+  when it expires, then reload the MCP server with /reload-mcp.
