@@ -23,7 +23,7 @@ Language resolution order:
     1. Explicit ``lang=`` argument passed to :func:`t`
     2. ``HERMES_LANGUAGE`` environment variable (for tests / quick override)
     3. ``display.language`` from config.yaml
-    4. ``"en"`` (baseline)
+    4. ``"zh"`` (baseline)
 
 Supported languages: en, zh, ja, de, es, fr, tr, uk.  Unknown values fall back to en.
 """
@@ -44,7 +44,8 @@ SUPPORTED_LANGUAGES: tuple[str, ...] = (
     "en", "zh", "zh-hant", "ja", "de", "es", "fr", "tr", "uk",
     "af", "ko", "it", "ga", "pt", "ru", "hu",
 )
-DEFAULT_LANGUAGE = "en"
+DEFAULT_LANGUAGE = "zh"
+FALLBACK_CATALOG_LANGUAGE = "en"
 
 # Accept a few natural aliases so users who type "chinese" / "zh-CN" / "jp"
 # get the right catalog instead of silently falling back to English.
@@ -159,7 +160,7 @@ def _normalize_lang(value: Any) -> str:
     base = key.split("-", 1)[0]
     if base in SUPPORTED_LANGUAGES:
         return base
-    return DEFAULT_LANGUAGE
+    return FALLBACK_CATALOG_LANGUAGE
 
 
 def _load_catalog(lang: str) -> dict[str, str]:
@@ -271,9 +272,9 @@ def t(key: str, lang: str | None = None, **format_kwargs: Any) -> str:
     catalog = _load_catalog(target)
     value = catalog.get(key)
 
-    if value is None and target != DEFAULT_LANGUAGE:
+    if value is None and target != FALLBACK_CATALOG_LANGUAGE:
         # Fall through to English rather than showing a key path to the user.
-        value = _load_catalog(DEFAULT_LANGUAGE).get(key)
+        value = _load_catalog(FALLBACK_CATALOG_LANGUAGE).get(key)
 
     if value is None:
         # Last-ditch: return the key itself.  A broken catalog should not

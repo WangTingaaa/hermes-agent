@@ -99,8 +99,8 @@ def test_normalize_lang_accepts_aliases():
 
 def test_normalize_lang_unknown_falls_back():
     assert i18n._normalize_lang("klingon") == "en"
-    assert i18n._normalize_lang("") == "en"
-    assert i18n._normalize_lang(None) == "en"
+    assert i18n._normalize_lang("") == "zh"
+    assert i18n._normalize_lang(None) == "zh"
 
 
 def test_env_var_override(monkeypatch):
@@ -117,12 +117,12 @@ def test_env_var_normalized(monkeypatch):
 
 
 def test_default_when_nothing_set(monkeypatch):
-    """With no env var and no config override, falls back to English."""
+    """With no env var and no config override, falls back to the default language."""
     monkeypatch.delenv("HERMES_LANGUAGE", raising=False)
     # Force config lookup to return None -- patch the cached reader.
     i18n.reset_language_cache()
     monkeypatch.setattr(i18n, "_config_language_cached", lambda: None)
-    assert i18n.get_language() == "en"
+    assert i18n.get_language() == "zh"
 
 
 # ---------------------------------------------------------------------------
