@@ -1330,7 +1330,7 @@ def run_doctor(args):
             soul_path.write_text(
                 "# Mira Agent Persona\n\n"
                 "<!-- Edit this file to customize how Mira communicates. -->\n\n"
-                "You are Mira Agent, a helpful AI assistant.\n",
+                "You are Mira, a helpful AI assistant.\n",
                 encoding="utf-8",
             )
             check_ok(f"Created {_DHH}/SOUL.md with basic template")

@@ -1261,5 +1261,5 @@ OPENROUTER_MODELS_URL = f"{OPENROUTER_BASE_URL}/models"
 
 # User-facing product name (UI, CLI banner, agent identity). Internal package/cmd
 # names stay "hermes" for compatibility.
-BRAND_AGENT_NAME = "Mira Agent"
+BRAND_AGENT_NAME = "Mira"
 BRAND_AGENT_WORDMARK = "MIRA AGENT"
