@@ -14,7 +14,7 @@ import { BootFailureOverlay } from './boot-failure-overlay'
 
 function failBoot() {
   $desktopBoot.set({
-    error: 'Could not connect to MesoInsights gateway',
+    error: 'Could not connect to Mira gateway',
     fakeMode: false,
     message: 'boot failed',
     phase: 'renderer.error',

@@ -637,7 +637,7 @@ def format_steer_marker(steer_text: str) -> str:
 
 STEER_CHANNEL_NOTE = (
     "## Mid-turn user steering\n"
-    "While you work, the user can send an out-of-band message that Hermes "
+    "While you work, the user can send an out-of-band message that Mira Agent "
     "appends to the end of a tool result, wrapped exactly as:\n"
     f"{STEER_MARKER_OPEN}\n<their message>\n{STEER_MARKER_CLOSE}\n"
     "Text inside that marker is a genuine message from the user delivered "
@@ -760,7 +760,7 @@ PLATFORM_HINTS = {
         "default-deliver cron job will message them in this session."
     ),
     "tui": (
-        "You are running in the Hermes terminal UI (TUI). "
+        "You are running in the Mira Agent terminal UI (TUI). "
         "Cron jobs scheduled from this session are LOCAL-ONLY: their output is "
         "saved (viewable via cronjob action='list') but is NOT delivered back "
         "into this TUI session — there is no live-delivery channel here. If the "
@@ -770,7 +770,7 @@ PLATFORM_HINTS = {
         "default-deliver cron job will message them in this session."
     ),
     "desktop": (
-        "You are chatting inside the Hermes desktop app — a graphical chat "
+        "You are chatting inside the Mira Agent desktop app — a graphical chat "
         "surface, not a terminal. Use markdown freely: it renders with full "
         "GitHub flavor (tables, code blocks with syntax highlighting, math "
         "via $...$, task lists, blockquote callouts). "
@@ -885,7 +885,7 @@ PLATFORM_HINTS = {
         "brief and natural."
     ),
     "webui": (
-        "You are in the Hermes WebUI, a browser-based chat interface. "
+        "You are in the Mira Agent WebUI, a browser-based chat interface. "
         "Full Markdown rendering is supported — headings, bold, italic, code "
         "blocks, tables, math (LaTeX), and Mermaid diagrams all render natively. "
         "To display local or remote media/files inline, include "
@@ -1733,7 +1733,7 @@ def build_skills_system_prompt(
             "for tasks like code review, planning, and testing — load them even for tasks you "
             "already know how to do, because the skill defines how it should be done here.\n"
             "Whenever the user asks you to configure, set up, install, enable, disable, modify, "
-            "or troubleshoot Hermes Agent itself — its CLI, config, models, providers, tools, "
+            "or troubleshoot Mira Agent itself — its CLI, config, models, providers, tools, "
             "skills, voice, gateway, plugins, or any feature — load the `hermes-agent` skill "
             "first. It has the actual commands (e.g. `hermes config set …`, `hermes tools`, "
             "`hermes setup`) so you don't have to guess or invent workarounds.\n"

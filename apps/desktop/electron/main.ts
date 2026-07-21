@@ -561,7 +561,7 @@ const BOOT_FAKE_STEP_MS = (() => {
   return Math.max(120, raw)
 })()
 
-const APP_NAME = process.env.HERMES_DESKTOP_APP_NAME || 'MesoInsights'
+const APP_NAME = process.env.HERMES_DESKTOP_APP_NAME || 'Mira'
 const TITLEBAR_HEIGHT = 34
 const MACOS_TRAFFIC_LIGHTS_HEIGHT = 14
 
@@ -993,7 +993,7 @@ let nativeThemeListenerInstalled = false
 let bootProgressState = {
   error: null,
   fakeMode: BOOT_FAKE_MODE,
-  message: 'Waiting to start MesoInsights backend',
+  message: 'Waiting to start Mira backend',
   phase: 'idle',
   progress: 0,
   running: false,
@@ -1520,7 +1520,7 @@ async function waitForUpdateToFinish() {
   while (marker && Date.now() < deadline) {
     await advanceBootProgress(
       'backend.update-wait',
-      'An update is finishing — MesoInsights will start automatically when it completes…',
+      'An update is finishing — Mira will start automatically when it completes…',
       12
     )
     await new Promise(r => setTimeout(r, UPDATE_WAIT_POLL_MS))
@@ -2635,7 +2635,7 @@ async function applyUpdates(opts = {}) {
     emitUpdateProgress({
       stage: 'restart',
       message:
-        'Updating MesoInsights — this window will close and the updater will open. Don’t reopen MesoInsights yourself; it restarts automatically when the update finishes.',
+        'Updating Mira — this window will close and the updater will open. Don’t reopen Mira yourself; it restarts automatically when the update finishes.',
       percent: 100
     })
     repairMacUpdaterHelper(updater)
@@ -2665,8 +2665,8 @@ async function applyUpdates(opts = {}) {
       // user close the holder and retry. Restart our own backend so the app
       // keeps working after the failed attempt.
       const message =
-        'Update aborted: another process is holding the MesoInsights install open ' +
-        '(a second MesoInsights window or a terminal running hermes?). Close it and retry.'
+        'Update aborted: another process is holding the Mira install open ' +
+        '(a second Mira window or a terminal running hermes?). Close it and retry.'
 
       emitUpdateProgress({ stage: 'error', message, percent: null })
       startHermes().catch(() => {})
@@ -2923,7 +2923,7 @@ async function applyUpdatesPosixInApp(opts: any) {
     // best effort
   }
 
-  emitUpdateProgress({ stage: 'update', message: 'Updating MesoInsights (git + dependencies)…', percent: 10 })
+  emitUpdateProgress({ stage: 'update', message: 'Updating Mira (git + dependencies)…', percent: 10 })
 
   const updated = (await runStreamedUpdate(hermes, ['update', '--yes', ...branchArgs], {
     cwd: updateRoot,
@@ -2953,7 +2953,7 @@ async function applyUpdatesPosixInApp(opts: any) {
   if (rebuilt.code !== 0) {
     emitUpdateProgress({
       stage: 'error',
-      message: 'Backend updated, but the desktop rebuild failed. Restart MesoInsights to retry.',
+      message: 'Backend updated, but the desktop rebuild failed. Restart Mira to retry.',
       error: rebuilt.error || 'rebuild-failed'
     })
 
@@ -3000,7 +3000,7 @@ async function applyUpdatesPosixInApp(opts: any) {
     const outcome = decideRelaunchOutcome({ underUnpacked, sandboxOk })
 
     if (outcome === 'relaunch') {
-      emitUpdateProgress({ stage: 'restart', message: 'Restarting MesoInsights…', percent: 100 })
+      emitUpdateProgress({ stage: 'restart', message: 'Restarting Mira…', percent: 100 })
       // Preserve launch context across the re-exec: replay the original args
       // (filtered of Electron internals) and the env/cwd that define which
       // backend/profile/root this instance talks to. Without this the
@@ -3038,7 +3038,7 @@ async function applyUpdatesPosixInApp(opts: any) {
           backendUpdated: true,
           guiUpdated: false,
           manualRestart: true,
-          message: 'Backend updated. Quit and reopen MesoInsights to load the new version.'
+          message: 'Backend updated. Quit and reopen Mira to load the new version.'
         }
       }
     }
@@ -3048,7 +3048,7 @@ async function applyUpdatesPosixInApp(opts: any) {
         stage: 'guiSkew',
         message:
           'Backend updated, but the desktop app package was not changed. ' +
-          'Update or reinstall the MesoInsights desktop app to match.',
+          'Update or reinstall the Mira desktop app to match.',
         percent: 100
       })
       rememberLog(
@@ -3074,13 +3074,13 @@ async function applyUpdatesPosixInApp(opts: any) {
       sandboxBlocked: true,
       message:
         'Backend updated. The rebuilt app can’t relaunch automatically ' +
-        '(sandbox helper needs root). Quit and reopen MesoInsights to finish.'
+        '(sandbox helper needs root). Quit and reopen Mira to finish.'
     }
   }
 
   const rebuiltApp = [
-    path.join(updateRoot, 'apps', 'desktop', 'release', 'mac-arm64', 'MesoInsights.app'),
-    path.join(updateRoot, 'apps', 'desktop', 'release', 'mac', 'MesoInsights.app')
+    path.join(updateRoot, 'apps', 'desktop', 'release', 'mac-arm64', 'Mira.app'),
+    path.join(updateRoot, 'apps', 'desktop', 'release', 'mac', 'Mira.app')
   ].find(directoryExists)
 
   const targetApp = runningAppBundle()
@@ -3090,7 +3090,7 @@ async function applyUpdatesPosixInApp(opts: any) {
   if (!rebuiltApp || !targetApp) {
     emitUpdateProgress({
       stage: 'done',
-      message: 'Backend updated. Restart MesoInsights to load the new version.',
+      message: 'Backend updated. Restart Mira to load the new version.',
       percent: 100
     })
 
@@ -3129,7 +3129,7 @@ fi
   } catch (err) {
     emitUpdateProgress({
       stage: 'done',
-      message: 'Backend + app updated. Restart MesoInsights to load the new version.',
+      message: 'Backend + app updated. Restart Mira to load the new version.',
       percent: 100
     })
     rememberLog(`[updates] could not write swap script: ${err.message}; rebuilt app at ${rebuiltApp}`)
@@ -3591,7 +3591,7 @@ function resolveHermesBackend(backendArgs) {
   //    is a recoverable state the GUI can drive through.
   return {
     kind: 'bootstrap-needed',
-    label: 'MesoInsights agent not installed yet; bootstrap required',
+    label: 'Mira Agent not installed yet; bootstrap required',
     command: null,
     args: backendArgs,
     bootstrap: true,
@@ -3622,11 +3622,11 @@ async function ensureRuntime(backend) {
   // will rewire startup to spawn the window first and route bootstrap events
   // to a renderer-side install overlay.
   if (backend.kind === 'bootstrap-needed') {
-    rememberLog('[bootstrap] no MesoInsights install found; starting first-launch bootstrap')
+    rememberLog('[bootstrap] no Mira install found; starting first-launch bootstrap')
 
     if (await handOffWindowsBootstrapRecovery('bootstrap-needed')) {
       const handoffError: Error & { isBootstrapFailure?: boolean; bootstrapHandedOff?: boolean } = new Error(
-        'MesoInsights recovery was handed off to MesoInsights Setup. The desktop will restart when recovery completes.'
+        'Mira recovery was handed off to Mira Setup. The desktop will restart when recovery completes.'
       )
 
       handoffError.isBootstrapFailure = true
@@ -3683,7 +3683,7 @@ async function ensureRuntime(backend) {
     bootstrapAbortController = null
 
     if (bootstrapResult.cancelled) {
-      const cancelledError = new Error('MesoInsights install was cancelled.') as any
+      const cancelledError = new Error('Mira install was cancelled.') as any
       cancelledError.isBootstrapFailure = true
       cancelledError.bootstrapCancelled = true
       bootstrapFailure = cancelledError
@@ -3692,7 +3692,7 @@ async function ensureRuntime(backend) {
 
     if (!bootstrapResult.ok) {
       const bootstrapError = new Error(
-        `MesoInsights bootstrap failed${bootstrapResult.failedStage ? ` at stage '${bootstrapResult.failedStage}'` : ''}: ` +
+        `Mira bootstrap failed${bootstrapResult.failedStage ? ` at stage '${bootstrapResult.failedStage}'` : ''}: ` +
           `${bootstrapResult.error || 'unknown error'}. ` +
           `Check ${path.join(HERMES_HOME, 'logs', 'desktop.log')} for the full transcript.`
       ) as any
@@ -3721,7 +3721,7 @@ async function ensureRuntime(backend) {
   // attests they ran successfully).
   if (!isHermesSourceRoot(ACTIVE_HERMES_ROOT)) {
     throw new Error(
-      `MesoInsights install at ${ACTIVE_HERMES_ROOT} is missing or incomplete. ` +
+      `Mira install at ${ACTIVE_HERMES_ROOT} is missing or incomplete. ` +
         'Reinstall via the desktop installer or scripts/install.ps1.'
     )
   }
@@ -3734,10 +3734,10 @@ async function ensureRuntime(backend) {
   // here via an external `hermes` on PATH, this check still helps.
   if (IS_WINDOWS && !findGitBash()) {
     throw new Error(
-      'Git for Windows is required for MesoInsights on Windows (provides Git Bash, ' +
+      'Git for Windows is required for Mira on Windows (provides Git Bash, ' +
         "which the agent's terminal tool uses). Install it from " +
         'https://git-scm.com/download/win or run `winget install -e --id Git.Git`, ' +
-        'then relaunch MesoInsights.'
+        'then relaunch Mira.'
     )
   }
 
@@ -3752,7 +3752,7 @@ async function ensureRuntime(backend) {
     // install.ps1 succeeds. If we hit this, the user (or a deleted venv)
     // broke the invariant; tell them to re-run the install.
     throw new Error(
-      `MesoInsights venv missing at ${VENV_ROOT}. Re-run the desktop installer or ` + '`scripts/install.ps1` to rebuild it.'
+      `Mira venv missing at ${VENV_ROOT}. Re-run the desktop installer or ` + '`scripts/install.ps1` to rebuild it.'
     )
   }
 
@@ -3760,7 +3760,7 @@ async function ensureRuntime(backend) {
   backend.label = `Hermes at ${ACTIVE_HERMES_ROOT} (venv: ${VENV_ROOT})`
   updateBootProgress({
     phase: 'runtime.ready',
-    message: 'MesoInsights runtime is ready',
+    message: 'Mira runtime is ready',
     progress: 82,
     running: true,
     error: null
@@ -3803,7 +3803,7 @@ function fetchJson(url, token, options: any = {}) {
     const timeoutMs = resolveTimeoutMs(options.timeoutMs, DEFAULT_FETCH_TIMEOUT_MS)
 
     if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
-      reject(new Error(`Unsupported MesoInsights backend URL protocol: ${parsed.protocol}`))
+      reject(new Error(`Unsupported Mira backend URL protocol: ${parsed.protocol}`))
 
       return
     }
@@ -3848,7 +3848,7 @@ function fetchJson(url, token, options: any = {}) {
             reject(
               new Error(
                 `Expected JSON from ${url} but got HTML (status ${res.statusCode}). ` +
-                  'The endpoint is likely missing on the MesoInsights backend.'
+                  'The endpoint is likely missing on the Mira backend.'
               )
             )
 
@@ -3866,7 +3866,7 @@ function fetchJson(url, token, options: any = {}) {
 
     req.on('error', reject)
     req.setTimeout(timeoutMs, () => {
-      req.destroy(new Error(`Timed out connecting to MesoInsights backend after ${timeoutMs}ms`))
+      req.destroy(new Error(`Timed out connecting to Mira backend after ${timeoutMs}ms`))
     })
 
     if (body) {
@@ -3899,7 +3899,7 @@ function fetchPublicJson(url, options: any = {}) {
     const timeoutMs = resolveTimeoutMs(options.timeoutMs, DEFAULT_FETCH_TIMEOUT_MS)
 
     if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
-      reject(new Error(`Unsupported MesoInsights backend URL protocol: ${parsed.protocol}`))
+      reject(new Error(`Unsupported Mira backend URL protocol: ${parsed.protocol}`))
 
       return
     }
@@ -3938,7 +3938,7 @@ function fetchPublicJson(url, options: any = {}) {
             reject(
               new Error(
                 `Expected JSON from ${url} but got HTML (status ${res.statusCode}). ` +
-                  'The endpoint is likely missing on the MesoInsights backend.'
+                  'The endpoint is likely missing on the Mira backend.'
               )
             )
 
@@ -3956,7 +3956,7 @@ function fetchPublicJson(url, options: any = {}) {
 
     req.on('error', reject)
     req.setTimeout(timeoutMs, () => {
-      req.destroy(new Error(`Timed out connecting to MesoInsights backend after ${timeoutMs}ms`))
+      req.destroy(new Error(`Timed out connecting to Mira backend after ${timeoutMs}ms`))
     })
 
     if (body) {
@@ -4605,7 +4605,7 @@ async function waitForHermes(baseUrl, token) {
     }
   }
 
-  throw new Error(`MesoInsights backend did not become ready: ${lastError?.message || 'timeout'}`)
+  throw new Error(`Mira backend did not become ready: ${lastError?.message || 'timeout'}`)
 }
 
 function getWindowButtonPosition() {
@@ -5466,7 +5466,7 @@ function openOauthLoginWindow(baseUrl, { silent = false } = {}) {
       win = new BrowserWindow({
         width: 520,
         height: 720,
-        title: silent ? 'Connecting to MesoInsights Cloud agent…' : 'Sign in to MesoInsights gateway',
+        title: silent ? 'Connecting to Mira Cloud…' : 'Sign in to Mira gateway',
         autoHideMenuBar: true,
         // Silent cascade: start HIDDEN. The auto-SSO 302 chain completes in
         // well under a second, so the window normally never needs to show. We
@@ -5557,7 +5557,7 @@ function fetchJsonViaOauthSession(url, options: any = {}) {
     }
 
     if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
-      reject(new Error(`Unsupported MesoInsights backend URL protocol: ${parsed.protocol}`))
+      reject(new Error(`Unsupported Mira backend URL protocol: ${parsed.protocol}`))
 
       return
     }
@@ -5586,7 +5586,7 @@ function fetchJsonViaOauthSession(url, options: any = {}) {
         // already finished
       }
 
-      reject(new Error(`Timed out connecting to MesoInsights backend after ${timeoutMs}ms`))
+      reject(new Error(`Timed out connecting to Mira backend after ${timeoutMs}ms`))
     }, timeoutMs)
 
     request.on('response', res => {
@@ -5757,7 +5757,7 @@ function openPortalLoginWindow() {
 
   return new Promise((resolve, reject) => {
     if (!app.isReady()) {
-      reject(new Error('Desktop is not ready to start a MesoInsights Cloud sign-in.'))
+      reject(new Error('Desktop is not ready to start a Mira Cloud sign-in.'))
 
       return
     }
@@ -5815,7 +5815,7 @@ function openPortalLoginWindow() {
       win = new BrowserWindow({
         width: 520,
         height: 720,
-        title: 'Sign in to MesoInsights Cloud',
+        title: 'Sign in to Mira Cloud',
         autoHideMenuBar: true,
         webPreferences: {
           contextIsolation: true,
@@ -5863,7 +5863,7 @@ async function discoverCloudAgents(org?: string) {
 
   if (!(await hasLivePortalSession())) {
     const err = new Error(
-      'You are not signed in to MesoInsights Cloud. Open Settings → Gateway, choose MesoInsights Cloud, and sign in.'
+      'You are not signed in to Mira Cloud. Open Settings → Gateway, choose Mira Cloud, and sign in.'
     ) as any
 
     err.needsCloudLogin = true
@@ -5882,7 +5882,7 @@ async function discoverCloudAgents(org?: string) {
     // A 401 means the portal session lapsed between the liveness check and the
     // call — surface it as a re-login, not a generic failure.
     if (error && error.statusCode === 401) {
-      const err = new Error('Your MesoInsights Cloud session has expired. Open Settings → Gateway and sign in again.') as any
+      const err = new Error('Your Mira Cloud session has expired. Open Settings → Gateway and sign in again.') as any
       err.needsCloudLogin = true
       err.cause = error
       throw err
@@ -5987,7 +5987,7 @@ async function cloudAgentSilentSignIn(dashboardUrl) {
   // interactive prompt rather than a silent cascade. Discovery already gates on
   // this, but a selection can arrive after the session lapsed.
   if (!(await hasLivePortalSession())) {
-    const err = new Error('Your MesoInsights Cloud session has expired. Sign in to MesoInsights Cloud again.') as any
+    const err = new Error('Your Mira Cloud session has expired. Sign in to Mira Cloud again.') as any
     err.needsCloudLogin = true
     throw err
   }
@@ -6325,7 +6325,7 @@ async function buildRemoteConnection(rawUrl, authMode, token, source) {
     // the authoritative liveness check.
     if (!(await hasLiveOauthSession(baseUrl))) {
       const err = new Error(
-        'Remote MesoInsights gateway uses OAuth, but you are not signed in. ' +
+        'Remote Mira gateway uses OAuth, but you are not signed in. ' +
           'Open Settings → Gateway and click "Sign in", or switch back to Local.'
       ) as any
 
@@ -6358,7 +6358,7 @@ async function buildRemoteConnection(rawUrl, authMode, token, source) {
 
   if (!token) {
     throw new Error(
-      'Remote MesoInsights gateway is selected, but no session token is saved. ' +
+      'Remote Mira gateway is selected, but no session token is saved. ' +
         'Open Settings → Gateway and save a token, or switch back to Local.'
     )
   }
@@ -6402,7 +6402,7 @@ async function resolveRemoteBackend(profile) {
     if (!rawEnvToken) {
       throw new Error(
         'HERMES_DESKTOP_REMOTE_URL is set but HERMES_DESKTOP_REMOTE_TOKEN is not. ' +
-          'Both must be provided to connect to a remote MesoInsights backend.'
+          'Both must be provided to connect to a remote Mira backend.'
       )
     }
 
@@ -6846,7 +6846,7 @@ async function spawnPoolBackend(profile, entry) {
   const webDist = resolveWebDist()
   const readyFile = backend.readyFile ? makeDashboardReadyFile() : null
 
-  rememberLog(`Starting MesoInsights backend for profile "${profile}" via ${backend.label}`)
+  rememberLog(`Starting Mira backend for profile "${profile}" via ${backend.label}`)
 
   const child = spawn(
     backend.command,
@@ -6887,17 +6887,17 @@ async function spawnPoolBackend(profile, entry) {
   })
 
   child.once('error', error => {
-    rememberLog(`MesoInsights backend for profile "${profile}" failed to start: ${error.message}`)
+    rememberLog(`Mira backend for profile "${profile}" failed to start: ${error.message}`)
     backendPool.delete(profile)
     rejectStart?.(error)
   })
   child.once('exit', (code, signal) => {
-    rememberLog(`MesoInsights backend for profile "${profile}" exited (${signal || code})`)
+    rememberLog(`Mira backend for profile "${profile}" exited (${signal || code})`)
     backendPool.delete(profile)
 
     if (!ready) {
       rejectStart?.(
-        new Error(`MesoInsights backend for profile "${profile}" exited before it became ready (${signal || code}).`)
+        new Error(`Mira backend for profile "${profile}" exited before it became ready (${signal || code}).`)
       )
     }
   })
@@ -6917,7 +6917,7 @@ async function spawnPoolBackend(profile, entry) {
 
   const authToken = await adoptServedDashboardToken(baseUrl, token, {
     childAlive: () => child.exitCode === null && !child.killed,
-    label: `MesoInsights backend for profile "${profile}"`,
+    label: `Mira backend for profile "${profile}"`,
     rememberLog
   })
 
@@ -7040,7 +7040,7 @@ async function startHermes() {
   let attemptedRemote = primaryBackendIsRemote()
 
   const connectionPromise = (async () => {
-    await advanceBootProgress('backend.resolve', 'Resolving MesoInsights backend', 8)
+    await advanceBootProgress('backend.resolve', 'Resolving Mira backend', 8)
     // Resolve for the desktop's primary profile so a per-profile remote
     // override on the active profile is honored (falls back to env / global).
     // Re-read once resolved so the classification tracks the value actually used.
@@ -7048,11 +7048,11 @@ async function startHermes() {
     const remote = await resolveRemoteBackend(primaryProfileKey())
 
     if (remote) {
-      await advanceBootProgress('backend.remote', `Connecting to remote MesoInsights backend at ${remote.baseUrl}`, 24)
+      await advanceBootProgress('backend.remote', `Connecting to remote Mira backend at ${remote.baseUrl}`, 24)
       await waitForHermes(remote.baseUrl, remote.token)
       updateBootProgress({
         phase: 'backend.ready',
-        message: 'Remote MesoInsights backend is ready',
+        message: 'Remote Mira backend is ready',
         progress: 94,
         running: true,
         error: null
@@ -7092,7 +7092,7 @@ async function startHermes() {
       backendArgs.unshift('--profile', activeProfile)
     }
 
-    await advanceBootProgress('backend.runtime', 'Resolving MesoInsights runtime', 28)
+    await advanceBootProgress('backend.runtime', 'Resolving Mira runtime', 28)
     const backend = await ensureRuntime(resolveHermesBackend(backendArgs))
     // Route old runtimes (no `serve`) through the legacy `dashboard --no-open`.
     backend.args = getBackendArgsForRuntime(backend)
@@ -7100,8 +7100,8 @@ async function startHermes() {
     const webDist = resolveWebDist()
     const readyFile = backend.readyFile ? makeDashboardReadyFile() : null
 
-    await advanceBootProgress('backend.spawn', `Starting MesoInsights backend via ${backend.label}`, 84)
-    rememberLog(`Starting MesoInsights backend via ${backend.label}`)
+    await advanceBootProgress('backend.spawn', `Starting Mira backend via ${backend.label}`, 84)
+    rememberLog(`Starting Mira backend via ${backend.label}`)
 
     const hermesProcess = spawn(
       backend.command,
@@ -7137,7 +7137,7 @@ async function startHermes() {
 
     if (!processOwner) {
       stopBackendChild(hermesProcess)
-      throw new Error('MesoInsights backend start was superseded by a newer connection attempt.')
+      throw new Error('Mira backend start was superseded by a newer connection attempt.')
     }
 
     hermesProcess.stdout.on('data', rememberLog)
@@ -7151,17 +7151,17 @@ async function startHermes() {
 
     hermesProcess.once('error', error => {
       if (!backendConnectionState.clearForCurrentProcess(processOwner)) {
-        rememberLog(`Ignoring stale MesoInsights backend error: ${error.message}`)
-        rejectBackendStart?.(new Error('MesoInsights backend start was superseded by a newer connection attempt.'))
+        rememberLog(`Ignoring stale Mira backend error: ${error.message}`)
+        rejectBackendStart?.(new Error('Mira backend start was superseded by a newer connection attempt.'))
 
         return
       }
 
-      rememberLog(`MesoInsights backend failed to start: ${error.message}`)
+      rememberLog(`Mira backend failed to start: ${error.message}`)
       updateBootProgress(
         {
           error: error.message,
-          message: `MesoInsights backend failed to start: ${error.message}`,
+          message: `Mira backend failed to start: ${error.message}`,
           phase: 'backend.error',
           running: false
         },
@@ -7172,20 +7172,20 @@ async function startHermes() {
     })
     hermesProcess.once('exit', (code, signal) => {
       if (!backendConnectionState.clearForCurrentProcess(processOwner)) {
-        rememberLog(`Ignoring stale MesoInsights backend exit (${signal || code})`)
+        rememberLog(`Ignoring stale Mira backend exit (${signal || code})`)
 
         if (!backendReady) {
-          rejectBackendStart?.(new Error('MesoInsights backend start was superseded by a newer connection attempt.'))
+          rejectBackendStart?.(new Error('Mira backend start was superseded by a newer connection attempt.'))
         }
 
         return
       }
 
-      rememberLog(`MesoInsights backend exited (${signal || code})`)
+      rememberLog(`Mira backend exited (${signal || code})`)
       sendBackendExit({ code, signal })
 
       if (!backendReady) {
-        const message = `MesoInsights backend exited before it became ready (${signal || code}).`
+        const message = `Mira backend exited before it became ready (${signal || code}).`
         updateBootProgress(
           {
             error: message,
@@ -7197,13 +7197,13 @@ async function startHermes() {
         )
         rejectBackendStart?.(
           new Error(
-            `MesoInsights backend exited before it became ready (${signal || code}). Log: ${DESKTOP_LOG_PATH}\n${recentHermesLog()}`
+            `Mira backend exited before it became ready (${signal || code}). Log: ${DESKTOP_LOG_PATH}\n${recentHermesLog()}`
           )
         )
       }
     })
 
-    await advanceBootProgress('backend.port', 'Waiting for MesoInsights backend to launch', 86)
+    await advanceBootProgress('backend.port', 'Waiting for Mira backend to launch', 86)
 
     // Discover the ephemeral port the child bound to
     const port = await Promise.race([
@@ -7216,7 +7216,7 @@ async function startHermes() {
     }
 
     const baseUrl = `http://127.0.0.1:${port}`
-    await advanceBootProgress('backend.wait', 'Waiting for MesoInsights backend to become ready', 90)
+    await advanceBootProgress('backend.wait', 'Waiting for Mira backend to become ready', 90)
     await Promise.race([waitForHermes(baseUrl, token), backendStartFailed])
     backendReady = true
     backendStartFailure = null
@@ -7228,7 +7228,7 @@ async function startHermes() {
 
     updateBootProgress({
       phase: 'backend.ready',
-      message: 'MesoInsights backend is ready. Finalizing desktop startup',
+      message: 'Mira backend is ready. Finalizing desktop startup',
       progress: 94,
       running: true,
       error: null
@@ -7351,7 +7351,7 @@ function spawnSecondaryWindow({ sessionId, watch }: { sessionId?: string; watch?
     height: SESSION_WINDOW_MIN_HEIGHT,
     minWidth: SESSION_WINDOW_MIN_WIDTH,
     minHeight: SESSION_WINDOW_MIN_HEIGHT,
-    title: 'MesoInsights',
+    title: 'Mira',
     titleBarStyle: 'hidden',
     titleBarOverlay: getTitleBarOverlayOptions(),
     trafficLightPosition: IS_MAC ? WINDOW_BUTTON_POSITION : undefined,
@@ -7626,7 +7626,7 @@ function createWindow() {
     ...computeWindowOptions(savedWindowState, screen.getAllDisplays()),
     minWidth: WINDOW_MIN_WIDTH,
     minHeight: WINDOW_MIN_HEIGHT,
-    title: 'MesoInsights',
+    title: 'Mira',
     // Frameless title bar on every platform so the renderer can paint the
     // "hide sidebar" button (and other left-side titlebar tools) flush with
     // the top edge — matching the macOS layout where the traffic lights sit
@@ -8534,7 +8534,7 @@ ipcMain.handle('hermes:notify', (_event, payload) => {
   const actions = Array.isArray(payload?.actions) ? payload.actions : []
 
   const notification = new Notification({
-    title: payload?.title || 'MesoInsights',
+    title: payload?.title || 'Mira',
     body: payload?.body || '',
     silent: Boolean(payload?.silent),
     actions: actions.map(action => ({ type: 'button', text: String(action?.text || '') }))
@@ -8954,7 +8954,7 @@ function terminalShellEnv() {
   env.COLORTERM = 'truecolor'
   env.LC_CTYPE = env.LC_CTYPE || 'UTF-8'
   env.TERM = 'xterm-256color'
-  env.TERM_PROGRAM = 'MesoInsights'
+  env.TERM_PROGRAM = 'Mira'
   env.TERM_PROGRAM_VERSION = app.getVersion()
 
   // Let a hermes/--tui launched in this pane know it's embedded in the desktop
@@ -9501,7 +9501,7 @@ async function runDesktopUninstall(mode) {
     return {
       ok: false,
       error: 'agent-missing',
-      message: `Can't run the uninstaller: no MesoInsights agent venv at ${VENV_ROOT}.`
+      message: `Can't run the uninstaller: no Mira Agent venv at ${VENV_ROOT}.`
     }
   }
 

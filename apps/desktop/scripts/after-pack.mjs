@@ -28,7 +28,7 @@ export default async function afterPack(context) {
     return
   }
 
-  const productName = context.packager?.appInfo?.productFilename || 'MesoInsights'
+  const productName = context.packager?.appInfo?.productFilename || 'Mira'
   const exe = path.join(context.appOutDir, `${productName}.exe`)
   const desktopRoot = path.resolve(import.meta.dirname, '..')
 

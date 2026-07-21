@@ -240,7 +240,7 @@ export function SettingsView({ onClose, onConfigSaved, onMainModelChanged }: Set
       label: t.settings.nav.archivedChats,
       onSelect: () => setActiveView('sessions')
     }
-    // About panel temporarily hidden for MesoInsights branding pass.
+    // About panel temporarily hidden for Mira branding pass.
     // {
     //   active: activeView === 'about',
     //   gapBefore: true,

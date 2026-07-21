@@ -259,7 +259,7 @@ async function gatewayRequest<T>(method: string, params: Record<string, unknown>
   }
 
   if (!gateway) {
-    throw new Error('MesoInsights gateway is not connected')
+    throw new Error('Mira gateway is not connected')
   }
 
   return gateway.request<T>(method, params)

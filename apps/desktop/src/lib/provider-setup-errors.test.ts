@@ -8,7 +8,7 @@ describe('isProviderSetupErrorMessage', () => {
       true
     )
     expect(isProviderSetupErrorMessage('No inference provider is configured.')).toBe(true)
-    expect(isProviderSetupErrorMessage('No MesoInsights provider is configured.')).toBe(true)
+    expect(isProviderSetupErrorMessage('No Mira provider is configured.')).toBe(true)
     expect(isProviderSetupErrorMessage('set an API key (OPENROUTER_API_KEY) in ~/.hermes/.env')).toBe(true)
   })
 

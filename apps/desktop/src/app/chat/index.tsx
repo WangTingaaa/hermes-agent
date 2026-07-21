@@ -352,7 +352,7 @@ export function ChatView({
       }
 
       if (!gateway) {
-        throw new Error('MesoInsights gateway unavailable')
+        throw new Error('Mira gateway unavailable')
       }
 
       return gateway.request<ModelOptionsResponse>('model.options', {

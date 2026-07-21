@@ -799,7 +799,7 @@ export function GatewaySettings({ embedded = false }: { embedded?: boolean } = {
         </div>
       </div>
 
-      {/* MesoInsights Cloud panel: one portal sign-in, then a discovered-agent picker
+      {/* Mira Cloud panel: one portal sign-in, then a discovered-agent picker
           whose selection drives the silent per-agent cascade + a cloud
           connection. Replaces the URL/token form while in cloud mode. */}
       {state.mode === 'cloud' && !state.envOverride ? (

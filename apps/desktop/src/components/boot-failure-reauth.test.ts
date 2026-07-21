@@ -88,7 +88,7 @@ describe('isRemoteReauthError', () => {
   })
 
   it('ignores non-auth boot errors and nullish', () => {
-    expect(isRemoteReauthError('MesoInsights background process exited during startup.')).toBe(false)
+    expect(isRemoteReauthError('Mira background process exited during startup.')).toBe(false)
     expect(isRemoteReauthError(null)).toBe(false)
   })
 })

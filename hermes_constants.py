@@ -1,4 +1,4 @@
-"""Shared constants for Hermes Agent.
+"""Shared constants for Mira Agent.
 
 Import-safe module with no dependencies — can be imported from anywhere
 without risk of circular imports.
@@ -1261,5 +1261,5 @@ OPENROUTER_MODELS_URL = f"{OPENROUTER_BASE_URL}/models"
 
 # User-facing product name (UI, CLI banner, agent identity). Internal package/cmd
 # names stay "hermes" for compatibility.
-BRAND_AGENT_NAME = "MesoInsights agent"
-BRAND_AGENT_WORDMARK = "MESOINSIGHTS AGENT"
+BRAND_AGENT_NAME = "Mira Agent"
+BRAND_AGENT_WORDMARK = "MIRA AGENT"

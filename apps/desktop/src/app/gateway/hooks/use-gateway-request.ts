@@ -99,7 +99,7 @@ export function useGatewayRequest() {
       const gateway = gatewayRef.current
 
       if (!gateway) {
-        throw new Error('MesoInsights gateway unavailable')
+        throw new Error('Mira gateway unavailable')
       }
 
       try {

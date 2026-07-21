@@ -208,10 +208,10 @@ export type {
 export class HermesGateway extends JsonRpcGatewayClient {
   constructor() {
     super({
-      closedErrorMessage: 'MesoInsights gateway connection closed',
-      connectErrorMessage: 'Could not connect to MesoInsights gateway',
+      closedErrorMessage: 'Mira gateway connection closed',
+      connectErrorMessage: 'Could not connect to Mira gateway',
       createRequestId: nextId => nextId,
-      notConnectedErrorMessage: 'MesoInsights gateway is not connected',
+      notConnectedErrorMessage: 'Mira gateway is not connected',
       requestTimeoutMs: DEFAULT_GATEWAY_REQUEST_TIMEOUT_MS
     })
   }
@@ -265,7 +265,7 @@ function pluginPathSuffix(caller: string, path: string): string {
  *  declared-capability seam; today the namespace IS the boundary. */
 export async function pluginRest<T>(pluginId: string, path: string, opts: PluginRestOptions = {}): Promise<T> {
   if (!window.hermesDesktop?.api) {
-    throw new Error('MesoInsights desktop bridge unavailable')
+    throw new Error('Mira desktop bridge unavailable')
   }
 
   const suffix = pluginPathSuffix('pluginRest', path)
