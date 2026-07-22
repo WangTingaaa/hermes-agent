@@ -13875,7 +13875,9 @@ async def search_skills_hub(
 
 
 @app.get("/api/skills/hub/preview")
-async def preview_skill_hub(identifier: str = "", profile: Optional[str] = None):
+async def preview_skill_hub(
+    identifier: str = "", profile: Optional[str] = None, language: Optional[str] = None
+):
     """Fetch a hub skill's SKILL.md content + metadata for in-dashboard reading.
 
     Resolves the identifier across configured sources (same path the CLI
@@ -13914,7 +13916,12 @@ async def preview_skill_hub(identifier: str = "", profile: Optional[str] = None)
                         files[rel] = "(binary file)"
                 else:
                     files[rel] = content
-            skill_md = files.get("SKILL.md", "") or ""
+            # Localized companion files are documentation-only; the canonical
+            # SKILL.md remains the agent instruction file.  The dashboard may
+            # choose SKILL.zh.md for Chinese reading without changing runtime
+            # skill loading or prompt caching.
+            localized = "SKILL.zh.md" if language in {"zh", "zh-hant"} else ""
+            skill_md = files.get(localized, "") or files.get("SKILL.md", "") or ""
 
         m = meta or bundle
         return {
@@ -14767,6 +14774,7 @@ async def get_skills(profile: Optional[str] = None):
     from tools.skill_usage import (
         _read_bundled_manifest_names,
         _read_hub_installed_names,
+        read_official_optional_skill_names,
         activity_count,
         load_usage,
     )
@@ -14781,6 +14789,7 @@ async def get_skills(profile: Optional[str] = None):
         # the user may edit/delete from the UI.
         bundled_names = _read_bundled_manifest_names()
         hub_names = _read_hub_installed_names()
+        official_optional_names = read_official_optional_skill_names()
     for s in skills:
         s["enabled"] = s["name"] not in disabled
         s["usage"] = activity_count(usage.get(s["name"], {}))
@@ -14789,6 +14798,7 @@ async def get_skills(profile: Optional[str] = None):
             else "bundled" if s["name"] in bundled_names
             else "agent"
         )
+        s["official"] = s["name"] in bundled_names or s["name"] in official_optional_names
     return skills
 
 

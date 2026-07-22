@@ -6,9 +6,10 @@ import { useNavigate } from 'react-router-dom'
 
 import { ArchiveSkillConfirmDialog } from '@/app/learning/archive-skill-confirm-dialog'
 import { CodeEditor } from '@/components/chat/code-editor'
+import { CompactMarkdown } from '@/components/chat/compact-markdown'
 import { PageLoader } from '@/components/page-loader'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { CopyButton } from '@/components/ui/copy-button'
 import { CountSkeleton } from '@/components/ui/skeleton'
 import {
   editLearningNode,
@@ -24,6 +25,7 @@ import { useI18n } from '@/i18n'
 import { isDesktopToolsetVisible } from '@/lib/desktop-toolsets'
 import { compactNumber } from '@/lib/format'
 import { queryClient, writeCache } from '@/lib/query-client'
+import { localizeSkillCategory, localizeSkillDetail, localizeSkillName, localizeToolsetDescription, localizeToolsetName, skillSearchTexts, toolsetSearchTexts } from '@/lib/skill-localization'
 import { normalize } from '@/lib/text'
 import { $gateway } from '@/store/gateway'
 import { notify, notifyError } from '@/store/notifications'
@@ -80,6 +82,27 @@ const setToolsets = writeCache<ToolsetInfo[]>(TOOLSETS_QUERY_KEY)
 const TOOL_CALLS_TTL_MS = 10 * 60 * 1000
 const toolCallsCache = new Map<string, { at: number; value: Record<string, number> }>()
 
+function CapabilityTitle({
+  displayName,
+  originalName,
+  showOriginal
+}: {
+  displayName: string
+  originalName: string
+  showOriginal: boolean
+}) {
+  return (
+    <>
+      {displayName}
+      {showOriginal && displayName !== originalName && (
+        <span className="ml-1.5 font-mono text-[0.65rem] font-normal text-(--ui-text-quaternary)">
+          {originalName}
+        </span>
+      )}
+    </>
+  )
+}
+
 async function loadToolCalls(force = false): Promise<Record<string, number>> {
   const key = normalizeProfileKey($activeGatewayProfile.get())
   const cached = toolCallsCache.get(key)
@@ -105,27 +128,13 @@ const usageOf = (skill: SkillInfo): number => (typeof skill.usage === 'number' ?
 
 const categoryFor = (skill: SkillInfo): string => asText(skill.category) || 'general'
 
-// Row subtitle: category, with non-default origins badged.
-function skillSubtitle(skill: SkillInfo): React.ReactNode {
-  const category = prettyName(categoryFor(skill))
-  const provenance = skill.provenance
+const displayCategory = (category: string, locale: ReturnType<typeof useI18n>['locale']): string =>
+  locale === 'zh' || locale === 'zh-hant' ? localizeSkillCategory(category, locale) : prettyName(category)
 
-  return (
-    <>
-      <span className="truncate">{category}</span>
-      {provenance === 'agent' && (
-        <Badge className="shrink-0 normal-case" variant="default">
-          learned
-        </Badge>
-      )}
-      {provenance === 'hub' && (
-        <Badge className="shrink-0 normal-case" variant="muted">
-          hub
-        </Badge>
-      )}
-    </>
-  )
-}
+// Keep the master list quiet: the second line is the localized category only,
+// occupying the same slot where the description used to appear.
+const skillSubtitle = (skill: SkillInfo, locale: ReturnType<typeof useI18n>['locale']): string =>
+  displayCategory(categoryFor(skill), locale)
 
 function filteredSkills(skills: SkillInfo[], query: string, desc: boolean): SkillInfo[] {
   const q = normalize(query)
@@ -134,7 +143,7 @@ function filteredSkills(skills: SkillInfo[], query: string, desc: boolean): Skil
   return skills
     .filter(
       skill =>
-        !q || includesQuery(skill.name, q) || includesQuery(skill.description, q) || includesQuery(skill.category, q)
+        !q || skillSearchTexts(skill).some(text => includesQuery(text, q)) || includesQuery(categoryFor(skill), q) || includesQuery(localizeSkillCategory(categoryFor(skill), 'zh'), q)
     )
     .sort((a, b) => sign * (usageOf(b) - usageOf(a)) || asText(a.name).localeCompare(asText(b.name)))
 }
@@ -162,9 +171,7 @@ function filteredToolsets(
       }
 
       return (
-        includesQuery(toolset.name, q) ||
-        includesQuery(toolsetDisplayLabel(toolset), q) ||
-        includesQuery(toolset.description, q) ||
+        toolsetSearchTexts(toolset.name, toolsetDisplayLabel(toolset), toolset.description).some(text => includesQuery(text, q)) ||
         toolNames(toolset).some(name => includesQuery(name, q))
       )
     })
@@ -182,7 +189,7 @@ interface SkillsViewProps extends React.ComponentProps<'section'> {
 }
 
 export function SkillsView({ setStatusbarItemGroup: _setStatusbarItemGroup, ...props }: SkillsViewProps) {
-  const { t } = useI18n()
+  const { t, locale } = useI18n()
   const gateway = useStore($gateway) as HermesGateway | null
   const [mode, setMode] = useRouteEnumParam('tab', SKILLS_MODES, 'skills')
 
@@ -603,8 +610,14 @@ export function SkillsView({ setStatusbarItemGroup: _setStatusbarItemGroup, ...p
                   meta={usageOf(skill) > 0 ? `×${compactNumber(usageOf(skill))}` : undefined}
                   onSelect={() => setSelectedSkill(skill.name)}
                   onToggle={enabled => void handleToggleSkill(skill, enabled)}
-                  subtitle={skillSubtitle(skill)}
-                  title={skill.name}
+                  subtitle={skillSubtitle(skill, locale)}
+                  title={
+                    <CapabilityTitle
+                      displayName={localizeSkillName(skill, locale)}
+                      originalName={skill.name}
+                      showOriginal={locale === 'zh' || locale === 'zh-hant'}
+                    />
+                  }
                   toggleLabel={skill.name}
                 />
               ))}
@@ -633,7 +646,7 @@ export function SkillsView({ setStatusbarItemGroup: _setStatusbarItemGroup, ...p
             }
           >
             {visibleToolsets.map(toolset => {
-              const label = toolsetDisplayLabel(toolset)
+              const label = localizeToolsetName(toolset.name, toolsetDisplayLabel(toolset), locale)
               const calls = toolCalls ? toolsetCalls(toolset, toolCalls) : null
 
               return (
@@ -653,8 +666,14 @@ export function SkillsView({ setStatusbarItemGroup: _setStatusbarItemGroup, ...p
                   }
                   onSelect={() => setSelectedToolset(toolset.name)}
                   onToggle={checked => void handleToggleToolset(toolset, checked)}
-                  subtitle={asText(toolset.description)}
-                  title={label}
+                  subtitle={t.skills.tabToolsets}
+                  title={
+                    <CapabilityTitle
+                      displayName={label}
+                      originalName={toolset.name}
+                      showOriginal={locale === 'zh' || locale === 'zh-hant'}
+                    />
+                  }
                   toggleLabel={t.skills.toggleToolset(label)}
                 />
               )
@@ -696,10 +715,12 @@ export function SkillsView({ setStatusbarItemGroup: _setStatusbarItemGroup, ...p
 // Tools share one title/description block and tab switches don't jump.
 function DetailHeader({
   description,
+  metadata,
   pills,
   title
 }: {
   description: React.ReactNode
+  metadata?: React.ReactNode
   pills?: React.ReactNode
   title: string
 }) {
@@ -709,15 +730,16 @@ function DetailHeader({
         <h3 className="min-w-0 truncate text-[0.9375rem] font-semibold tracking-tight">{title}</h3>
         {pills}
       </div>
-      <p className="mt-1 text-[length:var(--conversation-caption-font-size)] leading-(--conversation-caption-line-height) text-(--ui-text-tertiary)">
+      {metadata}
+      <div className="mt-1 text-[length:var(--conversation-caption-font-size)] leading-(--conversation-caption-line-height) text-(--ui-text-tertiary)">
         {description}
-      </p>
+      </div>
     </header>
   )
 }
 
 function SkillDetail({ onArchive, onEdit, skill }: { onArchive: () => void; onEdit: () => void; skill: SkillInfo }) {
-  const { t } = useI18n()
+  const { t, locale } = useI18n()
   // Only learned/local skills are the user's to rewrite or archive — bundled
   // and hub skills are managed by their sources.
   const editable = skill.provenance === 'agent'
@@ -725,10 +747,24 @@ function SkillDetail({ onArchive, onEdit, skill }: { onArchive: () => void; onEd
   return (
     <>
       <DetailHeader
-        description={asText(skill.description) || t.skills.noDescription}
+        description={<CompactMarkdown text={localizeSkillDetail(skill, locale) || t.skills.noDescription} />}
+        metadata={
+          <div className="mt-1 flex min-w-0 items-center gap-1 text-[0.6875rem] text-(--ui-text-quaternary)">
+            <span className="shrink-0">{t.skills.originalName}:</span>
+            <code className="truncate font-mono text-(--ui-text-tertiary)">{skill.name}</code>
+            <CopyButton
+              appearance="icon"
+              buttonSize="icon-xs"
+              className="shrink-0 text-(--ui-text-quaternary) hover:text-foreground"
+              iconClassName="size-3"
+              label={`${t.common.copy} ${skill.name}`}
+              text={skill.name}
+            />
+          </div>
+        }
         pills={
           <>
-            <PanelPill>{prettyName(categoryFor(skill))}</PanelPill>
+            <PanelPill>{displayCategory(categoryFor(skill), locale)}</PanelPill>
             {skill.provenance && skill.provenance !== 'bundled' && (
               <PanelPill tone={skill.provenance === 'agent' ? 'good' : 'muted'}>
                 {t.skills.provenance[skill.provenance]}
@@ -736,7 +772,7 @@ function SkillDetail({ onArchive, onEdit, skill }: { onArchive: () => void; onEd
             )}
           </>
         }
-        title={skill.name}
+        title={localizeSkillName(skill, locale)}
       />
       {editable && (
         <div className="flex items-center gap-2">
@@ -761,16 +797,16 @@ function ToolsetDetail({
   toolCalls: Record<string, number>
   onConfiguredChange: () => void
 }) {
-  const { t } = useI18n()
+  const { t, locale } = useI18n()
   const navigate = useNavigate()
   const tools = toolNames(toolset)
-  const label = toolsetDisplayLabel(toolset)
+  const label = localizeToolsetName(toolset.name, toolsetDisplayLabel(toolset), locale)
 
   return (
     <>
       {/* "Configured" as a resting state is noise — only the warn state earns a pill. */}
       <DetailHeader
-        description={asText(toolset.description) || t.skills.noDescription}
+        description={localizeToolsetDescription(toolset.name, asText(toolset.description), locale) || t.skills.noDescription}
         pills={!toolset.configured && <PanelPill tone="warn">{t.skills.needsKeys}</PanelPill>}
         title={label}
       />

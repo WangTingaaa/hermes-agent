@@ -99,6 +99,7 @@ import { useDesktopIntegrations } from './hooks/use-desktop-integrations'
 import { usePetBridge } from './hooks/use-pet-bridge'
 import { useSessionTileDelegate } from './hooks/use-session-tile-delegate'
 import { $restartPreviewServer, useTitlebarToolContributions } from './panes'
+import { shouldNavigateToSidebarSession } from './sidebar-session-navigation'
 import { ChatRoutesSurface, SidebarSurface, StatusbarSurface, TerminalSurface } from './surfaces'
 import type { WiringActions, WiringApi } from './types'
 
@@ -755,7 +756,12 @@ export function ContribWiring({ children }: { children: ReactNode }) {
     // Already on screen (open tile, or the main session)? Jump to its tab;
     // otherwise load it into main.
     onResumeSession: sessionId => {
-      if (!focusOpenSession(sessionId)) {
+      const focusedOpenSession = focusOpenSession(sessionId)
+
+      // Focusing a hidden workspace tile does not replace a full-page route
+      // such as Skills & Tools. Return to chat even when that session was
+      // already open behind the page.
+      if (shouldNavigateToSidebarSession(currentView, focusedOpenSession)) {
         navigate(sessionRoute(sessionId))
       }
     },

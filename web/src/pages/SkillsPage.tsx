@@ -60,6 +60,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Input } from "@nous-research/ui/ui/components/input";
 import { useI18n } from "@/i18n";
+import { localizeHubSkill, localizeHubSkillDetail } from "@/lib/skill-hub-localization";
 import { usePageHeader } from "@/contexts/usePageHeader";
 import { PluginSlot } from "@/plugins";
 
@@ -863,6 +864,7 @@ function HubBrowser({
   /** Optional profile scoping installs + installed-state badges. */
   profile?: string;
 }) {
+  const { locale } = useI18n();
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SkillHubResult[]>([]);
   const [searching, setSearching] = useState(false);
@@ -1093,6 +1095,7 @@ function HubBrowser({
                 <HubResultCard
                   key={r.identifier}
                   result={r}
+                  locale={locale}
                   installed={isInstalled(r.identifier)}
                   onOpen={() => setDetail(r)}
                   onInstall={() => void install(r.identifier)}
@@ -1137,6 +1140,7 @@ function HubBrowser({
               <HubResultCard
                 key={r.identifier}
                 result={r}
+                locale={locale}
                 installed={isInstalled(r.identifier)}
                 onOpen={() => setDetail(r)}
                 onInstall={() => void install(r.identifier)}
@@ -1150,6 +1154,7 @@ function HubBrowser({
       {detail && (
         <SkillDetailDialog
           result={detail}
+          locale={locale}
           installed={isInstalled(detail.identifier)}
           onClose={() => setDetail(null)}
           onInstall={() => void install(detail.identifier)}
@@ -1254,16 +1259,19 @@ function SearchMeta({
 /* ---- One result card ---- */
 function HubResultCard({
   result,
+  locale,
   installed,
   onOpen,
   onInstall,
 }: {
   result: SkillHubResult;
+  locale: ReturnType<typeof useI18n>["locale"];
   installed: boolean;
   onOpen: () => void;
   onInstall: () => void;
 }) {
   const trust = trustVisual(result.trust_level);
+  const [name, description] = localizeHubSkill(result, locale);
   return (
     <Card className="rounded-none transition-colors hover:bg-muted/30">
       <CardContent className="py-3 flex items-start gap-3">
@@ -1271,12 +1279,18 @@ function HubResultCard({
           type="button"
           className="flex-1 min-w-0 text-left"
           onClick={onOpen}
-          aria-label={`Open ${result.name}`}
+          aria-label={`Open ${name}`}
         >
           <div className="flex flex-wrap items-center gap-2 mb-0.5">
             <span className="font-mono-ui text-sm hover:underline">
-              {result.name}
+              {name}
             </span>
+            {(locale === "zh" || locale === "zh-hant") &&
+              name !== result.name && (
+                <span className="font-mono text-[0.68rem] text-text-tertiary">
+                  {result.name}
+                </span>
+              )}
             <Badge tone={trust.tone} className="text-xs">
               {trust.label}
             </Badge>
@@ -1290,7 +1304,7 @@ function HubResultCard({
             )}
           </div>
           <p className="text-xs text-text-secondary line-clamp-2">
-            {result.description}
+            {description}
           </p>
           <div className="flex flex-wrap items-center gap-1 mt-1">
             {result.tags.slice(0, 5).map((tag) => (
@@ -1337,12 +1351,14 @@ function HubResultCard({
 /* ---- Detail dialog: SKILL.md preview + on-demand security scan ---- */
 function SkillDetailDialog({
   result,
+  locale,
   installed,
   onClose,
   onInstall,
   showToast,
 }: {
   result: SkillHubResult;
+  locale: ReturnType<typeof useI18n>["locale"];
   installed: boolean;
   onClose: () => void;
   onInstall: () => void;
@@ -1354,12 +1370,13 @@ function SkillDetailDialog({
   const [scan, setScan] = useState<SkillHubScan | null>(null);
   const [scanning, setScanning] = useState(false);
   const trust = trustVisual(result.trust_level);
+  const [name, description] = localizeHubSkill(result, locale);
 
   useEffect(() => {
     let cancelled = false;
     setPreviewLoading(true);
     api
-      .previewSkillFromHub(result.identifier)
+      .previewSkillFromHub(result.identifier, locale)
       .then((p) => !cancelled && setPreview(p))
       .catch((e) => {
         if (!cancelled) showToast(`Preview failed: ${e}`, "error");
@@ -1368,7 +1385,7 @@ function SkillDetailDialog({
     return () => {
       cancelled = true;
     };
-  }, [result.identifier, showToast]);
+  }, [locale, result.identifier, showToast]);
 
   const runScan = useCallback(async () => {
     setScanning(true);
@@ -1389,7 +1406,7 @@ function SkillDetailDialog({
         <DialogHeader>
           <DialogTitle className="flex flex-wrap items-center gap-2 text-sm">
             <Package className="h-4 w-4" />
-            {result.name}
+            {name}
             <Badge tone={trust.tone} className="text-xs">
               {trust.label}
             </Badge>
@@ -1403,13 +1420,13 @@ function SkillDetailDialog({
             )}
           </DialogTitle>
           <DialogDescription className="sr-only">
-            Preview the SKILL.md source and run a security scan for {result.name}{" "}
+            Preview the SKILL.md source and run a security scan for {name}{" "}
             before installing.
           </DialogDescription>
         </DialogHeader>
 
         <div className="mt-1 flex flex-col gap-1">
-          <p className="text-xs text-text-secondary">{result.description}</p>
+          <p className="text-xs text-text-secondary">{description}</p>
           <p className="text-xs font-mono text-text-tertiary truncate">
             {result.identifier}
           </p>
@@ -1498,7 +1515,7 @@ function SkillDetailDialog({
                   </div>
                 )}
                 <pre className="whitespace-pre-wrap break-words bg-background/50 border border-border p-3 text-xs font-mono text-text-secondary leading-relaxed">
-                  {(preview.skill_md || "").trim() || "(SKILL.md is empty)"}
+                  {localizeHubSkillDetail(result, (preview.skill_md || "").trim(), locale) || "(SKILL.md is empty)"}
                 </pre>
               </div>
             ) : (

@@ -1260,9 +1260,9 @@ export const api = {
     fetchJSON<SkillHubSourcesResponse>(
       `/api/skills/hub/sources${profileQuery(profile)}`,
     ),
-  previewSkillFromHub: (identifier: string) =>
+  previewSkillFromHub: (identifier: string, language?: string) =>
     fetchJSON<SkillHubPreview>(
-      `/api/skills/hub/preview?identifier=${encodeURIComponent(identifier)}`,
+      `/api/skills/hub/preview?identifier=${encodeURIComponent(identifier)}${language ? `&language=${encodeURIComponent(language)}` : ""}`,
     ),
   scanSkillFromHub: (identifier: string) =>
     fetchJSON<SkillHubScan>(

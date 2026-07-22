@@ -9,6 +9,7 @@ import { getElevenLabsVoices, getHermesConfigSchema, saveHermesConfig } from '@/
 import { useI18n } from '@/i18n'
 import { $keepAwake, setKeepAwake } from '@/store/keep-awake'
 import { notify, notifyError } from '@/store/notifications'
+import { $activeGatewayProfile } from '@/store/profile'
 import type { ConfigFieldSchema, HermesConfigRecord } from '@/types/hermes'
 
 import { setHermesConfigCache, useHermesConfigRecord } from '../hooks/use-config-record'
@@ -56,6 +57,7 @@ export function ConfigSettings({
   const { t } = useI18n()
   const c = t.settings.config
   const keepAwake = useStore($keepAwake)
+  const activeProfile = useStore($activeGatewayProfile)
   // The editable draft is local (debounced autosave watches it), but it's seeded
   // from — and saved back through — the shared config cache, so edits are visible
   // in the MCP/model surfaces and reopening the page doesn't reload-flash.
@@ -82,23 +84,23 @@ export function ConfigSettings({
   // Background refetches thereafter must not clobber in-progress edits.
   const configSeeded = useRef(false)
 
-  useEffect(() => {
-    if (loadedConfig && !configSeeded.current) {
-      configSeeded.current = true
-      setConfig(loadedConfig)
-    }
-  }, [loadedConfig])
-
-  // A profile switch invalidates (but doesn't clear) the shared config query, so
-  // the local draft would otherwise keep profile A's data and autosave it into
-  // B. Drop the seed + draft (re-seeds from B's refetch) and zero saveVersion so
-  // the pending debounced autosave is cancelled by its effect cleanup.
+  // Reset before the seed effect below. Config queries are profile-keyed, so
+  // this either seeds an already-cached record for B in the same commit or
+  // waits for B's request. Keeping this hook first prevents a cached record
+  // from being cleared after it was seeded, which left Model on its skeleton.
   useOnProfileSwitch(() => {
     configSeeded.current = false
     setConfig(null)
     saveVersionRef.current = 0
     setSaveVersion(0)
   })
+
+  useEffect(() => {
+    if (loadedConfig && !configSeeded.current) {
+      configSeeded.current = true
+      setConfig(loadedConfig)
+    }
+  }, [activeProfile, loadedConfig])
 
   useEffect(() => {
     let cancelled = false

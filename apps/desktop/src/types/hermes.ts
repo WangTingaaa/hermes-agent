@@ -715,12 +715,16 @@ export interface ProfilesResponse {
 
 export interface SkillInfo {
   category: string
+  /** Source-grounded Markdown preview extracted from the skill's SKILL.md. */
+  detail?: string
   description: string
   enabled: boolean
   name: string
+  /** True for bundled skills and official optional skills installed from the hub. */
+  official?: boolean
   /** Total observed activity (use + view + patch). Absent on older backends. */
   usage?: number
-  /** 'agent' = learned/local (editable), 'bundled' = ships with Mira, 'hub' = installed. */
+  /** 'agent' = learned/local, 'bundled' = default built-in, 'hub' = installed. */
   provenance?: 'agent' | 'bundled' | 'hub'
 }
 

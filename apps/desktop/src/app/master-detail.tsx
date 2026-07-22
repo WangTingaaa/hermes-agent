@@ -341,7 +341,7 @@ interface CapRowProps {
   rowId?: string
   /** Second line under the name (category, description, status). Rows grow to h-11. */
   subtitle?: ReactNode
-  title: string
+  title: ReactNode
   toggleLabel: string
 }
 
@@ -383,7 +383,7 @@ export function CapRow({
             {title}
           </span>
           {subtitle != null && (
-            <span className="flex min-w-0 items-center gap-1 text-[0.62rem] text-muted-foreground/50">
+            <span className="flex min-w-0 items-center gap-1 overflow-hidden text-[0.62rem] text-muted-foreground/50">
               {typeof subtitle === 'string' ? <span className="truncate">{subtitle}</span> : subtitle}
             </span>
           )}

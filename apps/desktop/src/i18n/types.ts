@@ -820,6 +820,7 @@ export interface Translations {
     emptyNoneAvailable: (noun: string) => string
     changesApplyNewSessions: string
     skillUpdated: string
+    originalName: string
     edit: string
     archive: string
     skillArchivedTitle: string

@@ -6,6 +6,7 @@ import type * as ReactRouterDom from 'react-router-dom'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type * as HermesApi from '@/hermes'
+import { I18nProvider } from '@/i18n'
 import { queryClient } from '@/lib/query-client'
 
 const getSkills = vi.fn()
@@ -58,17 +59,19 @@ function toolset(overrides: Record<string, unknown> = {}) {
   }
 }
 
-async function renderSkills() {
+async function renderSkills(initialLocale: 'en' | 'zh' = 'en', route = '/skills?tab=toolsets') {
   const { SkillsView } = await import('./index')
   let result: ReturnType<typeof render>
   await act(async () => {
     result = render(
       // SkillsView reads skills/toolsets via useQuery, so it needs a provider.
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter initialEntries={['/skills?tab=toolsets']}>
-          <SkillsView />
-        </MemoryRouter>
-      </QueryClientProvider>
+      <I18nProvider configClient={null} initialLocale={initialLocale}>
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter initialEntries={[route]}>
+            <SkillsView />
+          </MemoryRouter>
+        </QueryClientProvider>
+      </I18nProvider>
     )
   })
 
@@ -114,6 +117,46 @@ describe('SkillsView toolset management', () => {
     // of the emoji rather than a single-match text lookup.
     await screen.findByRole('switch', { name: 'Toggle Cron Jobs toolset' })
     expect(screen.queryByText(/⏰/)).toBeNull()
+  })
+
+  it('keeps the original toolset id beside the localized Chinese name', async () => {
+    await renderSkills('zh')
+
+    expect((await screen.findAllByText('网页访问')).length).toBeGreaterThan(0)
+    expect(screen.getByText('web')).toBeTruthy()
+    const toolsetSwitch = screen.getByRole('switch', { name: '切换 网页访问 工具集' })
+    expect(toolsetSwitch.parentElement?.textContent).toContain('工具集')
+    expect(toolsetSwitch.parentElement?.textContent).not.toContain('搜索并读取网页内容')
+  })
+
+  it('shows and copies the original skill name in the detail panel', async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined)
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: { writeText }
+    })
+    getSkills.mockResolvedValue([
+      {
+        category: 'productivity',
+        description: 'Create and edit spreadsheets.',
+        enabled: true,
+        name: 'xlsx',
+        official: true,
+        provenance: 'bundled'
+      }
+    ])
+    getToolsets.mockResolvedValue([])
+
+    await renderSkills('zh', '/skills?tab=skills')
+
+    const skillSwitch = await screen.findByRole('switch', { name: 'xlsx' })
+    expect(skillSwitch.parentElement?.textContent).toContain('生产力')
+    expect(skillSwitch.parentElement?.textContent).not.toContain('Create and edit spreadsheets.')
+    expect(screen.getByText(/Skill 原名/)).toBeTruthy()
+    const copy = screen.getByRole('button', { name: '复制 xlsx' })
+    fireEvent.click(copy)
+
+    await waitFor(() => expect(writeText).toHaveBeenCalledWith('xlsx'))
   })
 
   it('renders the provider config panel inline for the selected toolset', async () => {

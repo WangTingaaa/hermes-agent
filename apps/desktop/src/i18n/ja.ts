@@ -976,6 +976,7 @@ export const ja = defineLocale({
     emptyNoneAvailable: noun => `利用可能な ${noun} はまだありません。`,
     changesApplyNewSessions: '変更は新しいセッションに適用されます。',
     skillUpdated: 'スキルを更新しました',
+    originalName: 'Skill の元名',
     edit: '編集',
     archive: 'アーカイブ',
     skillArchivedTitle: 'スキルをアーカイブしました',

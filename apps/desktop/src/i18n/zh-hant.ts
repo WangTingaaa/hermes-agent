@@ -946,6 +946,7 @@ export const zhHant = defineLocale({
     emptyNoneAvailable: noun => `尚無可用的${noun}。`,
     changesApplyNewSessions: '變更將套用至新工作階段。',
     skillUpdated: '技能已更新',
+    originalName: 'Skill 原名',
     edit: '編輯',
     archive: '封存',
     skillArchivedTitle: '技能已封存',

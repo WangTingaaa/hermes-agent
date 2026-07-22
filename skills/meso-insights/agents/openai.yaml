@@ -1,0 +1,4 @@
+interface:
+  display_name: "mesoInsights 文档管理"
+  short_description: "管理、检索和生成 mesoInsights 文档的 AI结果。"
+  default_prompt: "使用 mesoInsights 帮我查找或管理文档及其 AI结果。"

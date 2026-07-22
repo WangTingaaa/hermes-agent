@@ -1134,6 +1134,7 @@ export const zh: Translations = {
     emptyNoneAvailable: noun => `暂无可用的${noun}。`,
     changesApplyNewSessions: '更改将应用于新会话。',
     skillUpdated: '技能已更新',
+    originalName: 'Skill 原名',
     edit: '编辑',
     archive: '归档',
     skillArchivedTitle: '技能已归档',

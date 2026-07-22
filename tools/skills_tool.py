@@ -666,6 +666,53 @@ def _is_skill_disabled(name: str, platform: str = None) -> bool:
         return False
 
 
+_CATALOG_DETAIL_HEADINGS = re.compile(
+    r"^(?:##|###)\s+(?:overview|what(?:\s+this\s+skill)?\s+(?:does|covers)|why\s+this\s+works|how\s+to\s+use|"
+    r"when\s+to\s+use|use\s+when|workflow|quick\s+start|examples?|capabilities|概述|适用场景|何时使用|工作流|示例|能力)",
+    re.IGNORECASE,
+)
+
+
+def _skill_catalog_detail(description: str, body: str) -> str:
+    """Build a concise Markdown preview exclusively from SKILL.md text.
+
+    Keep the source's own opening and first relevant sections; never invent
+    workflow, inputs, or outputs for a catalog card.
+    """
+    lines = body.strip().splitlines()
+    if not lines:
+        return description
+
+    parts: list[str] = []
+    intro: list[str] = []
+    index = 1 if lines[0].startswith("# ") else 0
+    while index < len(lines) and not lines[index].startswith("##"):
+        intro.append(lines[index])
+        index += 1
+    intro_text = "\n".join(intro).strip()
+    if intro_text:
+        parts.append(intro_text)
+
+    sections = 0
+    while index < len(lines) and sections < 2:
+        heading = lines[index]
+        index += 1
+        section_lines: list[str] = []
+        while index < len(lines) and not lines[index].startswith("##"):
+            section_lines.append(lines[index])
+            index += 1
+        if _CATALOG_DETAIL_HEADINGS.match(heading):
+            section = "\n".join([heading, *section_lines]).strip()
+            if section:
+                parts.append(section)
+                sections += 1
+
+    detail = "\n\n".join(parts).strip() or description
+    # The scanner intentionally reads a small SKILL.md prefix.  Keep this
+    # preview bounded too, while preserving its original Markdown.
+    return detail[:1400].rstrip()
+
+
 def _find_all_skills(*, skip_disabled: bool = False) -> List[Dict[str, Any]]:
     """Recursively find all skills in ~/.hermes/skills/ and external dirs.
 
@@ -740,7 +787,10 @@ def _find_all_skills(*, skip_disabled: bool = False) -> List[Dict[str, Any]]:
                 if name in disabled:
                     continue
 
-                description = frontmatter.get("description", "")
+                # The SKILL.md frontmatter is the source of truth for the
+                # dashboard's one-line description.  Do not use the prompt
+                # helper here: it intentionally truncates text to save tokens.
+                description = str(frontmatter.get("description", "")).strip().strip("'\"")
                 if not description:
                     for line in body.strip().split("\n"):
                         line = line.strip()
@@ -757,6 +807,7 @@ def _find_all_skills(*, skip_disabled: bool = False) -> List[Dict[str, Any]]:
                 skills.append({
                     "name": name,
                     "description": description,
+                    "detail": _skill_catalog_detail(description, body),
                     "category": category,
                 })
 

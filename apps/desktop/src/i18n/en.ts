@@ -945,6 +945,7 @@ export const en: Translations = {
     emptyNoneAvailable: noun => `No ${noun} available yet.`,
     changesApplyNewSessions: 'Changes apply to new sessions.',
     skillUpdated: 'Skill updated',
+    originalName: 'Original Skill Name',
     edit: 'Edit',
     archive: 'Archive',
     skillArchivedTitle: 'Skill archived',

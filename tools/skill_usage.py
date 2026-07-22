@@ -239,6 +239,33 @@ def _read_hub_installed_names() -> Set[str]:
     return set()
 
 
+def read_official_optional_skill_names() -> Set[str]:
+    """Return installed optional skills whose hub lock records official origin.
+
+    Optional skills are shipped with Hermes but installed on demand, so they do
+    not live in the bundled manifest.  Keeping this provenance distinct lets
+    UI consumers use the same source-grounded catalog treatment without
+    mistaking community hub skills for built-ins.
+    """
+    lock_path = _skills_dir() / ".hub" / "lock.json"
+    try:
+        data = json.loads(lock_path.read_text(encoding="utf-8"))
+        installed = data.get("installed", {}) if isinstance(data, dict) else {}
+        if not isinstance(installed, dict):
+            return set()
+        names: Set[str] = set()
+        for key, entry in installed.items():
+            if not isinstance(entry, dict) or entry.get("source") != "official":
+                continue
+            names.add(str(key))
+            install_path = entry.get("install_path")
+            if isinstance(install_path, str) and install_path:
+                names.add(install_path.rstrip("/").rsplit("/", 1)[-1])
+        return names
+    except (OSError, ValueError, TypeError, json.JSONDecodeError):
+        return set()
+
+
 def _prune_builtins_enabled() -> bool:
     """Whether bundled built-in skills are eligible for curator pruning.
 
