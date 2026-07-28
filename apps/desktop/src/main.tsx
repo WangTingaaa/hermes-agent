@@ -1,5 +1,7 @@
 import './styles.css'
 import './styles/mesoInsights-scrollbar.less'
+// Side-effect: reports in-flight turns to the main process for the quit guard.
+import './store/active-work'
 // Side-effect: applies the persisted window translucency on load.
 import './store/translucency'
 // Dev-only render/state churn counters. MUST precede the `react-dom` import
@@ -54,7 +56,7 @@ if (winParam === 'overlay') {
                     renders in a single sash drag). Radix's provider holds only
                     refs and stable callbacks, so hoisting is what it's for. */}
                 <RootTooltipProvider>
-                {/* useTransitions={false}: react-router v7's HashRouter wraps every
+                  {/* useTransitions={false}: react-router v7's HashRouter wraps every
                     route state update in React.startTransition() by default. In
                     React 19's concurrent renderer, transitions are non-urgent — React
                     can yield mid-render and resume later. When the app is under load
@@ -63,9 +65,9 @@ if (winParam === 'overlay') {
                     the route change commit. The session sidebar highlight + main pane
                     both freeze for seconds despite the main thread being free.
                     Disabling transitions makes navigate() commit at default priority. */}
-                <HashRouter useTransitions={false}>
-                  <App />
-                </HashRouter>
+                  <HashRouter useTransitions={false}>
+                    <App />
+                  </HashRouter>
                 </RootTooltipProvider>
               </HapticsProvider>
             </ThemeProvider>

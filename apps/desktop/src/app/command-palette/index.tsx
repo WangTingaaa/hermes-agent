@@ -16,6 +16,7 @@ import {
   AppWindow,
   Archive,
   BarChart3,
+  Check,
   ChevronLeft,
   ChevronRight,
   Clock,
@@ -70,6 +71,7 @@ import {
   COMMAND_CENTER_ROUTE,
   CRON_ROUTE,
   MESSAGING_ROUTE,
+  navigateToWorkspacePage,
   NEW_CHAT_ROUTE,
   PROFILES_ROUTE,
   sessionRoute,
@@ -88,6 +90,8 @@ import { PetInlineToggle, PetPalettePage } from './pet-palette-page'
 interface PaletteItem {
   /** Keybind action id — its live combo renders as a hotkey hint. */
   action?: string
+  /** Renders a trailing check: this row IS the current setting (theme, mode). */
+  active?: boolean
   icon: IconComponent
   id: string
   /** Keep the palette open after running (live-preview pickers like theme/mode). */
@@ -299,7 +303,7 @@ export function CommandPalette() {
   const bindings = useStore($bindings)
   const worktrees = useStore($repoWorktrees)
   const navigate = useNavigate()
-  const { availableThemes, resolvedMode, setMode, setTheme, themeName } = useTheme()
+  const { availableThemes, mode, resolvedMode, setMode, setTheme, themeName } = useTheme()
   const [search, setSearch] = useState('')
   const [page, setPage] = useState<string | null>(null)
 
@@ -350,7 +354,7 @@ export function CommandPalette() {
     }
   }, [open, pendingPage])
 
-  const go = useCallback((path: string) => () => navigate(path), [navigate])
+  const go = useCallback((path: string) => () => navigateToWorkspacePage(navigate, path), [navigate])
 
   // Step up one nested page (or back to the root list), clearing the filter so
   // the parent page doesn't reopen mid-search.
@@ -664,6 +668,7 @@ export function CommandPalette() {
     result.push({
       heading: t.settings.appearance.themeTitle,
       items: availableThemes.map(theme => ({
+        active: themeName === theme.name,
         icon: Palette,
         id: `search-theme-${theme.name}`,
         keepOpen: true,
@@ -684,6 +689,7 @@ export function CommandPalette() {
     result.push({
       heading: t.settings.appearance.colorMode,
       items: THEME_MODES.map(entry => ({
+        active: mode === entry.mode,
         icon: entry.icon,
         id: `search-mode-${entry.mode}`,
         keepOpen: true,
@@ -762,13 +768,15 @@ export function CommandPalette() {
     configFieldLabel,
     go,
     mcpServers,
+    mode,
     resolvedMode,
     search,
     sessions,
     setMode,
     setTheme,
     settingsSectionLabel,
-    t
+    t,
+    themeName
   ])
 
   const groups = useMemo(() => [...baseGroups, ...searchGroups], [baseGroups, searchGroups])
@@ -822,6 +830,7 @@ export function CommandPalette() {
           {
             heading: t.settings.appearance.colorMode,
             items: THEME_MODES.map(entry => ({
+              active: mode === entry.mode,
               icon: entry.icon,
               id: `mode-${entry.mode}`,
               keepOpen: true,
@@ -846,7 +855,7 @@ export function CommandPalette() {
         groups: []
       }
     }),
-    [availableThemes, resolvedMode, setMode, setTheme, t, themeName]
+    [availableThemes, mode, resolvedMode, setMode, setTheme, t, themeName]
   )
 
   const activePage = page ? subPages[page] : null
@@ -873,13 +882,13 @@ export function CommandPalette() {
     <DialogPrimitive.Root onOpenChange={setCommandPaletteOpen} open={open}>
       <DialogPrimitive.Portal>
         {/* Transparent overlay: keeps click-away + focus trap, but no dim/blur. */}
-        <DialogPrimitive.Overlay className="fixed inset-0 z-[200]" />
+        <DialogPrimitive.Overlay className="fixed inset-0 z-(--z-over-modal)" />
         <DialogPrimitive.Content
           aria-describedby={undefined}
           className={cn(
             HUD_POSITION,
             HUD_SURFACE,
-            'z-[210] w-[min(34rem,calc(100vw-2rem))] overflow-hidden duration-150 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:slide-in-from-top-2 data-[state=open]:zoom-in-95'
+            'z-(--z-over-modal-content) w-[min(34rem,calc(100vw-2rem))] overflow-hidden duration-150 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:slide-in-from-top-2 data-[state=open]:zoom-in-95'
           )}
         >
           <DialogPrimitive.Title className="sr-only">{t.commandCenter.paletteTitle}</DialogPrimitive.Title>
@@ -961,6 +970,11 @@ export function CommandPalette() {
                             {item.to && (
                               <ChevronRight
                                 className={cn('size-3.5 shrink-0 text-muted-foreground/70', !combo && 'ml-auto')}
+                              />
+                            )}
+                            {item.active && (
+                              <Check
+                                className={cn('size-3.5 shrink-0 text-primary', !combo && !item.to && 'ml-auto')}
                               />
                             )}
                           </CommandItem>

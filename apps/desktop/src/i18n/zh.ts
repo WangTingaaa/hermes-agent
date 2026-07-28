@@ -160,9 +160,9 @@ export const zh: Translations = {
       approveAction: '批准',
       rejectAction: '拒绝',
       inputTitle: '需要输入',
-      inputBody: 'Mira Agent 正在等待你的回应。',
-      turnDoneTitle: 'Mira Agent 已完成',
-      turnDoneBody: '回复已就绪。',
+      inputBody: 'Mira 正在等待你的回应。',
+      turnDoneTitle: 'Mira 已完成',
+      turnDoneBody: '',
       turnErrorTitle: '本轮失败',
       backgroundDoneTitle: '后台任务已完成',
       backgroundFailedTitle: '后台任务失败',
@@ -189,7 +189,6 @@ export const zh: Translations = {
     search: '搜索',
     searchTitle: '搜索会话、视图与操作',
     swapSidebarSides: '交换侧边栏位置',
-    swapSidebarSidesTitle: '交换会话栏和文件浏览器的位置',
     hideRightSidebar: '隐藏右侧栏',
     showRightSidebar: '显示右侧栏',
     muteHaptics: '关闭触感反馈',
@@ -252,6 +251,7 @@ export const zh: Translations = {
       'view.toggleSidebar': '切换会话侧边栏',
       'view.toggleRightSidebar': '切换文件浏览器',
       'view.toggleReview': '切换审查面板',
+      'view.toggleStatusbar': '切换状态栏',
       'view.showFiles': '显示文件浏览器',
       'view.showTerminal': '显示终端',
       'view.terminalSelection': '将终端选区发送到输入框',
@@ -356,8 +356,8 @@ export const zh: Translations = {
       title: '通知',
       intro: '原生桌面通知，区别于应用内提示。设置按设备保存，每台电脑各自独立。',
       enableAll: '启用通知',
-      enableAllDesc: '总开关。关闭后将静音下方所有通知。',
-      focusedHint: '完成提醒仅在 Mira Agent 处于后台时触发。',
+      enableAllDesc: '关闭后静音下方所有通知。',
+      focusedHint: '完成提醒仅在 Mira 处于后台时触发。',
       kinds: {
         approval: {
           label: '需要批准',
@@ -373,7 +373,7 @@ export const zh: Translations = {
         },
         turnError: {
           label: '本轮失败',
-          description: '本轮以错误结束。'
+          description: '后台回合错误。'
         },
         backgroundDone: {
           label: '后台任务完成',
@@ -791,8 +791,7 @@ export const zh: Translations = {
       saving: '保存中'
     },
     envActions: {
-      actionsFor: label => `${label} 的操作`,
-      credentialActions: '凭据操作',
+      actions: '操作',
       manageInKeys: '在 API 密钥中管理',
       docs: '文档',
       hideValue: '隐藏值',
@@ -1725,9 +1724,9 @@ export const zh: Translations = {
     showAllProfiles: '显示全部配置档案',
     switchToProfile: name => `切换到 ${name}`,
     manageProfiles: '管理配置档案…',
-    actionsFor: name => `${name} 的操作`,
+    actions: '操作',
     color: '颜色…',
-    colorFor: name => `${name} 的颜色`,
+    colorFor: '颜色',
     setColor: color => `设置颜色 ${color}`,
     autoColor: '自动',
     noProfiles: '暂无配置档案。',
@@ -1860,7 +1859,7 @@ export const zh: Translations = {
     showRuns: '显示运行记录',
     hideRuns: '隐藏运行记录',
     runHistory: '运行记录',
-    actionsFor: title => `${title} 的操作`,
+
     actionsTitle: '定时任务操作',
     resume: '恢复定时任务',
     pause: '暂停定时任务',
@@ -1961,6 +1960,26 @@ export const zh: Translations = {
     copyPath: '复制路径'
   },
 
+  artifactCard: {
+    kind: { code: '代码', html: '交互页面', svg: '图形' },
+    generating: lines => `生成中… ${lines} 行`,
+    versionBadge: count => `${count} 个版本`,
+    open: '打开'
+  },
+
+  artifactPreview: {
+    versionOf: (current, total) => `第 ${current}/${total} 版`,
+    olderVersion: '较旧版本',
+    newerVersion: '较新版本',
+    latest: '最新',
+    copyContent: '复制内容',
+    download: '下载',
+    openInBrowser: '在浏览器中打开',
+    openInBrowserFailed: '无法在浏览器中打开',
+    missingTitle: '产物不可用',
+    missingBody: '此产物已不在本地注册表中。'
+  },
+
   sidebar: {
     nav: {
       'new-session': '新建会话',
@@ -1985,11 +2004,11 @@ export const zh: Translations = {
     allPinned: '这里的全部已置顶。取消置顶某个对话即可在最近中显示。',
     shiftClickHint: 'Shift+ 单击对话以置顶 · 拖动以重新排序',
     noWorkspace: '无工作区',
-    noProject: '无项目',
     projectEmpty: '暂无会话',
     noSessions: '暂无会话',
     projects: {
       sectionLabel: '项目',
+      home: '主页',
       newButton: '新建项目',
       createTitle: '新建项目',
       createDesc: '为工作区命名并添加一个或多个文件夹。',
@@ -2007,7 +2026,7 @@ export const zh: Translations = {
       primaryBadge: '主',
       removeFolder: '移除',
       create: '创建',
-      menu: '项目操作',
+      menu: '操作',
       menuRename: '重命名',
       menuAppearance: '外观',
       noColor: '无颜色',
@@ -2067,7 +2086,7 @@ export const zh: Translations = {
       openInNewTab: '在新标签页中打开',
       openInSplit: '在分屏中打开',
       copyIdFailed: '无法复制会话 ID',
-      actionsFor: title => `${title} 的操作`,
+
       sessionActions: '会话操作',
       sessionRunning: '会话运行中',
       needsInput: '需要你输入',
@@ -2079,7 +2098,7 @@ export const zh: Translations = {
       renamed: '已重命名',
       renameFailed: '重命名失败',
       renameTitle: '重命名会话',
-      renameDesc: '给这个对话起一个好记的标题。留空则清除。',
+      renameDesc: '留空则清除。',
       untitledPlaceholder: '无标题会话',
       untitledChat: id => `会话 ${id}`,
       ageNow: '刚刚',
@@ -2575,9 +2594,9 @@ export const zh: Translations = {
       connectionSsh: host => `SSH: ${host}`,
       connectionRemote: host => `远程: ${host}`,
       connectionCloud: host => `云端: ${host}`,
-      connectionCloudTooltip: host => `已连接到 Hermes Cloud ${host} · 点击管理`,
-      connectionSshTooltip: host => `已通过 SSH 连接到 ${host} · 点击管理`,
-      connectionRemoteTooltip: host => `已连接到远程后端 ${host} · 点击管理`,
+      connectionCloudTooltip: host => `Hermes Cloud · ${host}`,
+      connectionSshTooltip: host => `SSH · ${host}`,
+      connectionRemoteTooltip: host => `Remote · ${host}`,
       backendLabel: version => `后端 v${version}`,
       commit: sha => `提交 ${sha}`,
       branch: branch => `分支 ${branch}`,
@@ -2592,11 +2611,15 @@ export const zh: Translations = {
       gatewayConnecting: '连接中',
       gatewayOffline: '离线',
       gatewayRestarting: '重启中…',
-      gatewayTitle: 'Mira Agent 推理网关状态',
+      gatewayTitle: '网关',
       customizeTitle: '在状态栏中显示',
+      hideStatusbar: '隐藏状态栏',
       toggleApprovalMode: '审批',
       toggleBackendVersion: '后端版本',
       toggleCommandCenter: '命令中心',
+      toggleContextUsage: '上下文用量',
+      toggleRunningTimer: '回合计时',
+      toggleSessionTimer: '会话计时',
       toggleTerminal: '终端',
       toggleVersion: '版本与更新',
       toggleWorkspace: '工作区',
@@ -2613,7 +2636,6 @@ export const zh: Translations = {
       starmap: '记忆图谱',
       openStarmap: '打开记忆图谱',
       turnRunning: '运行中',
-      currentTurnElapsed: '当前回合已用时间',
       contextUsage: '上下文用量',
       contextUsagePanel: {
         categories: {
@@ -2632,11 +2654,9 @@ export const zh: Translations = {
         title: '上下文用量',
         tokenSummary: (used, max) => `${used} / ${max} Tokens`
       },
-      openContextUsage: '打开上下文用量明细',
       session: '会话',
-      runtimeSessionElapsed: '运行时会话已用时间',
-      yoloOn: 'YOLO 已开启 - 自动批准危险命令。点击关闭。Shift+点击可全局切换。',
-      yoloOff: 'YOLO 已关闭 - 点击自动批准危险命令。Shift+点击可全局切换。',
+      yoloOn: 'YOLO 已开启 — 自动批准危险命令。Shift+点击可全局切换。',
+      yoloOff: 'YOLO 已关闭。Shift+点击可全局切换。',
       modelNone: '无',
       noModel: '无模型',
       switchModel: '切换模型',
@@ -2657,7 +2677,7 @@ export const zh: Translations = {
     remotePickerTitle: '选择远程文件夹',
     remotePickerDescription: '浏览已连接后端上的文件夹。',
     remotePickerSelect: '选择文件夹',
-    folderTip: cwd => `${cwd} — 点击更改文件夹`,
+    folderTip: cwd => cwd,
     openFolder: '打开文件夹',
     refreshTree: '刷新文件树',
     collapseAll: '折叠所有文件夹',
@@ -2831,6 +2851,9 @@ export const zh: Translations = {
       resumeWhenBackgroundDone: count =>
         count === 1 ? '后台任务完成后将自动继续' : `${count} 个后台任务完成后将自动继续`,
       thinking: '思考中',
+      thought: '已思考',
+      thoughtBriefly: '思考了片刻',
+      thoughtFor: duration => `思考了 ${duration}`,
       today: time => `今天，${time}`,
       yesterday: time => `昨天，${time}`,
       copy: '复制',
@@ -2887,7 +2910,6 @@ export const zh: Translations = {
       lateAnswerHint: '此问题已不再等待回答。选择一个选项会将其起草为后续消息。'
     },
     tool: {
-      code: '代码',
       copyCode: '复制代码',
       renderingImage: '正在渲染图片',
       copyOutput: '复制输出',
