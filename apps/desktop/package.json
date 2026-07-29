@@ -221,6 +221,7 @@
         "CFBundleExecutable": "Mira",
         "CFBundleName": "Mira",
         "NSAudioCaptureUsageDescription": "Mira uses audio capture for voice conversations.",
+        "NSCameraUsageDescription": "Mira uses the camera when a plugin or feature you enable requests it.",
         "NSMicrophoneUsageDescription": "Mira uses the microphone for voice input and voice conversations."
       },
       "gatekeeperAssess": false,

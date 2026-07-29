@@ -264,6 +264,8 @@ export const en: Translations = {
       'view.prevTerminal': 'Previous terminal',
       'view.closeTerminal': 'Close terminal',
       'view.terminalSelection': 'Send terminal selection to composer',
+      'view.terminalCopy': 'Copy terminal selection',
+      'view.terminalPaste': 'Paste into terminal',
       'view.closeTab': 'Close tab',
       'view.reopenTab': 'Reopen closed tab',
       'view.flipPanes': 'Swap sidebar sides',
@@ -551,6 +553,9 @@ export const en: Translations = {
       notSet: 'Not set',
       commaSeparated: 'comma-separated values',
       loading: 'Loading Mira Agent configuration...',
+      searchPlaceholder: 'Search…',
+      noResults: 'No results found',
+      systemDefault: 'System default',
       emptyTitle: 'Nothing to configure',
       emptyDesc: 'This section has no adjustable settings.',
       failedLoad: 'Settings failed to load',
@@ -558,7 +563,12 @@ export const en: Translations = {
       imported: 'Config imported',
       invalidJson: 'Invalid config JSON',
       keepAwakeTitle: 'Keep computer awake',
-      keepAwakeDesc: 'Stop this machine from sleeping so long or overnight runs keep going. The display can still dim.'
+      keepAwakeDesc: 'Stop this machine from sleeping so long or overnight runs keep going. The display can still dim.',
+      attachmentSizeTitle: 'Max preview / image load size',
+      attachmentSizeDesc:
+        'How big a local file Desktop will load for previews and image attach, in MB. Default is 16. Remote non-image attach uses a separate 256 MB cap. Setting this very high loads the whole file into memory and can freeze or crash the app.',
+      attachmentSizeUnit: 'MB',
+      attachmentSizeLabel: 'Max preview / image load size in megabytes'
     },
     quickEntry: {
       enabledTitle: 'Quick Entry',
@@ -1965,6 +1975,9 @@ export const en: Translations = {
     voiceDictation: 'Voice dictation',
     speakReplies: 'Read replies aloud',
     stopSpeakingReplies: 'Stop reading replies aloud',
+    wakeWordListening: phrase => `Wake word: "${phrase}" — listening`,
+    wakeWordOff: phrase => `Wake word: "${phrase}" — off`,
+    wakeWordPausedVoice: phrase => `Wake word: "${phrase}" — paused during voice chat`,
     lookupLoading: 'Looking up…',
     lookupNoMatches: 'No matches.',
     lookupTry: 'Try',
