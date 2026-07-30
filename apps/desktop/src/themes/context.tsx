@@ -137,6 +137,36 @@ function deriveTheme(skinName: string, mode: 'light' | 'dark'): DesktopTheme {
   }
 }
 
+/** 仅文镜外观 */
+function withWenjingAccent(theme: DesktopTheme, primaryColor: string, mode: 'light' | 'dark'): DesktopTheme {
+  if (!/^#[0-9a-f]{6}$/i.test(primaryColor)) {
+    return theme
+  }
+
+  const c = theme.colors
+  const secondary = mix(c.background, primaryColor, mode === 'dark' ? 0.14 : 0.07)
+  const accent = mix(c.background, primaryColor, mode === 'dark' ? 0.22 : 0.1)
+
+  return {
+    ...theme,
+    colors: {
+      ...c,
+      primary: primaryColor,
+      primaryForeground: readableOn(primaryColor),
+      secondary,
+      secondaryForeground: readableOn(secondary),
+      accent,
+      accentForeground: readableOn(accent),
+      ring: primaryColor,
+      midground: primaryColor,
+      midgroundForeground: readableOn(primaryColor),
+      composerRing: primaryColor,
+      userBubble: accent,
+      userBubbleBorder: mix(c.userBubbleBorder ?? c.border, primaryColor, 0.35)
+    }
+  }
+}
+
 /**
  * Some palettes intentionally keep a bright background even when
  * `mode === 'dark'`, so we shouldn't apply the `.dark` class. Decide from
@@ -343,6 +373,45 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     typeof window === 'undefined' ? 'light' : modePref.resolve(readBootProfileKey())
   )
 
+  /** 仅文镜外观 */
+  const [hostAppearance, setHostAppearance] = useState<WenjingHostAppearance | null>(null)
+
+  const acceptHostAppearance = useCallback((appearance: WenjingHostAppearance | null) => {
+    if (
+      !appearance ||
+      appearance.skin !== 'mesoInsights' ||
+      !/^#[0-9a-f]{6}$/i.test(appearance.primaryColor) ||
+      !['light', 'dark', 'system'].includes(appearance.mode) ||
+      !['light', 'dark'].includes(appearance.resolvedMode)
+    ) {
+      return
+    }
+
+    setHostAppearance(current => (!current || appearance.revision >= current.revision ? appearance : current))
+  }, [])
+
+  useEffect(() => {
+    const bridge = window.hermesDesktop?.hostAppearance
+
+    if (!bridge) {
+      return undefined
+    }
+
+    let active = true
+    const unsubscribe = bridge.onChanged(acceptHostAppearance)
+
+    void bridge.get().then(appearance => {
+      if (active) {
+        acceptHostAppearance(appearance)
+      }
+    }).catch(() => undefined)
+
+    return () => {
+      active = false
+      unsubscribe()
+    }
+  }, [acceptHostAppearance])
+
   // Follow profile switches: paint the profile's assigned skin + mode and
   // remember it for the next boot's first paint.
   useEffect(() => {
@@ -351,16 +420,35 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     setModeState(modePref.resolve(profileKey))
   }, [profileKey])
 
+  /** 仅文镜外观 */
+  const linkedHostAppearance = themeName === 'mesoInsights' ? hostAppearance : null
+
+  useEffect(() => {
+    if (!linkedHostAppearance) {
+      return
+    }
+
+    const hostMode: ThemeMode = linkedHostAppearance.mode
+    setModeState(current => (current === hostMode ? current : hostMode))
+    modePref.assign(profileKey, hostMode)
+  }, [linkedHostAppearance, profileKey])
+
   const systemDark = useMediaQuery('(prefers-color-scheme: dark)')
-  const resolvedMode = resolveMode(mode, systemDark)
+  const resolvedMode = linkedHostAppearance?.resolvedMode ?? resolveMode(mode, systemDark)
 
   const activeTheme = useMemo(
-    () => deriveTheme(themeName, resolvedMode),
+    () => {
+      const theme = deriveTheme(themeName, resolvedMode)
+
+      return linkedHostAppearance
+        ? withWenjingAccent(theme, linkedHostAppearance.primaryColor, resolvedMode)
+        : theme
+    },
     // deriveTheme resolves its seed through the merged registry, so the theme
     // stores are its reactivity too — an in-place palette edit of the ACTIVE
     // skin (live theme authoring) must repaint, not just a name switch.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [themeName, resolvedMode, userThemes, backendThemes, registryVersion]
+    [themeName, resolvedMode, linkedHostAppearance, userThemes, backendThemes, registryVersion]
   )
 
   // What actually gets painted (matches the `.dark` class applyTheme toggles).
@@ -385,7 +473,16 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const setMode = useCallback((next: ThemeMode) => {
     setModeState(next)
     modePref.assign(liveProfile(), next)
-  }, [])
+
+    /** 仅文镜外观 */
+    if (themeName === 'mesoInsights') {
+      window.hermesDesktop?.hostAppearance?.requestChange({
+        version: 1,
+        skin: 'mesoInsights',
+        mode: next
+      })
+    }
+  }, [themeName])
 
   // Drain a backend-driven skin switch (Hermes authoring/activating a skin from a
   // prompt, or `/skin` on another surface). setTheme persists it per profile, so

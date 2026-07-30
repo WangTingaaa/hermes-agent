@@ -11,6 +11,15 @@ import type { QuickEntryStatePush, QuickEntryStatus, QuickEntrySubmitPayload } f
 export {}
 
 declare global {
+  interface WenjingHostAppearance {
+    version: 1
+    revision: number
+    skin: 'mesoInsights'
+    mode: 'light' | 'dark' | 'system'
+    resolvedMode: 'light' | 'dark'
+    primaryColor: string
+  }
+
   interface Window {
     hermesDesktop: {
       // Resolve a backend connection. Omit `profile` (or pass the primary) for
@@ -142,6 +151,17 @@ declare global {
       setTranslucency?: (payload: { intensity: number }) => void
       setKeepAwake?: (on: boolean) => void
       setPreviewShortcutActive?: (active: boolean) => void
+      /** 仅文镜外观 */
+      hostAppearance?: {
+        get: () => Promise<WenjingHostAppearance | null>
+        requestChange: (intent: {
+          version: 1
+          skin: 'mesoInsights'
+          mode?: 'light' | 'dark' | 'system'
+          primaryColor?: string
+        }) => void
+        onChanged: (callback: (appearance: WenjingHostAppearance) => void) => () => void
+      }
       openExternal: (url: string) => Promise<void>
       openPreviewInBrowser?: (url: string) => Promise<void>
       fetchLinkTitle: (url: string) => Promise<string>
