@@ -2,7 +2,7 @@ import { useStore } from '@nanostores/react'
 import { useQuery } from '@tanstack/react-query'
 import type * as React from 'react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 
 import { ArchiveSkillConfirmDialog } from '@/app/learning/archive-skill-confirm-dialog'
 import { CodeEditor } from '@/components/chat/code-editor'
@@ -18,8 +18,8 @@ import {
   getToolsets,
   getUsageAnalytics,
   HermesGateway,
-  toggleSkill,
-  toggleToolset
+  setSkillEnabled,
+  setToolsetEnabled
 } from '@/hermes'
 import { useI18n } from '@/i18n'
 import { isDesktopToolsetVisible } from '@/lib/desktop-toolsets'
@@ -348,7 +348,7 @@ export function SkillsView({ setStatusbarItemGroup: _setStatusbarItemGroup, ...p
     setSkills(current => current?.map(row => (row.name === skill.name ? { ...row, enabled } : row)) ?? current)
 
     try {
-      await toggleSkill(skill.name, enabled)
+      await setSkillEnabled(skill.name, enabled)
       // A disabled skill loses its `/name` command, so the composer's cached
       // `/` list has to be dropped along with the row repaint.
       invalidateSlashCompletions()
@@ -367,7 +367,7 @@ export function SkillsView({ setStatusbarItemGroup: _setStatusbarItemGroup, ...p
     )
 
     try {
-      await toggleToolset(toolset.name, enabled)
+      await setToolsetEnabled(toolset.name, enabled)
     } catch (err) {
       setToolsets(
         current =>
@@ -391,13 +391,13 @@ export function SkillsView({ setStatusbarItemGroup: _setStatusbarItemGroup, ...p
 
     try {
       for (const row of skillTargets) {
-        await toggleSkill(row.name, enabled)
+        await setSkillEnabled(row.name, enabled)
         setSkills(cur => cur?.map(r => (r.name === row.name ? { ...r, enabled } : r)) ?? cur)
         done += 1
       }
 
       for (const row of toolsetTargets) {
-        await toggleToolset(row.name, enabled)
+        await setToolsetEnabled(row.name, enabled)
         setToolsets(cur => cur?.map(r => (r.name === row.name ? { ...r, enabled, available: enabled } : r)) ?? cur)
         done += 1
       }
@@ -676,15 +676,9 @@ export function SkillsView({ setStatusbarItemGroup: _setStatusbarItemGroup, ...p
                   }
                   onSelect={() => setSelectedToolset(toolset.name)}
                   onToggle={checked => void handleToggleToolset(toolset, checked)}
-                  subtitle={t.skills.tabToolsets}
-                  title={
-                    <CapabilityTitle
-                      displayName={label}
-                      originalName={toolset.name}
-                      showOriginal={locale === 'zh' || locale === 'zh-hant'}
-                    />
-                  }
-                  toggleLabel={t.skills.toggleToolset(label)}
+                  subtitle={asText(toolset.description)}
+                  title={label}
+                  toggleLabel={t.skills.toggleToolset(label, !toolset.enabled)}
                 />
               )
             })}
