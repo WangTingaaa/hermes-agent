@@ -75,6 +75,7 @@ interface ChatViewProps extends Omit<React.ComponentProps<'div'>, 'onSubmit'> {
   onBranchInNewChat?: (messageId: string) => void
   maxVoiceRecordingSeconds?: number
   onAttachImageBlob: (blob: Blob) => Promise<boolean | void> | boolean | void
+  onAttachFilePath: (filePath: string) => boolean | void
   onAttachDroppedItems: (candidates: DroppedFile[]) => Promise<boolean | void> | boolean | void
   onPasteClipboardImage: (opts?: { silent?: boolean }) => Promise<boolean> | void
   onPickFiles: () => void
@@ -253,6 +254,7 @@ export const ChatView = memo(function ChatView({
   onAddContextRef,
   onAddUrl,
   onAttachImageBlob,
+  onAttachFilePath,
   onAttachDroppedItems,
   onBranchInNewChat,
   maxVoiceRecordingSeconds,
@@ -580,6 +582,7 @@ export const ChatView = memo(function ChatView({
               onAddContextRef={onAddContextRef}
               onAddUrl={onAddUrl}
               onAttachDroppedItems={onAttachDroppedItems}
+              onAttachFilePath={onAttachFilePath}
               onAttachImageBlob={onAttachImageBlob}
               onCancel={onCancel}
               onPasteClipboardImage={onPasteClipboardImage}

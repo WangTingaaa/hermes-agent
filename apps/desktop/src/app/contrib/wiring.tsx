@@ -850,6 +850,7 @@ export function ContribWiring({ children }: { children: ReactNode }) {
     onAddContextRef: composer.addContextRefAttachment,
     onAddUrl: url => composer.addContextRefAttachment(`@url:${formatRefValue(url)}`, url),
     onArchiveSession: sessionId => void archiveSession(sessionId),
+    onAttachFilePath: composer.attachContextFilePath,
     onAttachDroppedItems: composer.attachDroppedItems,
     onAttachImageBlob: composer.attachImageBlob,
     onBranchInNewChat: messageId => void branchInNewChat(messageId),

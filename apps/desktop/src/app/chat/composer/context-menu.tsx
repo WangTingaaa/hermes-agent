@@ -15,7 +15,17 @@ import {
 import { Kbd } from '@/components/ui/kbd'
 import { Tip } from '@/components/ui/tooltip'
 import { useI18n } from '@/i18n'
-import { Clipboard, FileText, FolderOpen, type IconComponent, ImageIcon, Link, MessageSquareText } from '@/lib/icons'
+import {
+  Clipboard,
+  Cloud,
+  FileText,
+  FolderOpen,
+  type IconComponent,
+  ImageIcon,
+  Link,
+  MessageSquareText,
+  Upload
+} from '@/lib/icons'
 import { cn } from '@/lib/utils'
 
 import { useComposerAttachmentProviders } from './contrib'
@@ -29,6 +39,8 @@ export function ContextMenu({
   onInsertText,
   onOpenUrlDialog,
   onPasteClipboardImage,
+  onPickCloudFavorite,
+  onUploadCloudFavorite,
   onPickFiles,
   onPickFolders,
   onPickImages
@@ -84,6 +96,16 @@ export function ContextMenu({
           >
             {c.pasteImage}
           </ContextMenuItem>
+          {onUploadCloudFavorite ? (
+            <ContextMenuItem icon={Upload} onSelect={() => void onUploadCloudFavorite()}>
+              上传收藏文件
+            </ContextMenuItem>
+          ) : null}
+          {onPickCloudFavorite ? (
+            <ContextMenuItem icon={Cloud} onSelect={() => void onPickCloudFavorite()}>
+              引用收藏文件
+            </ContextMenuItem>
+          ) : null}
           <ContextMenuItem icon={Link} onSelect={onOpenUrlDialog}>
             {c.url}
           </ContextMenuItem>
@@ -188,6 +210,8 @@ interface ContextMenuProps {
   onInsertText: (text: string) => void
   onOpenUrlDialog: () => void
   onPasteClipboardImage?: (opts?: { silent?: boolean }) => Promise<boolean> | void
+  onPickCloudFavorite?: () => Promise<void> | void
+  onUploadCloudFavorite?: () => Promise<void> | void
   onPickFiles?: () => void
   onPickFolders?: () => void
   onPickImages?: () => void

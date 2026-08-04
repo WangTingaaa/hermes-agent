@@ -67,6 +67,28 @@ function pathToFileUrl(path: string) {
   return `file://${encoded.startsWith('/') ? encoded : `/${encoded}`}`
 }
 
+/**
+ * Electron and the renderer can update on separate clocks, and embedded hosts
+ * may provide their own bridge implementation. Treat the IPC result as
+ * untrusted runtime data instead of assuming it matches the TypeScript shape.
+ * A partial target is worse than no target: it reaches the preview rail and
+ * crashes while deriving its tab label.
+ */
+function isPreviewTarget(value: unknown): value is PreviewTarget {
+  if (!value || typeof value !== 'object') {
+    return false
+  }
+
+  const target = value as Record<string, unknown>
+
+  return (
+    (target.kind === 'file' || target.kind === 'url') &&
+    typeof target.label === 'string' &&
+    typeof target.source === 'string' &&
+    typeof target.url === 'string'
+  )
+}
+
 export function localPreviewTarget(rawTarget: string, cwd?: string | null): PreviewTarget | null {
   const raw = rawTarget.trim().replace(/^`|`$/g, '')
 
@@ -134,9 +156,9 @@ export async function normalizeOrLocalPreviewTarget(
   cwd?: string | null
 ): Promise<PreviewTarget | null> {
   try {
-    const normalized = await window.hermesDesktop?.normalizePreviewTarget?.(rawTarget, cwd || undefined)
+    const normalized: unknown = await window.hermesDesktop?.normalizePreviewTarget?.(rawTarget, cwd || undefined)
 
-    if (normalized) {
+    if (isPreviewTarget(normalized)) {
       return enrichPreviewTarget(normalized)
     }
   } catch {

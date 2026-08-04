@@ -196,6 +196,7 @@ function TileChat({
           onAddContextRef={addContextRefAttachment}
           onAddUrl={onAddUrl}
           onAttachDroppedItems={composer.attachDroppedItems}
+          onAttachFilePath={composer.attachContextFilePath}
           onAttachImageBlob={composer.attachImageBlob}
           onCancel={actions.cancelRun}
           onDeleteSelectedSession={noop}

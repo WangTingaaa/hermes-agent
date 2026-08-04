@@ -21,6 +21,18 @@ declare global {
     primaryColor: string
   }
 
+  interface WenjingCloudFile {
+    id: number
+    fileName: string
+    fileSize?: number
+    fileType?: string
+    parseStatus?: 'FAILED' | 'PARSING' | 'PENDING' | 'PROCESSING' | 'SUCCESS'
+  }
+
+  interface WenjingDownloadedCloudFile extends WenjingCloudFile {
+    localPath: string
+  }
+
   interface Window {
     hermesDesktop: {
       // Resolve a backend connection. Omit `profile` (or pass the primary) for
@@ -167,6 +179,11 @@ declare global {
           primaryColor?: string
         }) => void
         onChanged: (callback: (appearance: WenjingHostAppearance) => void) => () => void
+      }
+      /** Available only when Desktop is embedded by MesoInsights/Wenjing. */
+      cloudFiles?: {
+        pickFavorite: () => Promise<WenjingCloudFile | null>
+        pickForUpload: () => Promise<WenjingDownloadedCloudFile | null>
       }
       openExternal: (url: string) => Promise<void>
       openPreviewInBrowser?: (url: string) => Promise<void>

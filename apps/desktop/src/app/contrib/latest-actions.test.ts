@@ -9,6 +9,7 @@ function makeChatActions(): ChatActions {
   return {
     onAddContextRef: vi.fn(),
     onAddUrl: vi.fn(),
+    onAttachFilePath: vi.fn(),
     onAttachDroppedItems: vi.fn(),
     onAttachImageBlob: vi.fn(),
     onBranchInNewChat: vi.fn(),

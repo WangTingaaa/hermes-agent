@@ -37,6 +37,7 @@ import { SECTIONS } from './constants'
 import { GatewaySettings } from './gateway-settings'
 import { KeybindSettings } from './keybind-settings'
 import { KEYS_VIEWS, KeysSettings, type KeysView } from './keys-settings'
+import { MiraAboutSettings } from './mira-about-settings'
 import { NotificationsSettings } from './notifications-settings'
 import { PluginsSettings } from './plugins-settings'
 import { PROVIDER_VIEWS, ProvidersSettings, type ProviderView } from './providers-settings'
@@ -52,8 +53,8 @@ const SETTINGS_VIEWS: readonly SettingsViewId[] = [
   'notifications',
   'billing',
   'plugins',
-  'sessions'
-  // 'about'
+  'sessions',
+  'about'
 ]
 
 export function SettingsView({ onClose, onConfigSaved, onMainModelChanged }: SettingsPageProps) {
@@ -300,6 +301,8 @@ export function SettingsView({ onClose, onConfigSaved, onMainModelChanged }: Set
         <OverlayMain className="px-0 pb-0">
           {activeView === 'config:appearance' ? (
             <AppearanceSettings />
+          ) : activeView === 'about' ? (
+            <MiraAboutSettings />
           ) : activeView === 'gateway' ? (
             <GatewaySettings />
           ) : activeView === 'keybinds' ? (

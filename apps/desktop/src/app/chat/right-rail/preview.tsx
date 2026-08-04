@@ -43,7 +43,14 @@ function tabLabelFor(target: PreviewTarget): string {
     return target.label || translateNow('preview.tab')
   }
 
-  const value = target.label || target.path || target.source || target.url
+  // Targets cross IPC and persisted-storage boundaries. Keep the pane usable
+  // if an older/embedded host hands us a partial runtime shape; the normalizer
+  // will normally have replaced it with a renderer-built target already.
+  const value =
+    [target.label, target.path, target.source, target.url].find(
+      candidate => typeof candidate === 'string' && candidate.length > 0
+    ) || translateNow('preview.tab')
+
   const tail = value.split(/[\\/]/).filter(Boolean).at(-1)
 
   return tail || value || translateNow('preview.tab')

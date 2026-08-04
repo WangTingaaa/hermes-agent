@@ -16,6 +16,7 @@ import { sessionCompacting } from '@/store/compaction'
 import { browseBackward, browseForward, deriveUserHistory, isBrowsingHistory } from '@/store/composer-input-history'
 import { POPOUT_WIDTH_REM } from '@/store/composer-popout'
 import { parkQueuedPrompts, removeQueuedPrompt, unparkQueuedPrompts } from '@/store/composer-queue'
+import { notify } from '@/store/notifications'
 import { toggleReview } from '@/store/review'
 import { $gatewayState } from '@/store/session'
 import { $threadScrolledUp } from '@/store/thread-scroll'
@@ -23,6 +24,7 @@ import { $autoSpeakReplies } from '@/store/voice-prefs'
 import { useTheme } from '@/themes'
 
 import { AttachmentList } from './attachments'
+import { cloudFavoriteReference } from './cloud-files'
 import {
   acceptsTriggerCompletion,
   COMPOSER_FADE_BACKGROUND,
@@ -90,6 +92,7 @@ export function ChatBar({
   onCancel,
   onAddUrl,
   onAttachDroppedItems,
+  onAttachFilePath,
   onAttachImageBlob,
   onPasteClipboardImage,
   onPickFiles,
@@ -240,6 +243,40 @@ export function ChatBar({
     insertText,
     onAddUrl
   })
+
+  const pickCloudFavorite = window.hermesDesktop?.cloudFiles
+    ? async () => {
+        const file = await window.hermesDesktop.cloudFiles?.pickFavorite()
+
+        if (!file) {
+          return
+        }
+
+        insertText(cloudFavoriteReference(file))
+      }
+    : undefined
+
+  const uploadCloudFavorite = window.hermesDesktop?.cloudFiles?.pickForUpload && onAttachFilePath
+    ? async () => {
+        try {
+          const file = await window.hermesDesktop.cloudFiles?.pickForUpload()
+
+          if (!file) {
+            return
+          }
+
+          if (onAttachFilePath(file.localPath) !== false) {
+            notify({ kind: 'success', message: `${file.fileName} 已保存到下载文件夹并添加为附件` })
+          }
+        } catch (error) {
+          notify({
+            kind: 'error',
+            title: '云端文件下载失败',
+            message: error instanceof Error ? error.message : '请稍后重试'
+          })
+        }
+      }
+    : undefined
 
   // The queue engine — queued turns, in-place editing, the shared drain lock,
   // and bounded auto-drain. Consumes the draft API and writes `queueEditRef`.
@@ -903,9 +940,11 @@ export function ChatBar({
       onInsertText={insertText}
       onOpenUrlDialog={openUrlDialog}
       onPasteClipboardImage={onPasteClipboardImage}
+      onPickCloudFavorite={pickCloudFavorite}
       onPickFiles={onPickFiles}
       onPickFolders={onPickFolders}
       onPickImages={onPickImages}
+      onUploadCloudFavorite={uploadCloudFavorite}
       state={state}
     />
   )
