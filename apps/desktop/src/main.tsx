@@ -20,7 +20,7 @@ import { createRoot } from 'react-dom/client'
 import { HashRouter } from 'react-router'
 
 import App from './app'
-import { ErrorBoundary } from './components/error-boundary'
+import { RootErrorBoundary } from './components/error-boundary'
 import { HapticsProvider } from './components/haptics-provider'
 import { RootTooltipProvider } from './components/ui/tooltip'
 import { I18nProvider } from './i18n'
@@ -40,6 +40,10 @@ if (import.meta.env.MODE !== 'production' || import.meta.env.VITE_PERF_PROBE ===
 
 const winParam = new URLSearchParams(window.location.search).get('win')
 
+if (winParam === 'hud') {
+  document.title = 'Hermes HUD'
+}
+
 if (winParam === 'overlay') {
   void import('./app/pet-overlay/overlay-root').then(({ mountPetOverlay }) => mountPetOverlay())
 } else if (winParam === 'quick') {
@@ -49,7 +53,7 @@ if (winParam === 'overlay') {
 } else {
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
-      <ErrorBoundary label="root">
+      <RootErrorBoundary>
         <QueryClientProvider client={queryClient}>
           <I18nProvider>
             <ThemeProvider>
@@ -77,7 +81,7 @@ if (winParam === 'overlay') {
             </ThemeProvider>
           </I18nProvider>
         </QueryClientProvider>
-      </ErrorBoundary>
+      </RootErrorBoundary>
     </StrictMode>
   )
 }
