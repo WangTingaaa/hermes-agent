@@ -328,6 +328,13 @@ interface ThemeContextValue {
   availableThemes: Array<{ name: string; label: string; description: string }>
   setTheme: (name: string) => void
   setMode: (mode: ThemeMode) => void
+  /**
+   * Paint a theme with an explicit light/dark, without persistence. This is
+   * the highlight preview for the palette. A commit (`setTheme`) or
+   * `clearThemePreview` repaints the committed appearance.
+   */
+  previewTheme: (name: string, mode: 'light' | 'dark') => void
+  clearThemePreview: () => void
 }
 
 const SKIN_LIST = BUILTIN_THEME_LIST.map(({ name, label, description }) => ({ name, label, description }))
@@ -340,7 +347,9 @@ const ThemeContext = createContext<ThemeContextValue>({
   renderedMode: 'light',
   availableThemes: SKIN_LIST,
   setTheme: () => {},
-  setMode: () => {}
+  setMode: () => {},
+  previewTheme: () => {},
+  clearThemePreview: () => {}
 })
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
@@ -460,25 +469,33 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const systemDark = useMediaQuery('(prefers-color-scheme: dark)')
   const resolvedMode = linkedHostAppearance?.resolvedMode ?? resolveMode(mode, systemDark)
 
+  // Transient highlight preview (palette theme picker). It is never
+  // persisted. A commit or an explicit clear returns the paint to the
+  // committed appearance.
+  const [preview, setPreview] = useState<{ name: string; mode: 'light' | 'dark' } | null>(null)
+
+  const paintedName = preview ? preview.name : themeName
+  const paintedMode = preview ? preview.mode : resolvedMode
+
   const activeTheme = useMemo(
     () => {
-      const theme = deriveTheme(themeName, resolvedMode)
+      const theme = deriveTheme(paintedName, paintedMode)
 
-      return linkedHostAppearance
-        ? withWenjingAccent(theme, linkedHostAppearance.primaryColor, resolvedMode)
+      return !preview && linkedHostAppearance
+        ? withWenjingAccent(theme, linkedHostAppearance.primaryColor, paintedMode)
         : theme
     },
     // deriveTheme resolves its seed through the merged registry, so the theme
     // stores are its reactivity too — an in-place palette edit of the ACTIVE
     // skin (live theme authoring) must repaint, not just a name switch.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [themeName, resolvedMode, linkedHostAppearance, userThemes, backendThemes, registryVersion]
+    [paintedName, paintedMode, preview, linkedHostAppearance, userThemes, backendThemes, registryVersion]
   )
 
   // What actually gets painted (matches the `.dark` class applyTheme toggles).
-  const renderedMode = useMemo(() => renderedModeFor(activeTheme.colors, resolvedMode), [activeTheme, resolvedMode])
+  const renderedMode = useMemo(() => renderedModeFor(activeTheme.colors, paintedMode), [activeTheme, paintedMode])
 
-  useEffect(() => applyTheme(activeTheme, resolvedMode), [activeTheme, resolvedMode])
+  useEffect(() => applyTheme(activeTheme, paintedMode), [activeTheme, paintedMode])
 
   // Keep the native window appearance pinned to the app theme (vibrancy
   // material, titlebar, new-window pre-paint background).
@@ -490,11 +507,13 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   const setTheme = useCallback((name: string) => {
     const next = normalizeSkin(name)
+    setPreview(null)
     setThemeNameState(next)
     skinPref.assign(liveProfile(), next)
   }, [])
 
   const setMode = useCallback((next: ThemeMode) => {
+    setPreview(null)
     setModeState(next)
     modePref.assign(liveProfile(), next)
 
@@ -507,6 +526,12 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       })
     }
   }, [themeName])
+
+  const previewTheme = useCallback((name: string, previewMode: 'light' | 'dark') => {
+    setPreview(resolveTheme(name) ? { name, mode: previewMode } : null)
+  }, [])
+
+  const clearThemePreview = useCallback(() => setPreview(null), [])
 
   // Drain a backend-driven skin switch (Hermes authoring/activating a skin from a
   // prompt, or `/skin` on another surface). setTheme persists it per profile, so
@@ -524,8 +549,30 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   // (`appearance.toggleMode`) so it shows up in the hotkey map and is rebindable.
 
   const value = useMemo<ThemeContextValue>(
-    () => ({ theme: activeTheme, themeName, mode, resolvedMode, renderedMode, availableThemes, setTheme, setMode }),
-    [activeTheme, themeName, mode, resolvedMode, renderedMode, availableThemes, setTheme, setMode]
+    () => ({
+      theme: activeTheme,
+      themeName,
+      mode,
+      resolvedMode,
+      renderedMode,
+      availableThemes,
+      setTheme,
+      setMode,
+      previewTheme,
+      clearThemePreview
+    }),
+    [
+      activeTheme,
+      themeName,
+      mode,
+      resolvedMode,
+      renderedMode,
+      availableThemes,
+      setTheme,
+      setMode,
+      previewTheme,
+      clearThemePreview
+    ]
   )
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>

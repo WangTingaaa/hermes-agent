@@ -2,7 +2,8 @@ import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { __resetBackendSkinSync, ingestBackendSkin } from './backend-sync'
-import { ThemeProvider, useTheme } from './context'
+import { skinPref, ThemeProvider, useTheme } from './context'
+import { midnightTheme } from './presets'
 
 // The live-authoring loop: Hermes writes/edits one skin file and every surface
 // repaints. An in-place edit keeps the NAME — only the palette moves.
@@ -101,7 +102,7 @@ describe('ThemeProvider ← Wenjing host appearance', () => {
 
   afterEach(() => {
     cleanup()
-    delete (window as any).hermesDesktop
+    delete (window as unknown as { hermesDesktop?: Window['hermesDesktop'] }).hermesDesktop
   })
 
   it('paints the host mode and primary color while 文镜 is active', async () => {
@@ -116,14 +117,16 @@ describe('ThemeProvider ← Wenjing host appearance', () => {
     expect(window.document.documentElement.classList.contains('dark')).toBe(true)
     expect(cssVar('--theme-primary')).toBe('#f5222d')
 
-    act(() => emitAppearance?.({
-      version: 1,
-      revision: 2,
-      skin: 'mesoInsights',
-      mode: 'light',
-      resolvedMode: 'light',
-      primaryColor: '#722ed1'
-    }))
+    act(() =>
+      emitAppearance?.({
+        version: 1,
+        revision: 2,
+        skin: 'mesoInsights',
+        mode: 'light',
+        resolvedMode: 'light',
+        primaryColor: '#722ed1'
+      })
+    )
 
     expect(window.document.documentElement.classList.contains('dark')).toBe(false)
     expect(cssVar('--theme-primary')).toBe('#722ed1')
@@ -136,7 +139,11 @@ describe('ThemeProvider ← Wenjing host appearance', () => {
       return <button onClick={() => setMode('light')}>light</button>
     }
 
-    render(<ThemeProvider><Toggle /></ThemeProvider>)
+    render(
+      <ThemeProvider>
+        <Toggle />
+      </ThemeProvider>
+    )
     await act(async () => undefined)
 
     fireEvent.click(screen.getByRole('button', { name: 'light' }))
@@ -145,5 +152,74 @@ describe('ThemeProvider ← Wenjing host appearance', () => {
       skin: 'mesoInsights',
       mode: 'light'
     })
+  })
+})
+
+describe('ThemeProvider highlight preview', () => {
+  beforeEach(() => {
+    window.localStorage.clear()
+    __resetBackendSkinSync()
+  })
+
+  afterEach(cleanup)
+
+  // Read the live context so the tests drive the real provider, not a mock.
+  let ctx: ReturnType<typeof useTheme>
+
+  function Probe() {
+    ctx = useTheme()
+
+    return null
+  }
+
+  const renderProbe = () =>
+    render(
+      <ThemeProvider>
+        <Probe />
+      </ThemeProvider>
+    )
+
+  it('paints the previewed theme without persisting it', () => {
+    renderProbe()
+
+    const committed = ctx.themeName
+
+    act(() => ctx.previewTheme('midnight', 'dark'))
+
+    expect(cssVar('--theme-foreground')).toBe(midnightTheme.colors.foreground)
+    // The commit surface does not change. The context name and the stored
+    // preference keep their values.
+    expect(ctx.themeName).toBe(committed)
+    expect(skinPref.resolve('default')).toBe(committed)
+  })
+
+  it('clearThemePreview repaints the committed appearance', () => {
+    renderProbe()
+
+    act(() => ctx.previewTheme('midnight', 'dark'))
+    expect(cssVar('--theme-foreground')).toBe(midnightTheme.colors.foreground)
+
+    act(() => ctx.clearThemePreview())
+    expect(cssVar('--theme-foreground')).not.toBe(midnightTheme.colors.foreground)
+  })
+
+  it('a commit replaces the preview and persists', () => {
+    renderProbe()
+
+    act(() => ctx.previewTheme('midnight', 'dark'))
+    act(() => ctx.setTheme('mono'))
+
+    expect(ctx.themeName).toBe('mono')
+    expect(skinPref.resolve('default')).toBe('mono')
+    expect(cssVar('--theme-foreground')).not.toBe(midnightTheme.colors.foreground)
+  })
+
+  it('ignores a preview of an unknown theme', () => {
+    renderProbe()
+
+    const painted = cssVar('--theme-foreground')
+
+    act(() => ctx.previewTheme('does-not-exist', 'dark'))
+    expect(cssVar('--theme-foreground')).toBe(painted)
   })
 })

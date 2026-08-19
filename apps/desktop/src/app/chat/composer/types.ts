@@ -47,6 +47,9 @@ export interface ChatBarProps {
   onAttachImageBlob?: (blob: Blob) => Promise<boolean | void> | boolean | void
   onAttachFilePath?: (filePath: string) => boolean | void
   onAttachDroppedItems?: (candidates: DroppedFile[]) => Promise<boolean | void> | boolean | void
+  /** Pasted GitHub PR-comment deep link → structured review attachment.
+   *  Returns true when the paste was consumed as an attachment. */
+  onAttachPrCommentUrl?: (url: string) => boolean
   onPasteClipboardImage?: (opts?: { silent?: boolean }) => Promise<boolean> | void
   onPickFiles?: () => void
   onPickFolders?: () => void
