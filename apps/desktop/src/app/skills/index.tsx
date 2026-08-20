@@ -64,7 +64,8 @@ import { TerminalBackendPanel } from '../settings/terminal-backend-panel'
 import { ToolsetConfigPanel } from '../settings/toolset-config-panel'
 import type { SetStatusbarItemGroup } from '../shell/statusbar-controls'
 
-import { EmbeddedHubPicker } from './embedded-hub-picker'
+// 暂时隐藏技能中心模块
+// import { EmbeddedHubPicker } from './embedded-hub-picker'
 import { McpTab } from './mcp-tab'
 import { $skillsSortDesc, $toolsetsSortDesc } from './store'
 
@@ -229,16 +230,11 @@ export function SkillsView({
 
   const [query, setQuery] = useState('')
 
-  // The hub picker hosts a full docs-site iframe — the single most expensive
-  // thing on this page. It mounts lazily (first time the Skills tab is shown)
-  // and then STAYS mounted but hidden across tab switches, so bouncing to
-  // Tools/MCP and back never reloads the site. Derived-state pattern: flips
-  // once, during render, never back.
-  const [hubMounted, setHubMounted] = useState(mode === 'skills')
-
-  if (mode === 'skills' && !hubMounted) {
-    setHubMounted(true)
-  }
+  // 暂时隐藏技能中心：不再懒挂载 docs-site iframe。
+  // const [hubMounted, setHubMounted] = useState(mode === 'skills')
+  // if (mode === 'skills' && !hubMounted) {
+  //   setHubMounted(true)
+  // }
 
   // Capabilities scope selector: which profile's Skills/Tools/MCP config we're
   // editing — and on WHICH gateway. A profile belongs to one gateway, so on a
@@ -420,9 +416,8 @@ export function SkillsView({
   const bulkSkills = skills ?? []
   const bulkToolsets = useMemo(() => (toolsets ?? []).filter(ts => isDesktopToolsetVisible(ts.name)), [toolsets])
 
-  // Installed-name set for the hub picker's already-installed guard — the
-  // UNFILTERED list on purpose (search must not make a skill look absent).
-  const installedSkillNames = useMemo(() => new Set((skills ?? []).map(s => s.name)), [skills])
+  // 暂时隐藏技能中心：已安装名称集只给 hub picker 用。
+  // const installedSkillNames = useMemo(() => new Set((skills ?? []).map(s => s.name)), [skills])
 
   // Rotating placeholder nudges from the user's own data — teach that search
   // understands categories and tool names, not just titles.
@@ -933,15 +928,11 @@ export function SkillsView({
               </MasterDetail>
             )}
           </div>
-          {/* Hub picker OUTSIDE the tab ternary: it lazy-mounts the first time
-              Skills is shown, then stays mounted (hidden) across Tools/MCP so
-              the docs-site iframe never reloads on a tab bounce. No scope key
-              on purpose — the picker fetches nothing; scope rides the
-              `profile` prop into each install call, and remounting on scope
-              change would reload the whole site for no data benefit. */}
+          {/* 暂时隐藏技能中心模块
           {hubMounted && (
             <EmbeddedHubPicker hidden={mode !== 'skills'} installedNames={installedSkillNames} profile={scopeProfile} />
           )}
+          */}
         </div>
       </div>
       {archiveTarget && (

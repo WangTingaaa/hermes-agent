@@ -335,7 +335,8 @@ describe('SkillsView toolset management', () => {
     )
   })
 
-  it('mounts the hub iframe lazily and keeps it (hidden) across tab switches', async () => {
+  // Skills Hub 模块暂时从技能页注释掉，恢复 EmbeddedHubPicker 后再打开。
+  it.skip('mounts the hub iframe lazily and keeps it (hidden) across tab switches', async () => {
     // On a non-Skills tab the docs-site iframe must not exist at all — an
     // eagerly mounted hub is exactly the Capabilities lag bug.
     await renderSkills() // ?tab=toolsets
