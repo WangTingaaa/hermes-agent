@@ -47,6 +47,8 @@ describe('skill localization', () => {
   it('exposes both English and Chinese text to search regardless of UI locale', () => {
     expect(skillSearchTexts(bundled)).toContain('docx')
     expect(skillSearchTexts(bundled)).toContain('Word 文档')
-    expect(toolsetSearchTexts('web', 'Web', 'Browse the web.')).toEqual(expect.arrayContaining(['web', 'Web', '网页访问']))
+    expect(toolsetSearchTexts('web', 'Web', 'Browse the web.')).toEqual(
+      expect.arrayContaining(['web', 'Web', '网页访问'])
+    )
   })
 })

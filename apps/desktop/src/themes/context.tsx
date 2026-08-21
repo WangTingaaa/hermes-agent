@@ -436,11 +436,14 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     let active = true
     const unsubscribe = bridge.onChanged(acceptHostAppearance)
 
-    void bridge.get().then(appearance => {
-      if (active) {
-        acceptHostAppearance(appearance)
-      }
-    }).catch(() => undefined)
+    void bridge
+      .get()
+      .then(appearance => {
+        if (active) {
+          acceptHostAppearance(appearance)
+        }
+      })
+      .catch(() => undefined)
 
     return () => {
       active = false
@@ -458,6 +461,22 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   /** 仅文镜外观 */
   const linkedHostAppearance = themeName === 'mesoInsights' ? hostAppearance : null
+
+  // Let renderer chrome opt into host-specific composition without coupling
+  // individual components to Electron's bridge. Absence means standalone.
+  useEffect(() => {
+    const root = document.documentElement
+
+    if (linkedHostAppearance) {
+      root.dataset.hostSurface = 'wenjing'
+    } else {
+      delete root.dataset.hostSurface
+    }
+
+    return () => {
+      delete root.dataset.hostSurface
+    }
+  }, [linkedHostAppearance])
 
   useEffect(() => {
     if (!linkedHostAppearance) {
@@ -546,20 +565,23 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     skinPref.assign(liveProfile(), next)
   }, [])
 
-  const setMode = useCallback((next: ThemeMode) => {
-    setPreview(null)
-    setModeState(next)
-    modePref.assign(liveProfile(), next)
+  const setMode = useCallback(
+    (next: ThemeMode) => {
+      setPreview(null)
+      setModeState(next)
+      modePref.assign(liveProfile(), next)
 
-    /** 仅文镜外观 */
-    if (themeName === 'mesoInsights') {
-      window.hermesDesktop?.hostAppearance?.requestChange({
-        version: 1,
-        skin: 'mesoInsights',
-        mode: next
-      })
-    }
-  }, [themeName])
+      /** 仅文镜外观 */
+      if (themeName === 'mesoInsights') {
+        window.hermesDesktop?.hostAppearance?.requestChange({
+          version: 1,
+          skin: 'mesoInsights',
+          mode: next
+        })
+      }
+    },
+    [themeName]
+  )
 
   const previewTheme = useCallback((name: string, previewMode: 'light' | 'dark') => {
     setPreview(resolveTheme(name) ? { name, mode: previewMode } : null)

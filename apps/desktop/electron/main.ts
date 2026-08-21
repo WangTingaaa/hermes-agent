@@ -10584,7 +10584,6 @@ async function startHermes() {
         throw new Error('Mira backend start was superseded by a newer connection attempt.')
       }
 
-
       updateBootProgress({
         phase: 'backend.ready',
         message: 'Remote Mira backend is ready',

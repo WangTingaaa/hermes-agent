@@ -115,6 +115,7 @@ describe('ThemeProvider ← Wenjing host appearance', () => {
     await act(async () => undefined)
 
     expect(window.document.documentElement.classList.contains('dark')).toBe(true)
+    expect(window.document.documentElement.dataset.hostSurface).toBe('wenjing')
     expect(cssVar('--theme-primary')).toBe('#f5222d')
 
     act(() =>

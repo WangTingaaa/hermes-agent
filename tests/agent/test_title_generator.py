@@ -30,6 +30,21 @@ class TestGenerateTitle:
          patch("hermes_cli.config.load_config_readonly", side_effect=RuntimeError("bad config")):
             assert _title_language() == ""
 
+    def test_title_language_falls_back_to_display_language(self):
+        with patch(
+            "hermes_cli.config.load_config_readonly",
+            return_value={"display": {"language": "zh"}},
+        ):
+            assert _title_language() == "Simplified Chinese"
+
+    def test_title_language_override_wins_over_display_language(self):
+        config = {
+            "display": {"language": "zh"},
+            "auxiliary": {"title_generation": {"language": "French"}},
+        }
+        with patch("hermes_cli.config.load_config_readonly", return_value=config):
+            assert _title_language() == "French"
+
     def test_default_timeout_delegates_to_auxiliary_config(self):
         captured_kwargs = {}
 

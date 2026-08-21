@@ -95,6 +95,17 @@ _TITLE_PROMPT_TEMPLATE = (
 _LANGUAGE_RULE_MATCH_USER = "- Write the title in the same language as the user's message."
 _LANGUAGE_RULE_PINNED = "- Write the title in {language}."
 
+_DISPLAY_LANGUAGE_NAMES = {
+    "en": "English",
+    "zh": "Simplified Chinese",
+    "zh-cn": "Simplified Chinese",
+    "zh-hans": "Simplified Chinese",
+    "zh-hant": "Traditional Chinese",
+    "zh-tw": "Traditional Chinese",
+    "ja": "Japanese",
+    "ar": "Arabic",
+}
+
 # JSON schema constraining the response to a single title field. Removes the
 # whole class of "model answered the prompt instead of titling it" failures
 # that produced titles like "<title>...</title>" and "User: Yep, that's the
@@ -154,15 +165,26 @@ _MACHINE_PREFIXES = (
 
 
 def _title_language() -> str:
-    """Return configured title language, or empty string to match the user."""
+    """Resolve title language: task override, display locale, then message.
+
+    ``display.language`` is an explicit user preference and should govern
+    generated UI metadata such as session titles. An unset display language
+    preserves the historical behavior of matching the opening message.
+    """
     try:
         from hermes_cli.config import load_config_readonly
 
-        return str(
-            ((load_config_readonly() or {}).get("auxiliary") or {})
-            .get("title_generation", {})
-            .get("language", "")
+        config = load_config_readonly() or {}
+        title_language = str(
+            ((config.get("auxiliary") or {}).get("title_generation") or {}).get(
+                "language", ""
+            )
         ).strip()
+        if title_language:
+            return title_language
+
+        display_language = str((config.get("display") or {}).get("language", "")).strip()
+        return _DISPLAY_LANGUAGE_NAMES.get(display_language.lower(), display_language)
     except Exception:
         return ""
 

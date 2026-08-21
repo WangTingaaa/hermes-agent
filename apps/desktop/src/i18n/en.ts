@@ -573,7 +573,10 @@ export const en: Translations = {
         mono: { label: 'Mono', description: 'Clean grayscale — minimal and focused' },
         cyberpunk: { label: 'Cyberpunk', description: 'Neon green on black — matrix terminal' },
         slate: { label: 'Slate', description: 'Cool slate blue — focused developer theme' },
-        mesoInsights: { label: 'mesoInsights', description: 'Clean cyan workspace based on the mesoInsights design system' }
+        mesoInsights: {
+          label: 'mesoInsights',
+          description: 'Clean cyan workspace based on the mesoInsights design system'
+        }
       },
       themeProfileNote: profile => `Saved for the ${profile} profile — each profile keeps its own theme.`,
       installTitle: 'Install from VS Code',
@@ -2496,7 +2499,8 @@ export const en: Translations = {
     maybeLater: 'Maybe later',
     moreChanges: count => `+ ${count} more change${count === 1 ? '' : 's'} included.`,
     manualTitle: 'Update from your terminal',
-    manualBody: 'You installed Mira Agent from the command line, so updates run there too. Paste this into your terminal:',
+    manualBody:
+      'You installed Mira Agent from the command line, so updates run there too. Paste this into your terminal:',
     manualPickedUp: 'Mira Agent will pick up the new version next time you launch it.',
     guiSkewTitle: 'Update the desktop app',
     guiSkewBody:
@@ -2646,7 +2650,8 @@ export const en: Translations = {
       xai: { short: 'Grok models', description: 'Direct access to xAI Grok models.' },
       local: {
         short: 'self-hosted',
-        description: 'Point Mira Agent at a local or self-hosted OpenAI-compatible endpoint (vLLM, llama.cpp, Ollama, etc).'
+        description:
+          'Point Mira Agent at a local or self-hosted OpenAI-compatible endpoint (vLLM, llama.cpp, Ollama, etc).'
       }
     },
     backToSignIn: 'Back to sign in',
@@ -2970,7 +2975,8 @@ export const en: Translations = {
       address: 'Address',
       addressPlaceholder: 'Enter address',
       blankPageBody: 'Type an address above to browse, or ask Mira Agent to open a page.',
-      finishedRestarting: message => `Mira Agent finished restarting the preview server${message ? `: ${message}` : ''}`,
+      finishedRestarting: message =>
+        `Mira Agent finished restarting the preview server${message ? `: ${message}` : ''}`,
       failedRestarting: message => `Server restart failed: ${message}`,
       unknownError: 'unknown error',
       restartedTitle: 'Preview server restarted',

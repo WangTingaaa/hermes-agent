@@ -10,6 +10,12 @@
   font-size: var(--titlebar-icon-size);
 }
 
+/* 文镜 already supplies the outer white application header. Give Mira's own
+   titlebar a quiet gray surface so the two navigation levels remain distinct. */
+html[data-host-surface='wenjing'] [data-contrib-titlebar] {
+  background: color-mix(in srgb, var(--ui-text-primary) 2%, var(--ui-bg-chrome));
+}
+
 @custom-variant dark (&:is(.dark *));
 
 /* Blanket reduced-motion override: kill ALL CSS animations and transitions

@@ -5,6 +5,7 @@ import type { ClientSessionState, CommandDispatchResponse } from '@/app/types'
 import { formatRefValue } from '@/components/assistant-ui/directive-text'
 import { type ChatMessage, type ChatMessagePart, chatMessageText, textPart } from '@/lib/chat-messages'
 import { normalize } from '@/lib/text'
+import { getRuntimeI18nLocale } from '@/i18n/runtime'
 import type { ComposerAttachment } from '@/store/composer'
 import type { ModelOptionsResponse, SessionInfo } from '@/types/hermes'
 
@@ -48,8 +49,27 @@ export function createClientSessionState(
   }
 }
 
+const LEGACY_FRIENDLY_GREETING: Record<string, string> = {
+  ar: 'تحية ودية',
+  ja: '親しみのある挨拶',
+  zh: '友好问候',
+  'zh-hant': '友好問候'
+}
+
+/** Translate the one English sample title emitted by the old auto-titler.
+ * Keep the collision suffix stable and leave every user-authored/semantic
+ * English title untouched. */
+export function localizeLegacySessionTitle(title: string): string {
+  const match = /^Friendly greeting(?<suffix> #\d+)?$/i.exec(title.trim())
+  const localized = LEGACY_FRIENDLY_GREETING[getRuntimeI18nLocale()]
+
+  return match && localized ? `${localized}${match.groups?.suffix ?? ''}` : title.trim()
+}
+
 export function sessionTitle(session: SessionInfo): string {
-  return session.title?.trim() || session.preview?.trim() || 'Untitled session'
+  const title = session.title?.trim()
+
+  return title ? localizeLegacySessionTitle(title) : session.preview?.trim() || 'Untitled session'
 }
 
 /** What a session is called before it has been sent — and before its composer

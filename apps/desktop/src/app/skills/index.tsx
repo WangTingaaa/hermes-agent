@@ -31,7 +31,15 @@ import { useI18n } from '@/i18n'
 import { isDesktopToolsetVisible } from '@/lib/desktop-toolsets'
 import { compactNumber } from '@/lib/format'
 import { queryClient } from '@/lib/query-client'
-import { localizeSkillCategory, localizeSkillDetail, localizeSkillName, localizeToolsetDescription, localizeToolsetName, skillSearchTexts, toolsetSearchTexts } from '@/lib/skill-localization'
+import {
+  localizeSkillCategory,
+  localizeSkillDetail,
+  localizeSkillName,
+  localizeToolsetDescription,
+  localizeToolsetName,
+  skillSearchTexts,
+  toolsetSearchTexts
+} from '@/lib/skill-localization'
 import { invalidateSlashCompletions } from '@/lib/slash-completion-cache'
 import { normalize } from '@/lib/text'
 import { useStoreSelector } from '@/lib/use-session-slice'
@@ -105,9 +113,7 @@ function CapabilityTitle({
     <>
       {displayName}
       {showOriginal && displayName !== originalName && (
-        <span className="ml-1.5 font-mono text-[0.65rem] font-normal text-(--ui-text-quaternary)">
-          {originalName}
-        </span>
+        <span className="ml-1.5 font-mono text-[0.65rem] font-normal text-(--ui-text-quaternary)">{originalName}</span>
       )}
     </>
   )
@@ -152,7 +158,10 @@ function filteredSkills(skills: SkillInfo[], query: string, desc: boolean): Skil
   return skills
     .filter(
       skill =>
-        !q || skillSearchTexts(skill).some(text => includesQuery(text, q)) || includesQuery(categoryFor(skill), q) || includesQuery(localizeSkillCategory(categoryFor(skill), 'zh'), q)
+        !q ||
+        skillSearchTexts(skill).some(text => includesQuery(text, q)) ||
+        includesQuery(categoryFor(skill), q) ||
+        includesQuery(localizeSkillCategory(categoryFor(skill), 'zh'), q)
     )
     .sort((a, b) => sign * (usageOf(b) - usageOf(a)) || asText(a.name).localeCompare(asText(b.name)))
 }
@@ -180,8 +189,9 @@ function filteredToolsets(
       }
 
       return (
-        toolsetSearchTexts(toolset.name, toolsetDisplayLabel(toolset), toolset.description).some(text => includesQuery(text, q)) ||
-        toolNames(toolset).some(name => includesQuery(name, q))
+        toolsetSearchTexts(toolset.name, toolsetDisplayLabel(toolset), toolset.description).some(text =>
+          includesQuery(text, q)
+        ) || toolNames(toolset).some(name => includesQuery(name, q))
       )
     })
     .sort(
@@ -1151,7 +1161,9 @@ function ToolsetDetail({
     <>
       {/* "Configured" as a resting state is noise — only the warn state earns a pill. */}
       <DetailHeader
-        description={localizeToolsetDescription(toolset.name, asText(toolset.description), locale) || t.skills.noDescription}
+        description={
+          localizeToolsetDescription(toolset.name, asText(toolset.description), locale) || t.skills.noDescription
+        }
         pills={!toolset.configured && <PanelPill tone="warn">{t.skills.needsKeys}</PanelPill>}
         title={label}
       />

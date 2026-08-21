@@ -74,6 +74,7 @@ import {
 import type { SetStatusbarItemGroup } from '../shell/statusbar-controls'
 
 import { BlueprintSlotControl, blueprintSlotHelp, cleanBlueprintFieldError, initialBlueprintValues } from './blueprints'
+import { localizeAutomationBlueprint } from './blueprint-localization'
 import { mutateAndRefreshCronJobs, refreshCronJobs, triggerAndRefreshCronJobs } from './cron-actions'
 import {
   cronEditorUpdates,
@@ -296,7 +297,7 @@ interface CronViewProps extends React.ComponentProps<'section'> {
 }
 
 export function CronView({ onClose, onOpenSession, setStatusbarItemGroup: _setStatusbarItemGroup }: CronViewProps) {
-  const { t } = useI18n()
+  const { locale, t } = useI18n()
   const c = t.cron
   // Source of truth is the shared atom (also fed by the controller poll), so the
   // sidebar and this overlay never drift — a delete here clears the sidebar row
@@ -408,11 +409,11 @@ export function CronView({ onClose, onOpenSession, setStatusbarItemGroup: _setSt
   })
 
   const visibleBlueprints = useMemo(() => {
-    const list = blueprintsQuery.data ?? []
+    const list = (blueprintsQuery.data ?? []).map(item => localizeAutomationBlueprint(item, locale))
     const needle = query.trim().toLowerCase()
 
     return needle ? list.filter(item => `${item.title} ${item.description}`.toLowerCase().includes(needle)) : list
-  }, [blueprintsQuery.data, query])
+  }, [blueprintsQuery.data, locale, query])
 
   // Detail always reflects a concrete job: the explicitly selected one, else the
   // first visible row, so the right pane is never empty while jobs exist.
@@ -1025,7 +1026,7 @@ function CronEditorDialog({
   onClose: () => void
   onSave: (values: EditorValues) => Promise<void>
 }) {
-  const { t } = useI18n()
+  const { locale, t } = useI18n()
   const c = t.cron
   const open = editor.mode !== 'closed'
   const isEdit = editor.mode === 'edit'
@@ -1058,7 +1059,10 @@ function CronEditorDialog({
     enabled: open && !isEdit
   })
 
-  const blueprintList = blueprintsQuery.data ?? []
+  const blueprintList = useMemo(
+    () => (blueprintsQuery.data ?? []).map(item => localizeAutomationBlueprint(item, locale)),
+    [blueprintsQuery.data, locale]
+  )
 
   const blueprint =
     templateChoice === CUSTOM_TEMPLATE ? null : (blueprintList.find(item => item.key === templateChoice) ?? null)

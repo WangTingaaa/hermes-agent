@@ -92,10 +92,7 @@ const zhBuiltInSkills: Readonly<Record<string, LocalizedCopy>> = {
   sherlock: ['用户名开源情报搜索', '通过 Sherlock 在四百多个社交网络中检索用户名'],
   unbroker: ['个人信息清除', '查找并协助清除数据经纪商网站暴露的个人信息'],
   'web-pentest': ['Web 渗透测试', '在明确授权范围内执行 Web 应用侦察、漏洞验证和报告'],
-  'adversarial-ux-test': [
-    '压力测试',
-    '扮演最挑剔、最不擅长技术的用户测试产品，筛出真实体验问题并生成可执行工单'
-  ]
+  'adversarial-ux-test': ['压力测试', '扮演最挑剔、最不擅长技术的用户测试产品，筛出真实体验问题并生成可执行工单']
 }
 
 const zhToolsets: Readonly<Record<string, LocalizedCopy>> = {
