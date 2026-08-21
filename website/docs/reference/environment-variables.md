@@ -140,7 +140,7 @@ For native Anthropic auth, Hermes prefers Claude Code's own credential files whe
 | `PARALLEL_API_KEY` | AI-native web search ([parallel.ai](https://parallel.ai/)) |
 | `FIRECRAWL_API_KEY` | Web scraping and cloud browser ([firecrawl.dev](https://firecrawl.dev/)) |
 | `FIRECRAWL_API_URL` | Custom Firecrawl API endpoint for self-hosted instances (optional) |
-| `TAVILY_API_KEY` | Tavily API key for AI-native web search, extract, and crawl ([app.tavily.com](https://app.tavily.com/home)) |
+| `TAVILY_API_KEY` | Optional Tavily API key for higher search/extract limits. After selecting Tavily as the web backend, keyless access works without it ([app.tavily.com](https://app.tavily.com/home), [keyless docs](https://docs.tavily.com/documentation/keyless)) |
 | `SEARXNG_URL` | SearXNG instance URL for free self-hosted web search — no API key required ([searxng.github.io](https://searxng.github.io/searxng/)) |
 | `TAVILY_BASE_URL` | Override the Tavily API endpoint. Useful for corporate proxies and self-hosted Tavily-compatible search backends. Same pattern as `GROQ_BASE_URL`. |
 | `EXA_API_KEY` | Exa API key for AI-native web search and contents ([exa.ai](https://exa.ai/)) |
@@ -150,7 +150,7 @@ For native Anthropic auth, Hermes prefers Claude Code's own credential files whe
 | `BROWSER_USE_API_KEY` | Browser Use cloud browser API key ([browser-use.com](https://browser-use.com/)) |
 | `FIRECRAWL_BROWSER_TTL` | Firecrawl browser session TTL in seconds (default: 300) |
 | `BROWSER_CDP_URL` | Chrome DevTools Protocol URL for local browser (set via `/browser connect`, e.g. `ws://localhost:9222`) |
-| `CAMOFOX_URL` | Camofox local anti-detection browser URL (default: `http://localhost:9377`) |
+| `CAMOFOX_URL` | Camofox local anti-detection browser server address (default: `http://localhost:9377`). Address only — it does not select Camofox as the backend; pick Camofox in `hermes tools` (`browser.cloud_provider: camofox`) |
 | `CAMOFOX_API_KEY` | Optional bearer token sent as Authorization header to a remote/authenticated Camofox server |
 | `CAMOFOX_USER_ID` | Optional externally managed Camofox user ID for shared visible sessions |
 | `CAMOFOX_SESSION_KEY` | Optional Camofox session key used when creating tabs for `CAMOFOX_USER_ID` |
