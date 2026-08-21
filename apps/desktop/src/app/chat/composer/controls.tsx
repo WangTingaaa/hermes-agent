@@ -9,6 +9,7 @@ import { AudioLines, Ear, EarOff, iconSize, Layers3, Loader2, Square, Volume2, V
 import { cn } from '@/lib/utils'
 import { $hudMode, closeHud } from '@/store/hud'
 import { $wakeWord, toggleWakeWord } from '@/store/wake-word'
+import { useTheme } from '@/themes/context'
 
 import { ACTIVE_ICON_BTN, GHOST_ICON_BTN, PRIMARY_ICON_BTN } from './control-classes'
 import type { ConversationStatus } from './hooks/use-voice-conversation'
@@ -65,6 +66,7 @@ export function ComposerControls({
   onToggleAutoSpeak: () => void
 }) {
   const { t } = useI18n()
+  const { isWenjingHost } = useTheme()
   const c = t.composer
   const hudMode = useStore($hudMode)
 
@@ -87,6 +89,7 @@ export function ComposerControls({
 
   const voiceControls = foldedVoice ? (
     <VoiceMenu
+      allowWakeWord={!isWenjingHost}
       autoSpeak={autoSpeak}
       disabled={disabled}
       onDictate={onDictate}
@@ -99,7 +102,7 @@ export function ComposerControls({
     <>
       <DictationButton disabled={disabled} onToggle={onDictate} state={state.voice} status={voiceStatus} />
       <AutoSpeakButton active={autoSpeak} disabled={disabled} onToggle={onToggleAutoSpeak} />
-      <WakeWordButton disabled={disabled} />
+      {!isWenjingHost && <WakeWordButton disabled={disabled} />}
     </>
   )
 
@@ -207,6 +210,7 @@ function ConversationPill({
   status
 }: ConversationProps & { disabled: boolean }) {
   const { t } = useI18n()
+  const { isWenjingHost } = useTheme()
   const c = t.composer
   const speaking = status === 'speaking'
   const listening = status === 'listening' && !muted
@@ -226,7 +230,7 @@ function ConversationPill({
     <div className="ml-auto flex shrink-0 items-center gap-(--composer-control-gap)">
       {/* Keep the ear visible during voice chat — shown paused, since the
           conversation holds the mic (the one time wake must not listen). */}
-      <WakeWordButton disabled={disabled} pausedForVoice />
+      {!isWenjingHost && <WakeWordButton disabled={disabled} pausedForVoice />}
       <Tip label={muted ? c.unmuteMic : c.muteMic}>
         <Button
           aria-label={muted ? c.unmuteMic : c.muteMic}

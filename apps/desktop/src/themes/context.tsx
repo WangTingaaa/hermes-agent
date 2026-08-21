@@ -349,6 +349,8 @@ interface ThemeContextValue {
    * this so it matches what's on screen instead of inverting.
    */
   renderedMode: 'light' | 'dark'
+  /** True only while this renderer is hosted inside 文镜. */
+  isWenjingHost: boolean
   availableThemes: Array<{ name: string; label: string; description: string }>
   setTheme: (name: string) => void
   setMode: (mode: ThemeMode) => void
@@ -369,6 +371,7 @@ const ThemeContext = createContext<ThemeContextValue>({
   mode: 'light',
   resolvedMode: 'light',
   renderedMode: 'light',
+  isWenjingHost: false,
   availableThemes: SKIN_LIST,
   setTheme: () => {},
   setMode: () => {},
@@ -611,6 +614,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       mode,
       resolvedMode,
       renderedMode,
+      isWenjingHost: Boolean(linkedHostAppearance),
       availableThemes,
       setTheme,
       setMode,
@@ -623,6 +627,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       mode,
       resolvedMode,
       renderedMode,
+      linkedHostAppearance,
       availableThemes,
       setTheme,
       setMode,

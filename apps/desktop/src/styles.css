@@ -16,6 +16,14 @@ html[data-host-surface='wenjing'] [data-contrib-titlebar] {
   background: color-mix(in srgb, var(--ui-text-primary) 2%, var(--ui-bg-chrome));
 }
 
+/* 文镜's bottom-center floating switch occupies the app's usual composer
+   lane. Reserve its 60px host-safe area for the docked composer only; a
+   user-popped composer and the standalone/HUD surfaces keep their positions. */
+html[data-host-surface='wenjing'] [data-slot='composer-dock']:not([data-popped-out]),
+html[data-host-surface='wenjing'] [data-composer-fallback] {
+  bottom: 3.75rem;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 /* Blanket reduced-motion override: kill ALL CSS animations and transitions

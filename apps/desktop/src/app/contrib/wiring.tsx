@@ -74,6 +74,7 @@ import { requestForSessionProfile } from '@/store/session-request-router'
 import { clearSessionTodos, setSessionTodos, todosForHydration } from '@/store/todos'
 import { armWakeWord, stopClientCapture } from '@/store/wake-word'
 import { isAuxiliaryWindow, isHudWindow } from '@/store/windows'
+import { useTheme } from '@/themes/context'
 import { useSkinCommand } from '@/themes/use-skin-command'
 
 import { closeWorkspaceTab } from '../chat/close-tab'
@@ -165,6 +166,7 @@ export function ContribWiring({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient()
   const location = useLocation()
   const navigate = useNavigate()
+  const { isWenjingHost } = useTheme()
 
   const busyRef = useRef(false)
   const creatingSessionRef = useRef(false)
@@ -784,12 +786,16 @@ export function ContribWiring({ children }: { children: ReactNode }) {
   })
 
   useEffect(() => {
-    if (gatewayState === 'open') {
+    if (gatewayState === 'open' && !isWenjingHost) {
       // Status-then-arm, syncing $wakeWord so the composer toggle reflects the
       // same listener this auto-arm claims.
       void armWakeWord(requestGateway)
     }
-  }, [gatewayState, requestGateway])
+    if (isWenjingHost) {
+      stopClientCapture()
+      void requestGateway('wake.stop', { persist: false }).catch(() => undefined)
+    }
+  }, [gatewayState, isWenjingHost, requestGateway])
 
   const activeIsMessaging =
     !!selectedStoredSessionId &&

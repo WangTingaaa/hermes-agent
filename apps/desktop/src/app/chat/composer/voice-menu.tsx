@@ -22,6 +22,7 @@ import { ACTIVE_ICON_BTN, GHOST_ICON_BTN } from './control-classes'
 import type { ChatBarState, VoiceStatus } from './types'
 
 export interface VoiceMenuProps {
+  allowWakeWord?: boolean
   autoSpeak: boolean
   disabled: boolean
   state: ChatBarState
@@ -47,6 +48,7 @@ export interface VoiceMenuProps {
  * trade than the space it saves.
  */
 export function VoiceMenu({
+  allowWakeWord = true,
   autoSpeak,
   disabled,
   state,
@@ -61,7 +63,7 @@ export function VoiceMenu({
 
   const phrase = wake.phrase || 'hey hermes'
   const dictating = state.voice.active || voiceStatus !== 'idle'
-  const wakeListening = wake.listening
+  const wakeListening = allowWakeWord && wake.listening
   // Anything live keeps the trigger lit, so a folded menu can never look idle
   // while the mic is open.
   const active = dictating || wakeListening || autoSpeak
@@ -143,19 +145,21 @@ export function VoiceMenu({
           {autoSpeak ? <Volume2 className={iconSize.sm} /> : <VolumeX className={iconSize.sm} />}
           {autoSpeak ? c.stopSpeakingReplies : c.speakReplies}
         </DropdownMenuCheckboxItem>
-        <DropdownMenuCheckboxItem
-          checked={wakeListening}
-          className={dropdownMenuRow}
-          disabled={disabled || wake.pending}
-          onSelect={event => {
-            event.preventDefault()
-            triggerHaptic(wakeListening ? 'close' : 'open')
-            void toggleWakeWord()
-          }}
-        >
-          {wakeListening ? <Ear className={iconSize.sm} /> : <EarOff className={iconSize.sm} />}
-          {wakeLabel}
-        </DropdownMenuCheckboxItem>
+        {allowWakeWord && (
+          <DropdownMenuCheckboxItem
+            checked={wakeListening}
+            className={dropdownMenuRow}
+            disabled={disabled || wake.pending}
+            onSelect={event => {
+              event.preventDefault()
+              triggerHaptic(wakeListening ? 'close' : 'open')
+              void toggleWakeWord()
+            }}
+          >
+            {wakeListening ? <Ear className={iconSize.sm} /> : <EarOff className={iconSize.sm} />}
+            {wakeLabel}
+          </DropdownMenuCheckboxItem>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   )
