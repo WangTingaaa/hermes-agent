@@ -13,15 +13,20 @@
 /* 文镜 already supplies the outer white application header. Give Mira's own
    titlebar a quiet gray surface so the two navigation levels remain distinct. */
 html[data-host-surface='wenjing'] [data-contrib-titlebar] {
+  height: 1.875rem;
   background: color-mix(in srgb, var(--ui-text-primary) 2%, var(--ui-bg-chrome));
 }
 
+html[data-host-surface='wenjing'] [data-contrib-wiring] {
+  --titlebar-controls-top: 3px !important;
+}
+
 /* 文镜's bottom-center floating switch occupies the app's usual composer
-   lane. Reserve its 60px host-safe area for the docked composer only; a
+   lane. Reserve its 45px host-safe area for the docked composer only; a
    user-popped composer and the standalone/HUD surfaces keep their positions. */
 html[data-host-surface='wenjing'] [data-slot='composer-dock']:not([data-popped-out]),
 html[data-host-surface='wenjing'] [data-composer-fallback] {
-  bottom: 3.75rem;
+  bottom: 2.8125rem;
 }
 
 @custom-variant dark (&:is(.dark *));

@@ -11,6 +11,7 @@ import { Check, ChevronDown, ChevronLeft, KeyRound, Loader2 } from '@/lib/icons'
 import { isProviderSetupErrorMessage } from '@/lib/provider-setup-errors'
 import { cn } from '@/lib/utils'
 import { $desktopBoot, type DesktopBootState } from '@/store/boot'
+import { useTheme } from '@/themes/context'
 import {
   $desktopOnboarding,
   clearPendingProviderOAuth,
@@ -308,6 +309,7 @@ export function DesktopOnboardingOverlay({
         bare && leaving ? '[transition-delay:660ms]' : '',
         leaving ? 'pointer-events-none opacity-0' : 'opacity-100'
       )}
+      data-glass-opaque=""
     >
       <div
         className={cn(
@@ -555,6 +557,7 @@ export function ApiKeyForm({
   redactedValue?: (envKey: string) => null | string | undefined
 }) {
   const { t } = useI18n()
+  const { isWenjingHost } = useTheme()
 
   const [option, setOption] = useState<ApiKeyOption>(() => options.find(o => o.envKey === initialEnvKey) ?? options[0])
 
@@ -623,7 +626,7 @@ export function ApiKeyForm({
 
   return (
     <div className="grid gap-4">
-      {canGoBack ? (
+      {canGoBack && !isWenjingHost ? (
         <Button className="-mt-1 self-start font-medium" onClick={onBack} size="xs" type="button" variant="text">
           <ChevronLeft className="size-3" />
           {t.onboarding.backToSignIn}

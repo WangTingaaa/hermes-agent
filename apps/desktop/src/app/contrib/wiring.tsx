@@ -1061,6 +1061,7 @@ export function ContribWiring({ children }: { children: ReactNode }) {
     <ContribWiringContext.Provider value={api}>
       <div
         className="contents"
+        data-contrib-wiring=""
         style={
           {
             '--titlebar-controls-left': `${controlsPos.left}px`,
