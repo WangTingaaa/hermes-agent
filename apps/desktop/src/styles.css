@@ -10,6 +10,12 @@
   font-size: var(--titlebar-icon-size);
 }
 
+/* v4 gates hover: on @media (hover: hover). Some Windows hosts with a
+   digitizer answer false even with a mouse, so hover-reveal controls stay
+   opacity-0 (clickable, invisible). Trust :hover itself. */
+@custom-variant hover (&:hover);
+@custom-variant dark (&:is(.dark *));
+
 /* 文镜 already supplies the outer white application header. Give Mira's own
    titlebar a quiet gray surface so the two navigation levels remain distinct. */
 html[data-host-surface='wenjing'] [data-contrib-titlebar] {
@@ -28,8 +34,6 @@ html[data-host-surface='wenjing'] [data-slot='composer-dock']:not([data-popped-o
 html[data-host-surface='wenjing'] [data-composer-fallback] {
   bottom: 2.8125rem;
 }
-
-@custom-variant dark (&:is(.dark *));
 
 /* Blanket reduced-motion override: kill ALL CSS animations and transitions
    when the user (or the E2E test harness via prefers-reduced-motion) requests

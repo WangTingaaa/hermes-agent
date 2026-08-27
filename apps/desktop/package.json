@@ -245,7 +245,14 @@
         "CFBundleName": "Mira",
         "NSAudioCaptureUsageDescription": "Mira uses audio capture for voice conversations.",
         "NSCameraUsageDescription": "Mira uses the camera when a plugin or feature you enable requests it.",
-        "NSMicrophoneUsageDescription": "Mira uses the microphone for voice input and voice conversations."
+        "NSMicrophoneUsageDescription": "Mira uses the microphone for voice input and voice conversations.",
+        "NSCalendarsUsageDescription": "Mira needs access to Calendar to provide requested meeting and scheduling support.",
+        "NSCalendarsFullAccessUsageDescription": "Mira needs full access to Calendar to read and manage events when explicitly requested.",
+        "NSRemindersUsageDescription": "Mira needs access to Reminders to provide requested personal-assistant and scheduling support.",
+        "NSRemindersFullAccessUsageDescription": "Mira needs full access to Reminders to read and manage reminders when explicitly requested.",
+        "NSScreenCaptureUsageDescription": "Mira captures the screen when you ask the agent to screenshot or record it.",
+        "NSLocalNetworkUsageDescription": "Mira connects to devices on your local network when a plugin or feature you enable requests it.",
+        "NSAppleMusicUsageDescription": "Mira accesses your music library when a plugin or feature you enable requests it."
       },
       "gatekeeperAssess": false,
       "hardenedRuntime": true,
