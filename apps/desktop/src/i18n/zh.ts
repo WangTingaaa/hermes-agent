@@ -576,10 +576,10 @@ export const zh: Translations = {
       reactionsTitle: '消息回应',
       reactionsDesc: 'iMessage 风格的表情回应 — 你可以给消息添加回应，Hermes 也能回应你的消息。',
       tipsTitle: '应用内提示',
-      tipsDesc: '指向应用某处的小气泡：空闲时偶尔出现，需要时 Hermes 也会给你一条。关掉一条就不再出现。',
+      tipsDesc: '指向应用某处的小气泡：空闲时偶尔出现，需要时 Mira Agent 也会给你一条。关掉一条就不再出现。',
       tipsReset: (count: number) => `恢复 ${count} 条已关闭的提示`,
       toursTitle: '引导导览',
-      toursDesc: '让 Hermes 带你熟悉应用：调暗界面并逐步高亮每个位置。',
+      toursDesc: '让 Mira Agent 带你熟悉应用：调暗界面并逐步高亮每个位置。',
       composerPopoutTitle: '悬浮输入框',
       composerPopoutDesc: '允许将输入框拖出底部停靠区。关闭后，输入框会锁定在底部。',
       vibeHeartsTitle: '心情爱心',
@@ -3648,14 +3648,14 @@ export const zh: Translations = {
       },
       skills: {
         title: '教一次就够',
-        text: '技能是一组说明文件，Hermes 会在需要时自行加载。'
+        text: '技能是一组说明文件，Mira Agent 会在需要时自行加载。'
       },
       messaging: {
         title: '离开电脑也能用',
         text: '接入 Telegram、Discord、Slack 等 — 同一个智能体，同一份记忆。'
       },
       artifacts: {
-        title: 'Hermes 做过的一切',
+        title: 'Mira Agent 做过的一切',
         text: '所有会话里的图片、文件和链接，都汇总在这里。'
       },
       cron: {
@@ -3668,7 +3668,7 @@ export const zh: Translations = {
       },
       profiles: {
         title: '配置文件彼此独立',
-        text: '每个都是独立的 Hermes — 自己的密钥、记忆和会话。'
+        text: '每个都是独立的 Mira Agent — 自己的密钥、记忆和会话。'
       },
       'composer-mentions': {
         title: '附件与命令',

@@ -402,10 +402,10 @@ export const zhHant = defineLocale({
       reactionsTitle: '訊息回應',
       reactionsDesc: 'iMessage 風格的表情回應 — 你可以對訊息做出回應，Hermes 也能回應你的訊息。',
       tipsTitle: '應用程式內提示',
-      tipsDesc: '指向應用程式某處的小氣泡：閒置時偶爾出現，需要時 Hermes 也會給你一則。關掉一則就不再出現。',
+      tipsDesc: '指向應用程式某處的小氣泡：閒置時偶爾出現，需要時 Mira Agent 也會給你一則。關掉一則就不再出現。',
       tipsReset: (count: number) => `復原 ${count} 則已關閉的提示`,
       toursTitle: '導覽',
-      toursDesc: '讓 Hermes 帶你認識應用程式：調暗畫面並逐步標示每個位置。',
+      toursDesc: '讓 Mira Agent 帶你認識應用程式：調暗畫面並逐步標示每個位置。',
       composerPopoutTitle: '懸浮輸入框',
       composerPopoutDesc: '允許將輸入框拖出底部停靠區。關閉後，輸入框會鎖定在底部。',
       vibeHeartsTitle: '心情愛心',
@@ -3009,14 +3009,14 @@ export const zhHant = defineLocale({
       },
       skills: {
         title: '教一次就夠',
-        text: '技能是一組說明檔，Hermes 會在需要時自行載入。'
+        text: '技能是一組說明檔，Mira Agent 會在需要時自行載入。'
       },
       messaging: {
         title: '離開電腦也能用',
         text: '接上 Telegram、Discord、Slack 等 — 同一個代理，同一份記憶。'
       },
       artifacts: {
-        title: 'Hermes 做過的一切',
+        title: 'Mira Agent 做過的一切',
         text: '所有工作階段的圖片、檔案與連結，都彙整在這裡。'
       },
       cron: {
@@ -3029,7 +3029,7 @@ export const zhHant = defineLocale({
       },
       profiles: {
         title: '設定檔彼此獨立',
-        text: '每個都是獨立的 Hermes — 自己的金鑰、記憶與工作階段。'
+        text: '每個都是獨立的 Mira Agent — 自己的金鑰、記憶與工作階段。'
       },
       'composer-mentions': {
         title: '附件與指令',

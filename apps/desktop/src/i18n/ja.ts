@@ -415,10 +415,10 @@ export const ja = defineLocale({
         'iMessage風の絵文字タップバック — メッセージにリアクションでき、Hermesもあなたのメッセージにリアクションします。',
       tipsTitle: 'アプリ内ヒント',
       tipsDesc:
-        'アプリの一部を指す小さな吹き出し。待機中にときどき、また役に立つときは Hermes からも表示します。閉じたヒントは二度と表示されません。',
+        'アプリの一部を指す小さな吹き出し。待機中にときどき、また役に立つときは Mira Agent からも表示します。閉じたヒントは二度と表示されません。',
       tipsReset: (count: number) => `閉じた${count}件のヒントを元に戻す`,
       toursTitle: 'ガイドツアー',
-      toursDesc: '画面を暗くして各ステップを強調しながら、Hermes がアプリを案内します。',
+      toursDesc: '画面を暗くして各ステップを強調しながら、Mira Agent がアプリを案内します。',
       composerPopoutTitle: 'フローティング入力欄',
       composerPopoutDesc: '入力欄をドックからドラッグして外せるようにします。オフにすると画面下部に固定されます。',
       vibeHeartsTitle: 'バイブハート',
@@ -3131,14 +3131,14 @@ export const ja = defineLocale({
       },
       skills: {
         title: '一度教えれば覚えます',
-        text: 'スキルは手順書のフォルダで、必要な場面で Hermes が自分で読み込みます。'
+        text: 'スキルは手順書のフォルダで、必要な場面で Mira Agent が自分で読み込みます。'
       },
       messaging: {
-        title: 'デスクを離れても Hermes',
+        title: 'デスクを離れても Mira Agent',
         text: 'Telegram、Discord、Slack などに接続。同じエージェント、同じ記憶のままです。'
       },
       artifacts: {
-        title: 'Hermes が作ったものすべて',
+        title: 'Mira Agent が作ったものすべて',
         text: '全セッションの画像・ファイル・リンクを一箇所にまとめています。'
       },
       cron: {
@@ -3151,7 +3151,7 @@ export const ja = defineLocale({
       },
       profiles: {
         title: 'プロファイルは独立しています',
-        text: 'それぞれが独自のキー・メモリ・セッションを持つ、別の Hermes です。'
+        text: 'それぞれが独自のキー・メモリ・セッションを持つ、別の Mira Agent です。'
       },
       'composer-mentions': {
         title: 'ファイルとコマンド',
