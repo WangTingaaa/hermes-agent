@@ -102,6 +102,34 @@ try:
 except Exception:
     pass
 
+# Startup-liveness watchdog (OOF-298): for gateway runs, arm BEFORE the heavy
+# module-level import graph below — an import-time deadlock (native-extension
+# init, contended import lock) is exactly the "wedged before the event loop,
+# no logs, live PID" class this watchdog exists for. ``hermes_startup_watchdog``
+# is stdlib-only, so importing it here cannot itself wedge on application
+# code. The match requires the ADJACENT token pair ``gateway run`` (the
+# subcommand shape, wherever global flags like ``-p <profile>`` put it) so
+# unrelated commands that merely mention both words in different arguments
+# never arm a 300s hard-exit timer, while flag-carrying invocations still
+# do — under-arming recreates OOF-298. Foreground `hermes gateway run`
+# still arms — a pre-loop wedge is just as dead without a supervisor, and
+# the stack dump plus exit beats a silent hang; GatewayRunner disarms once
+# the event loop is confirmed live.
+def _argv_is_gateway_run(argv: list) -> bool:
+    return any(
+        a == "gateway" and b == "run" for a, b in zip(argv, argv[1:])
+    )
+
+
+if _argv_is_gateway_run(sys.argv[1:]):
+    try:
+        from hermes_startup_watchdog import arm_startup_watchdog as _arm_sw
+
+        _arm_sw()
+        del _arm_sw
+    except Exception:
+        pass
+
 
 def _exit_after_oneshot(rc: object) -> None:
     """Exit one-shot mode without letting late native finalizers change rc.
@@ -633,17 +661,55 @@ def _apply_profile_override() -> None:
 
     # 2. If no flag, check active_profile in the hermes root.
     #
-    # EXCEPTION: a supervised s6 gateway child (exported by the container
-    # run-script as HERMES_S6_SUPERVISED_CHILD=1) must NOT follow the sticky
-    # active_profile. Each supervised slot has a fixed profile identity: named
-    # slots pass ``-p <name>`` explicitly (handled in step 1 above), and the
-    # reserved ``gateway-default`` slot runs bare ``hermes gateway run`` to mean
-    # "the root HERMES_HOME profile". If the reserved default child read
-    # active_profile here, switching the active profile (e.g. via the dashboard)
-    # would silently redirect the default gateway into that profile — yielding a
-    # duplicate gateway for the active profile and no real default gateway. See
-    # the "Docker & Profiles & Dashboard" report.
-    if profile_name is None and not os.environ.get("HERMES_S6_SUPERVISED_CHILD"):
+    # EXCEPTION: a supervisor-launched gateway child must NOT follow the
+    # sticky active_profile. Each supervised slot has a fixed profile
+    # identity: named slots pass ``-p <name>`` explicitly (handled in step 1
+    # above) or pin ``HERMES_HOME`` to the profile directory (step 1.5), and
+    # a bare invocation means "the root HERMES_HOME profile". If a supervised
+    # default-profile child read active_profile here, switching the active
+    # profile (e.g. via the dashboard or ``hermes profile use``) would
+    # silently redirect the default gateway into that profile — the default
+    # gateway then assumes the other profile's identity/credentials (logs
+    # under the other profile's tree, connects with its Telegram bot token)
+    # and double-polls a token already owned by that profile's own gateway.
+    # See issue #74872 and the "Docker & Profiles & Dashboard" report.
+    #
+    # Supervisor markers honored (see gateway/restart.py
+    # ``is_gateway_supervisor_process`` for the sibling detection used by
+    # restart routing):
+    #   - HERMES_SUPERVISED_CHILD: generalized marker exported by the
+    #     generated systemd unit, launchd plist, and Windows Scheduled-Task
+    #     launchers (#74872).
+    #   - HERMES_S6_SUPERVISED_CHILD: legacy s6 container marker (back-compat;
+    #     exported by S6ServiceManager's run-script).
+    #   - INVOCATION_ID: set by systemd for service children only (never in
+    #     interactive shells) — covers already-installed gateway units that
+    #     predate the HERMES_SUPERVISED_CHILD marker. Consulted ONLY for
+    #     gateway commands: INVOCATION_ID is inherited by every descendant of
+    #     a systemd-launched process (self-hosted CI runners, user services
+    #     running unrelated hermes commands), so honoring it globally would
+    #     silently disable the sticky active_profile for those.
+    #   - HERMES_GATEWAY_EXTERNAL_SUPERVISOR: explicit external-supervisor
+    #     opt-in (``hermes gateway run --external-supervisor``).
+    #
+    # XPC_SERVICE_NAME is deliberately NOT consulted here: interactive macOS
+    # terminals set it too, and a false positive would silently break the
+    # sticky active_profile for every interactive command.
+    def _under_gateway_supervisor() -> bool:
+        if os.environ.get("HERMES_SUPERVISED_CHILD"):
+            return True
+        if os.environ.get("HERMES_S6_SUPERVISED_CHILD"):
+            return True
+        is_gateway_cmd = next(
+            (a for a in argv if not a.startswith("-")), None
+        ) == "gateway"
+        if is_gateway_cmd and os.environ.get("INVOCATION_ID"):
+            return True
+        return os.environ.get(
+            "HERMES_GATEWAY_EXTERNAL_SUPERVISOR", ""
+        ).strip().lower() in {"1", "true", "yes", "on"}
+
+    if profile_name is None and not _under_gateway_supervisor():
         try:
             from hermes_constants import get_default_hermes_root
 
@@ -3399,9 +3465,6 @@ def cmd_chat(args):
             accept_hooks=getattr(args, "accept_hooks", False),
         )
 
-    # Import and run the CLI
-    from cli import main as cli_main
-
     # --query-file: read the single query from a file (or stdin via '-') so
     # callers never have to shell-quote message bodies. This is the transport
     # the Bot Mode DM protocol uses — interpolating arbitrary text into a
@@ -3437,6 +3500,7 @@ def cmd_chat(args):
         "verbose": getattr(args, "verbose", None),
         "quiet": getattr(args, "quiet", False),
         "query": args.query,
+        "oneshot": bool(getattr(args, "oneshot_exit", False)),
         "image": getattr(args, "image", None),
         "resume": getattr(args, "resume", None),
         "worktree": getattr(args, "worktree", False),
@@ -3452,10 +3516,23 @@ def cmd_chat(args):
     kwargs = {k: v for k, v in kwargs.items() if v is not None}
 
     try:
+        from cli import main as cli_main
+
         cli_main(**kwargs)
     except ValueError as e:
         print(f"Error: {e}")
         sys.exit(1)
+    except ImportError as e:
+        # Mixed-version installs (new cli.py, older hermes_cli.config) crash
+        # here — e.g. missing resolve_turn_limit / split_model_config_default
+        # (#96900). The agent-setup mixin prints this hint too late: HermesCLI
+        # construction already failed. Fast-chat launch also goes through
+        # cmd_chat, so this one catch covers `hermes` / `hermes chat`.
+        from hermes_constants import emit_partial_update_hint
+
+        if emit_partial_update_hint(e):
+            sys.exit(1)
+        raise
 
 
 def cmd_gateway(args):
@@ -4209,6 +4286,7 @@ def select_provider_and_model(args=None):
         "nvidia",
         "ollama-cloud",
         "tencent-tokenhub",
+        "tencent-tokenplan",
         "lmstudio",
     } or _is_profile_api_key_provider(selected_provider):
         _model_flow_api_key_provider(config, selected_provider, current_model)
@@ -5053,11 +5131,13 @@ _LAZY_COMMAND_EXPORTS = {
     "hermes_cli.update_cmd": (
         "_abort_dependency_sync_if_self_locked",
         "_add_upstream_remote",
+        "_apply_pending_fleet_restart_catchup",
         "_atomic_replace_dir",
         "_capture_active_lazy_features",
         "_capture_active_tool_dependencies",
         "_capture_head_sha",
         "_classify_concurrent_instance",
+        "_clear_fleet_restart_pending_marker",
         "_assess_parked_branch_switch",
         "_branch_head_label",
         "_branch_head_suffix",
@@ -5078,6 +5158,7 @@ _LAZY_COMMAND_EXPORTS = {
         "_ensure_uv_for_termux",
         "_finish_dashboard_update_cleanup",
         "_fleet_probe_expected_runtimes",
+        "_fleet_restart_pending_marker_path",
         "_filter_non_gateway_concurrent_instances",
         "_for_each_systemd_gateway_unit",
         "_format_concurrent_instances_message",
@@ -5107,6 +5188,7 @@ _LAZY_COMMAND_EXPORTS = {
         "_npm_manifest_paths",
         "_npm_manifests_digest",
         "_orphaned_desktop_backend_pids",
+        "_pending_fleet_restart_needed",
         "_pause_windows_gateways_for_update",
         "_print_curator_first_run_notice",
         "_print_curator_recent_run_notice",
@@ -5128,6 +5210,7 @@ _LAZY_COMMAND_EXPORTS = {
         "_restore_active_tool_dependencies",
         "_restore_stashed_changes",
         "_resume_windows_gateways_after_update",
+        "_run_pending_fleet_restart",
         "_run_logged_subprocess",
         "_run_pre_update_backup",
         "_service_unit_supports_graceful_sigusr1_restart",
@@ -5148,8 +5231,10 @@ _LAZY_COMMAND_EXPORTS = {
         "_wait_for_windows_update_gateway_exit",
         "_warn_gateway_restart_phase_aborted",
         "_warn_incomplete_gateway_fleet_restart",
+        "_warn_pending_fleet_restart_on_startup",
         "_web_build_toolchain_ready",
         "_web_toolchain_roots",
+        "_write_fleet_restart_pending_marker",
         "_write_lazy_refresh_incomplete_marker",
         "_write_marker_file",
         "_write_update_incomplete_marker",
@@ -5885,7 +5970,16 @@ def cmd_config(args):
     """Configuration management."""
     from hermes_cli.config import config_command
 
-    config_command(args)
+    try:
+        config_command(args)
+    except RuntimeError as exc:
+        # Safety net for the fail-closed config write guard (unparseable /
+        # non-mapping / unreadable config.yaml raises RuntimeError from
+        # require_readable_config_before_write). set/unset already surface
+        # this per-branch; this covers migrate and future write subcommands
+        # so no path ends in a raw traceback.
+        print(f"✗ {exc}", file=sys.stderr)
+        sys.exit(1)
 
 
 def cmd_skin(args):
@@ -11149,7 +11243,7 @@ def cmd_profile(args):
 
             # Profile dir for display
             try:
-                profile_dir_display = "~/" + str(profile_dir.relative_to(Path.home()))
+                profile_dir_display = "~/" + profile_dir.relative_to(Path.home()).as_posix()
             except ValueError:
                 profile_dir_display = str(profile_dir)
 
@@ -13130,6 +13224,15 @@ def main():
     except Exception:
         pass
 
+    # Cheap hint only (#95294): an interrupted update that pulled code but
+    # never restarted the fleet. Do NOT restart here — that is ``hermes
+    # update`` catch-up work. Skip when the user is already running update.
+    try:
+        if "update" not in sys.argv[1:]:
+            _warn_pending_fleet_restart_on_startup()
+    except Exception:
+        pass
+
     if _try_termux_fast_tui_launch():
         return
     if _try_termux_fast_cli_launch():
@@ -13271,7 +13374,7 @@ def main():
     )
     browser_close.add_argument(
         "--browser",
-        help="Override detected default browser (chrome/edge/brave/chromium)",
+        help="Override detected default browser (chrome/edge/brave/brave-origin/chromium)",
     )
 
     def _dispatch_browser(_args):
