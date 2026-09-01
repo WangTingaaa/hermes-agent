@@ -1346,7 +1346,8 @@ export const zh: Translations = {
       noKeysMatch: '没有匹配的提供方。',
       localEndpoint: {
         title: '本地 / 自定义端点',
-        description: '将 Mira Agent 指向任意 OpenAI 兼容端点（Zyphra、vLLM、llama.cpp、Ollama 等）。'
+        description: '将 Mira Agent 指向任意 OpenAI 兼容端点（Zyphra、vLLM、llama.cpp、Ollama 等）。',
+        configured: '已配置'
       },
       loading: '正在加载提供方...'
     },

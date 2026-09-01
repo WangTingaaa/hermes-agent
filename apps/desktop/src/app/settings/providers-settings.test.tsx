@@ -9,15 +9,37 @@ import type { EnvVarInfo, OAuthProvider } from '@/types/hermes'
 const listOAuthProviders = vi.fn()
 const disconnectOAuthProvider = vi.fn()
 const getEnvVars = vi.fn()
+const getCustomEndpoints = vi.fn()
 const startManualProviderOAuth = vi.fn()
 const startManualLocalEndpoint = vi.fn()
 const onboarding = atom({ manual: false })
 
 vi.mock('@/hermes', () => ({
   disconnectOAuthProvider: (providerId: string) => disconnectOAuthProvider(providerId),
+  getCustomEndpoints: () => getCustomEndpoints(),
   getEnvVars: () => getEnvVars(),
-  listOAuthProviders: () => listOAuthProviders()
+  listOAuthProviders: () => listOAuthProviders(),
+  setApiRequestProfile: vi.fn()
 }))
+
+// Keep assertions independent from the app's product-level default locale.
+vi.mock('@/i18n', async importOriginal => {
+  const actual = await importOriginal<typeof import('@/i18n')>()
+  const { en } = await import('@/i18n/en')
+
+  return {
+    ...actual,
+    useI18n: () => ({
+      configLoadError: null,
+      isLoadingConfig: false,
+      isSavingLocale: false,
+      locale: 'en',
+      saveError: null,
+      setLocale: async () => {},
+      t: en
+    })
+  }
+})
 
 vi.mock('@/store/onboarding', () => ({
   $desktopOnboarding: onboarding,
@@ -62,6 +84,7 @@ function keyVar(patch: Partial<EnvVarInfo> = {}): EnvVarInfo {
 beforeEach(() => {
   onboarding.set({ manual: false })
   getEnvVars.mockResolvedValue({})
+  getCustomEndpoints.mockResolvedValue({ current: { base_url: '', model: '', provider: '' }, endpoints: [] })
   disconnectOAuthProvider.mockResolvedValue({ ok: true, provider: 'nous' })
   listOAuthProviders.mockResolvedValue({
     providers: [provider('nous', true), provider('minimax-oauth', false)]
@@ -233,5 +256,33 @@ describe('ProvidersSettings', () => {
     fireEvent.click(row)
 
     await waitFor(() => expect(startManualLocalEndpoint).toHaveBeenCalledWith(null))
+  })
+
+  it('marks the custom-endpoint entry configured when the backend has an endpoint', async () => {
+    getCustomEndpoints.mockResolvedValue({
+      current: {
+        base_url: 'https://tokenhub.tencentmaas.com/v1',
+        model: 'minimax-m3',
+        provider: 'custom:tokenhub.tencentmaas.com'
+      },
+      endpoints: [
+        {
+          base_url: 'https://tokenhub.tencentmaas.com/v1',
+          discover_models: true,
+          has_api_key: true,
+          id: 'tokenhub-tencentmaas-com',
+          is_current: true,
+          model: 'minimax-m3',
+          models: ['minimax-m3'],
+          name: 'Tokenhub.tencentmaas.com'
+        }
+      ]
+    })
+    listOAuthProviders.mockResolvedValue({ providers: [] })
+
+    const { ProvidersSettings } = await import('./providers-settings')
+    render(<ProvidersSettings onClose={vi.fn()} onViewChange={vi.fn()} view="keys" />)
+
+    expect(await screen.findByText('Configured')).toBeTruthy()
   })
 })

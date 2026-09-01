@@ -1976,6 +1976,47 @@ class TestWebServerEndpoints:
         assert endpoint["has_api_key"] is True
         assert "sk-in-env" not in (endpoint["api_key_preview"] or "")
 
+    def test_custom_endpoint_response_recognizes_active_legacy_provider(self):
+        """The Desktop panel must recognize legacy ``custom_providers`` rows.
+
+        Runtime provider resolution has supported ``custom:<name>`` identities
+        for years.  The settings endpoint previously read only ``providers:``
+        and treated only bare ``custom`` as a direct-config fallback, so a
+        working authenticated provider appeared unconfigured in Desktop.
+        """
+        from hermes_cli.config import load_config, save_config
+
+        cfg = load_config()
+        cfg["model"] = {
+            "provider": "custom:tokenhub.tencentmaas.com",
+            "default": "minimax-m3",
+            "base_url": "https://tokenhub.tencentmaas.com/v1",
+            "api_key": "sk-model-mirror",
+        }
+        cfg["custom_providers"] = [
+            {
+                "name": "Tokenhub.tencentmaas.com",
+                "base_url": "https://tokenhub.tencentmaas.com/v1",
+                "api_key": "sk-legacy",
+                "model": "minimax-m3",
+                "models": {"minimax-m3": {}, "glm-5.2": {}},
+            }
+        ]
+        save_config(cfg)
+
+        response = self.client.get("/api/providers/custom-endpoints")
+
+        assert response.status_code == 200
+        endpoints = response.json()["endpoints"]
+        assert len(endpoints) == 1
+        endpoint = endpoints[0]
+        assert endpoint["id"] == "tokenhub-tencentmaas-com"
+        assert endpoint["name"] == "Tokenhub.tencentmaas.com"
+        assert endpoint["is_current"] is True
+        assert endpoint["has_api_key"] is True
+        assert endpoint["models"] == ["minimax-m3", "glm-5.2"]
+        assert "sk-legacy" not in (endpoint["api_key_preview"] or "")
+
     def test_activating_an_endpoint_carries_its_credential_either_way(self):
         """Activate must work for both key_env and pre-#69449 plaintext entries."""
         from hermes_cli.config import load_config, save_config

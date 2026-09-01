@@ -70,6 +70,7 @@ from hermes_cli.config import (
     get_env_path,
     get_hermes_home,
     get_process_hermes_home,
+    get_compatible_custom_providers,
     load_config,
     load_env,
     read_raw_config,
@@ -8548,6 +8549,8 @@ def _config_api_key_is_env_ref(endpoint_id: str) -> bool:
 
 
 def _custom_endpoint_response(cfg: Dict[str, Any]) -> Dict[str, Any]:
+    from hermes_cli.providers import custom_provider_aliases
+
     model_cfg = cfg.get("model", {}) if isinstance(cfg.get("model"), dict) else {}
     current_provider = str(model_cfg.get("provider", "") or "")
     current_model = str(model_cfg.get("default", model_cfg.get("name", "")) or "")
@@ -8563,12 +8566,13 @@ def _custom_endpoint_response(cfg: Dict[str, Any]) -> Dict[str, Any]:
             if not base_url:
                 continue
             endpoint_id = str(provider_id)
+            endpoint_name = str(raw_entry.get("name") or endpoint_id)
             models = _models_from_custom_endpoint_entry(raw_entry)
             endpoint_model = str(raw_entry.get("model") or raw_entry.get("default_model") or (models[0] if models else ""))
             has_api_key, api_key_preview = _api_key_display(raw_entry)
             endpoints.append({
                 "id": endpoint_id,
-                "name": str(raw_entry.get("name") or endpoint_id),
+                "name": endpoint_name,
                 "base_url": base_url,
                 "model": endpoint_model,
                 "models": models,
@@ -8576,20 +8580,47 @@ def _custom_endpoint_response(cfg: Dict[str, Any]) -> Dict[str, Any]:
                 "discover_models": bool(raw_entry.get("discover_models", True)),
                 "has_api_key": has_api_key,
                 "api_key_preview": api_key_preview,
-                "is_current": endpoint_id == current_provider,
+                "is_current": current_provider.lower()
+                in custom_provider_aliases(endpoint_name, endpoint_id),
                 "source": "providers",
             })
 
-    if current_provider.lower() == "custom" and current_base_url and not any(e["id"] == "custom" for e in endpoints):
-        has_api_key, api_key_preview = _api_key_display(model_cfg)
+    current_custom = current_provider.lower() == "custom" or current_provider.lower().startswith("custom:")
+    if current_custom and current_base_url and not any(e["is_current"] for e in endpoints):
+        # ``custom_providers:`` is still a supported runtime format.  Reuse the
+        # same compatibility view as provider resolution so Desktop does not
+        # report a working ``custom:<name>`` provider as unconfigured merely
+        # because it is not yet stored under the newer ``providers:`` mapping.
+        target_url = current_base_url.rstrip("/").lower()
+        legacy_entry = next(
+            (
+                entry
+                for entry in get_compatible_custom_providers(cfg)
+                if current_provider.lower()
+                in custom_provider_aliases(
+                    str(entry.get("name") or ""),
+                    str(entry.get("provider_key") or ""),
+                )
+                or str(entry.get("base_url") or "").rstrip("/").lower() == target_url
+            ),
+            None,
+        )
+        display_entry = legacy_entry or model_cfg
+        has_api_key, api_key_preview = _api_key_display(display_entry)
+        if not has_api_key:
+            has_api_key, api_key_preview = _api_key_display(model_cfg)
+        endpoint_identity = current_provider.split(":", 1)[1] if ":" in current_provider else "custom"
+        endpoint_models = _models_from_custom_endpoint_entry(display_entry)
+        if not endpoint_models and current_model:
+            endpoint_models = [current_model]
         endpoints.insert(0, {
-            "id": "custom",
-            "name": "Custom",
+            "id": _custom_endpoint_id(endpoint_identity),
+            "name": str(display_entry.get("name") or "Custom"),
             "base_url": current_base_url,
-            "model": current_model,
-            "models": [current_model] if current_model else [],
-            "context_length": model_cfg.get("context_length"),
-            "discover_models": True,
+            "model": str(display_entry.get("model") or current_model),
+            "models": endpoint_models,
+            "context_length": display_entry.get("context_length", model_cfg.get("context_length")),
+            "discover_models": bool(display_entry.get("discover_models", True)),
             "has_api_key": has_api_key,
             "api_key_preview": api_key_preview,
             "is_current": True,

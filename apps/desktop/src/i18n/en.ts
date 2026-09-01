@@ -1157,7 +1157,8 @@ export const en: Translations = {
       noKeysMatch: 'No providers match your search.',
       localEndpoint: {
         title: 'Local / custom endpoint',
-        description: 'Point Mira Agent at any OpenAI-compatible endpoint (Zyphra, vLLM, llama.cpp, Ollama, etc).'
+        description: 'Point Mira Agent at any OpenAI-compatible endpoint (Zyphra, vLLM, llama.cpp, Ollama, etc).',
+        configured: 'Configured'
       },
       loading: 'Loading providers...'
     },

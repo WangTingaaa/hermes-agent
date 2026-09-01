@@ -15,7 +15,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { RowButton } from '@/components/ui/row-button'
 import { SearchField } from '@/components/ui/search-field'
-import { disconnectOAuthProvider, listOAuthProviders } from '@/hermes'
+import { disconnectOAuthProvider, getCustomEndpoints, listOAuthProviders } from '@/hermes'
 import { useI18n } from '@/i18n'
 import { Check, ChevronDown, ChevronRight, KeyRound, Loader2, Terminal, Trash2 } from '@/lib/icons'
 import { normalize } from '@/lib/text'
@@ -29,7 +29,7 @@ import { isKeyVar, ProviderKeyRows } from './credential-key-ui'
 import { CustomEndpointsSettings } from './custom-endpoints-settings'
 import { SettingsCategoryHeading, useEnvCredentials } from './env-credentials'
 import { providerGroup, providerMeta, providerPriority } from './helpers'
-import { SettingsContent, SettingsSkeleton } from './primitives'
+import { Pill, SettingsContent, SettingsSkeleton } from './primitives'
 
 // The embedded terminal (and thus the "run disconnect command" path) only
 // exists in the Electron desktop shell, not the web dashboard.
@@ -312,7 +312,7 @@ function NoProviderKeys() {
 // Pass reason: null — the onboarding overlay renders an unmapped reason string
 // verbatim as a banner (see ReasonNotice in onboarding/index.tsx), and we don't
 // want a raw identifier like "providers-keys-tab" showing as literal text.
-function LocalEndpointRow({ onOpen }: { onOpen: (reason: null | string) => void }) {
+function LocalEndpointRow({ configured, onOpen }: { configured: boolean; onOpen: (reason: null | string) => void }) {
   const { t } = useI18n()
   const copy = t.settings.providers.localEndpoint
 
@@ -322,7 +322,15 @@ function LocalEndpointRow({ onOpen }: { onOpen: (reason: null | string) => void 
       onClick={() => onOpen(null)}
     >
       <div className="flex min-w-0 flex-col gap-0.5">
-        <span className="truncate text-[length:var(--conversation-text-font-size)] font-semibold">{copy.title}</span>
+        <span className="flex min-w-0 items-center gap-2">
+          <span className="truncate text-[length:var(--conversation-text-font-size)] font-semibold">{copy.title}</span>
+          {configured && (
+            <Pill tone="primary">
+              <Check className="size-3" />
+              {copy.configured}
+            </Pill>
+          )}
+        </span>
         <span className="truncate text-[length:var(--conversation-caption-font-size)] leading-5 text-muted-foreground">
           {copy.description}
         </span>
@@ -342,6 +350,7 @@ export function ProvidersSettings({
   const { t } = useI18n()
   const { rowProps, vars } = useEnvCredentials()
   const [oauthProviders, setOauthProviders] = useState<OAuthProvider[]>([])
+  const [hasCustomEndpoint, setHasCustomEndpoint] = useState(false)
   const [openProvider, setOpenProvider] = useState<null | string>(null)
   const [disconnecting, setDisconnecting] = useState<null | string>(null)
   // Free-text filter for the API-keys view (provider name / env-var key / desc).
@@ -378,6 +387,24 @@ export function ProvidersSettings({
 
     return () => void (cancelled = true)
   }, [onboardingActive])
+
+  useEffect(() => {
+    let cancelled = false
+
+    if (onboardingActive || view !== 'keys') {
+      return
+    }
+
+    void getCustomEndpoints()
+      .then(({ endpoints }) => {
+        if (!cancelled) {
+          setHasCustomEndpoint(endpoints.length > 0)
+        }
+      })
+      .catch(() => undefined)
+
+    return () => void (cancelled = true)
+  }, [onboardingActive, view])
 
   // External (CLI-managed) providers can't be cleared via the API by design —
   // Hermes never deletes creds another tool owns behind a silent API call.
@@ -467,7 +494,7 @@ export function ProvidersSettings({
 
     return (
       <SettingsContent>
-        <LocalEndpointRow onOpen={startManualLocalEndpoint} />
+        <LocalEndpointRow configured={hasCustomEndpoint} onOpen={startManualLocalEndpoint} />
         {keyGroups.length > 0 ? (
           <div className="grid gap-3">
             <SearchField

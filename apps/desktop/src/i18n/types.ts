@@ -994,6 +994,7 @@ export interface Translations {
       localEndpoint: {
         title: string
         description: string
+        configured: string
       }
       loading: string
     }
