@@ -41,8 +41,8 @@ export function translateFrom(
     return active
   }
 
-  if (locale !== DEFAULT_LOCALE) {
-    const fallback = render(resolvePath(source(DEFAULT_LOCALE), key), args)
+  if (locale !== FALLBACK_LOCALE) {
+    const fallback = render(resolvePath(source(FALLBACK_LOCALE), key), args)
 
     if (fallback !== null) {
       return fallback
