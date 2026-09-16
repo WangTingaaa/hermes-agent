@@ -71,11 +71,11 @@ _SHELL_RC_NAMES = (".bashrc", ".bash_profile", ".profile", ".zshrc", ".zprofile"
 
 
 def _strip_hermes_path_lines(content: str) -> str:
-    """Drop the ``# Mira Agent`` marker (+ its PATH line) and any hermes PATH line; squash blank runs."""
+    """Drop Mira/Hermes Agent markers and their PATH lines; squash blank runs."""
     new_lines = []
     skip_next = False
     for line in content.split('\n'):
-        if '# Mira Agent' in line or '# hermes-agent' in line:
+        if '# Mira Agent' in line or '# Hermes Agent' in line or '# hermes-agent' in line:
             skip_next = True
             continue
         if skip_next and ('hermes' in line.lower() and 'PATH' in line):
@@ -192,12 +192,14 @@ def uninstall_gateway_service():
 
 def _remove_systemd_gateway() -> bool:
     """Linux: uninstall systemd services (both user and system scopes)."""
-    from hermes_cli.gateway import _systemctl_cmd, get_service_name, get_systemd_unit_path
+    from hermes_cli.gateway import (
+        _systemctl_cmd, _systemd_unit_belongs_to_current_home, get_service_name, get_systemd_unit_path,
+    )
     svc_name = get_service_name()
     removed_any = False
     for is_system, scope in ((False, "user"), (True, "system")):
         unit_path = get_systemd_unit_path(system=is_system)
-        if not unit_path.exists():
+        if not unit_path.exists() or not _systemd_unit_belongs_to_current_home(is_system):
             continue
         try:
             if is_system and os.geteuid() != 0:  # windows-footgun: ok — Linux-only systemd path
@@ -423,7 +425,7 @@ def run_gui_uninstall(args):
     skip_confirm = bool(getattr(args, "yes", False))
 
     print()
-    _print_box("│         ⚕ Mira Chat GUI Uninstaller                  │", Colors.MAGENTA)
+    _print_box("│         ⚕ Mira Chat GUI Uninstaller                    │", Colors.MAGENTA)
     print()
 
     if not summary["gui_installed"]:
@@ -487,7 +489,7 @@ def run_uninstall(args):
         return
 
     print()
-    _print_box("│            ⚕ Mira Agent Uninstaller                  │", Colors.MAGENTA)
+    _print_box("│            ⚕ Mira Agent Uninstaller                    │", Colors.MAGENTA)
     print()
 
     # Show what will be affected

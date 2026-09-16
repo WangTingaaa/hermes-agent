@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Codicon } from '@/components/ui/codicon'
 import { getStatus } from '@/hermes'
 import { type Translations, useI18n } from '@/i18n'
-import { CheckCircle2, ExternalLink, Loader2, RefreshCw } from '@/lib/icons'
+import { CheckCircle2, ExternalLink, FileText, Loader2, RefreshCw } from '@/lib/icons'
 import { cn } from '@/lib/utils'
 import {
   $updateApply,
@@ -124,6 +124,10 @@ export function MiraAboutSettings() {
     : versions.loaded
       ? `Mira Agent · ${a.versionUnavailable}`
       : 'Mira Agent · …'
+  const releaseVersion = versions.agent && a.runtimeReleaseNotes[versions.agent]
+    ? versions.agent
+    : Object.keys(a.runtimeReleaseNotes)[0]
+  const runtimeNotes = releaseVersion ? a.runtimeReleaseNotes[releaseVersion] : []
 
   return (
     <SettingsContent>
@@ -185,6 +189,19 @@ export function MiraAboutSettings() {
             )}
           </div>
         </div>
+
+        {releaseVersion && runtimeNotes.length > 0 && (
+          <div className="mt-6">
+            <SectionHeading icon={FileText} title={`${a.releaseNotes} · ${releaseVersion}`} />
+            <ul className="space-y-2 rounded-xl border border-border/70 bg-muted/20 px-5 py-4 text-sm text-foreground">
+              {runtimeNotes.map(note => (
+                <li className="list-disc leading-6 marker:text-primary" key={note}>
+                  {note}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         {/* <ListRow
           description={a.automaticUpdatesDesc}
