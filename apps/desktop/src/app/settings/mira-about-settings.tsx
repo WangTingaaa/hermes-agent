@@ -190,7 +190,7 @@ export function MiraAboutSettings() {
           </div>
         </div>
 
-        {releaseVersion && runtimeNotes.length > 0 && (
+        {behind > 0 && releaseVersion && runtimeNotes.length > 0 && (
           <div className="mt-6">
             <SectionHeading icon={FileText} title={`${a.releaseNotes} · ${releaseVersion}`} />
             <ul className="space-y-2 rounded-xl border border-border/70 bg-muted/20 px-5 py-4 text-sm text-foreground">
