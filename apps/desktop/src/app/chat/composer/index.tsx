@@ -12,7 +12,6 @@ import { Button } from '@/components/ui/button'
 import { Slot as ContribSlot } from '@/contrib/react/slot'
 import { useI18n } from '@/i18n'
 import { chatMessageText } from '@/lib/chat-messages'
-import { PR_COMMENT_URL_RE } from '@/lib/chat-runtime'
 import { sanitizeComposerInput } from '@/lib/composer-input-sanitize'
 import { DATA_IMAGE_URL_RE } from '@/lib/embedded-images'
 import { triggerHaptic } from '@/lib/haptics'
@@ -59,6 +58,7 @@ import { useComposerMetrics } from './hooks/use-composer-metrics'
 import { useComposerPlaceholder } from './hooks/use-composer-placeholder'
 import { useComposerPopout } from './hooks/use-composer-popout'
 import { useComposerQueue } from './hooks/use-composer-queue'
+import { useComposerScreenshot } from './hooks/use-composer-screenshot'
 import { useComposerSubmit } from './hooks/use-composer-submit'
 import { triggerKeyUpHandler, useComposerTrigger } from './hooks/use-composer-trigger'
 import { useComposerUndo } from './hooks/use-composer-undo'
@@ -113,9 +113,7 @@ export function ChatBar({
   onCancel,
   onAddUrl,
   onAttachDroppedItems,
-  onAttachFilePath,
   onAttachImageBlob,
-  onAttachPrCommentUrl,
   onAttachPastedText,
   onPasteClipboardImage,
   onPickFiles,
@@ -242,6 +240,19 @@ export function ChatBar({
   // engine writes it — an explicit shared handle, not a back-reference.
   const queueEditRef = useRef<QueueEditState | null>(null)
   const composingRef = useRef(false) // true during IME composition (CJK input)
+  // The blur-close timer must not outlive the composer: an unmounted editor's
+  // deferred closeTrigger() would setState after teardown (vitest reported it as
+  // an unhandled "window is not defined" from paste-url-is-text.test.tsx).
+  const blurCloseTimer = useRef<number | null>(null)
+
+  useEffect(
+    () => () => {
+      if (blurCloseTimer.current !== null) {
+        window.clearTimeout(blurCloseTimer.current)
+      }
+    },
+    []
+  )
 
   const { availableThemes, themeName } = useTheme()
   const at = useAtCompletions({ gateway: gateway ?? null, sessionId: sessionId ?? null, cwd: cwd ?? null })
@@ -274,6 +285,8 @@ export function ChatBar({
     stashAt,
     syncDraftFromEditor
   } = useComposerDraft({ activeQueueSessionKey, focusKey, inputDisabled, queueEditRef, sessionId })
+
+  useComposerScreenshot({ sessionKey: activeQueueSessionKey, focusKey, onAttachImageBlob })
 
   // Undo/redo. The rich editor bypasses Chromium's editing pipeline for speed,
   // which also bypasses its undo stack — so we own the stack and every edit
@@ -329,28 +342,7 @@ export function ChatBar({
       }
     : undefined
 
-  const uploadCloudFavorite =
-    window.hermesDesktop?.cloudFiles?.pickForUpload && onAttachFilePath
-      ? async () => {
-          try {
-            const file = await window.hermesDesktop.cloudFiles?.pickForUpload()
-
-            if (!file) {
-              return
-            }
-
-            if (onAttachFilePath(file.localPath) !== false) {
-              notify({ kind: 'success', message: `${file.fileName} 已保存到下载文件夹并添加为附件` })
-            }
-          } catch (error) {
-            notify({
-              kind: 'error',
-              title: '云端文件下载失败',
-              message: error instanceof Error ? error.message : '请稍后重试'
-            })
-          }
-        }
-      : undefined
+  const uploadCloudFavorite = undefined
 
   // The queue engine — queued turns, in-place editing, the shared drain lock,
   // and bounded auto-drain. Consumes the draft API and writes `queueEditRef`.
@@ -597,17 +589,6 @@ export function ChatBar({
     }
 
     if (DATA_IMAGE_URL_RE.test(pastedText)) {
-      event.preventDefault()
-
-      return
-    }
-
-    // A pasted GitHub PR-comment deep link resolves to a structured review
-    // attachment (author, body, file:line anchor, diff hunk) instead of a bare
-    // `@url:` chip. Optimistic card first, resolve via gh in the background —
-    // if gh can't answer (offline, unauthenticated, foreign repo) the card
-    // swaps back to the plain URL ref so nothing is lost.
-    if (PR_COMMENT_URL_RE.test(pastedText) && onAttachPrCommentUrl?.(pastedText)) {
       event.preventDefault()
 
       return
@@ -1175,7 +1156,14 @@ export function ChatBar({
           // guard forever (#44135). Clear unconditionally: by the time blur
           // runs there is nothing left composing in this editor.
           composingRef.current = false
-          window.setTimeout(closeTrigger, 80)
+          if (blurCloseTimer.current !== null) {
+            window.clearTimeout(blurCloseTimer.current)
+          }
+
+          blurCloseTimer.current = window.setTimeout(() => {
+            blurCloseTimer.current = null
+            closeTrigger()
+          }, 80)
         }}
         onCompositionEnd={event => {
           composingRef.current = false

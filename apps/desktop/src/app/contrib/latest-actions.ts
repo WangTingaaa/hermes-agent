@@ -32,11 +32,9 @@ export function latestChatActions(actions: ChatActions): ChatActions {
   return {
     onAddContextRef: (...args) => actions.onAddContextRef(...args),
     onAddUrl: (...args) => actions.onAddUrl(...args),
-    onAttachFilePath: (...args) => actions.onAttachFilePath(...args),
     onAttachDroppedItems: (...args) => actions.onAttachDroppedItems(...args),
     onAttachImageBlob: (...args) => actions.onAttachImageBlob(...args),
     onAttachPastedText: latestOptional(() => actions.onAttachPastedText),
-    onAttachPrCommentUrl: latestOptional(() => actions.onAttachPrCommentUrl),
     onBranchInNewChat: latestOptional(() => actions.onBranchInNewChat),
     onCancel: (...args) => actions.onCancel(...args),
     onDeleteSelectedSession: (...args) => actions.onDeleteSelectedSession(...args),

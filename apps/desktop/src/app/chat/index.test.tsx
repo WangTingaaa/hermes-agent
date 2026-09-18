@@ -113,7 +113,6 @@ describe('ChatView render isolation', () => {
       onAddContextRef: vi.fn(),
       onAddUrl: vi.fn(),
       onAttachDroppedItems: vi.fn(),
-      onAttachFilePath: vi.fn(),
       onAttachImageBlob: vi.fn(),
       onBranchInNewChat: vi.fn(),
       onCancel: vi.fn(),
