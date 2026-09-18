@@ -527,9 +527,16 @@ function FreeTierReadyPanel({
 // rendered for meaningful caller-supplied reasons (defaults are filtered out
 // upstream), so it never shows the generic "no provider configured" noise.
 function ReasonNotice({ reason }: { reason: string }) {
+  const { locale } = useI18n()
+  const displayReason = /not connected to any AI provider yet/i.test(reason)
+    ? locale === 'zh'
+      ? 'Mira 尚未连接任何 AI 提供方。请先选择 Nous Portal（免费层无需 API 密钥），或在聊天中输入 `/login` 登录；也可以添加 API 密钥。'
+      : reason.replace(/Hermes/g, 'Mira')
+    : reason.replace(/Hermes/g, 'Mira')
+
   return (
     <div className="rounded-2xl border border-(--ui-stroke-tertiary) bg-(--ui-bg-tertiary)/40 px-4 py-3 text-sm text-muted-foreground">
-      {reason}
+      {displayReason}
     </div>
   )
 }

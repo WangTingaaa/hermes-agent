@@ -1410,7 +1410,7 @@ def resolve_provider(
     # the guidance names the profile the user must sign in to.
     sel = profile_cli_selector()
     profile_name = profile_name_for_home(get_hermes_home()) if sel else None
-    where = f"Profile '{profile_name}' is" if profile_name else "Hermes is"
+    where = f"Profile '{profile_name}' is" if profile_name else "Mira is"
     raise AuthError(
         f"{where} not connected to any AI provider yet. Run `hermes {sel}model` to pick one (the free "
         f"Nous tier needs no API key), type `/login` in chat, or add a key with "
