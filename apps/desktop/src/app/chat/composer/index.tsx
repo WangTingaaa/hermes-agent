@@ -330,9 +330,11 @@ export function ChatBar({
     onAddUrl
   })
 
-  const pickCloudFavorite = window.hermesDesktop?.cloudFiles
+  const cloudFiles = window.hermesDesktop?.cloudFiles
+
+  const pickCloudFavorite = cloudFiles
     ? async () => {
-        const file = await window.hermesDesktop.cloudFiles?.pickFavorite()
+        const file = await cloudFiles.pickFavorite()
 
         if (!file) {
           return
@@ -342,7 +344,30 @@ export function ChatBar({
       }
     : undefined
 
-  const uploadCloudFavorite = undefined
+  const uploadCloudFavorite =
+    cloudFiles?.pickForUpload && onAttachDroppedItems
+      ? async () => {
+          try {
+            const file = await cloudFiles.pickForUpload()
+
+            if (!file) {
+              return
+            }
+
+            const attached = await onAttachDroppedItems([{ path: file.localPath }])
+
+            if (attached !== false) {
+              notify({ kind: 'success', message: `${file.fileName} 已添加为附件` })
+            }
+          } catch (error) {
+            notify({
+              kind: 'error',
+              title: '云端文件下载失败',
+              message: error instanceof Error ? error.message : '请稍后重试'
+            })
+          }
+        }
+      : undefined
 
   // The queue engine — queued turns, in-place editing, the shared drain lock,
   // and bounded auto-drain. Consumes the draft API and writes `queueEditRef`.
