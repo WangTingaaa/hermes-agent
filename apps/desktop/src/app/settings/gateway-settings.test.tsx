@@ -4,10 +4,11 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 // Collect the component graph before the behavioral test deadline starts.
 import { GatewaySettings } from './gateway-settings'
 
-const { registry, activeId, selectConnection } = vi.hoisted(() => ({
+const { registry, activeId, selectConnection, wenjingHost } = vi.hoisted(() => ({
   registry: { value: null as any },
   activeId: { value: 'saved-b' },
-  selectConnection: vi.fn().mockResolvedValue(undefined)
+  selectConnection: vi.fn().mockResolvedValue(undefined),
+  wenjingHost: { value: false }
 }))
 
 vi.mock('@nanostores/react', () => ({ useStore: (store: any) => store.value }))
@@ -18,6 +19,7 @@ vi.mock('@/store/connections', () => ({
   selectConnection,
   setConnectionsRegistry: vi.fn()
 }))
+vi.mock('@/themes/context', () => ({ useTheme: () => ({ isWenjingHost: wenjingHost.value }) }))
 vi.mock('./connections-registry', async importOriginal => ({
   ...(await importOriginal<any>()),
   ConnectionsRegistrySection: () => null
@@ -54,6 +56,7 @@ beforeEach(() => {
 afterEach(() => {
   cleanup()
   vi.clearAllMocks()
+  wenjingHost.value = false
 })
 
 describe('GatewaySettings', () => {
@@ -189,5 +192,14 @@ describe('GatewaySettings', () => {
     expect(screen.queryByText('Applies to')).toBeNull()
     expect(screen.queryByText('All profiles')).toBeNull()
     expect(screen.queryByText('Use default gateway')).toBeNull()
+  })
+
+  it('hides Mira Cloud when hosted inside 文镜', async () => {
+    wenjingHost.value = true
+    render(<GatewaySettings embedded />)
+
+    await screen.findByText('Local gateway')
+    expect(screen.queryByText('Mira Cloud')).toBeNull()
+    expect(screen.queryByText('Sign in to Mira Cloud')).toBeNull()
   })
 })

@@ -2529,6 +2529,8 @@ export interface Translations {
     placeholderReconnecting: string
     placeholderFollowUp: string
     newSessionPlaceholders: readonly string[]
+    introHeadline?: string
+    introBody?: string
     followUpPlaceholders: readonly string[]
     startVoice: string
     openDirective: string

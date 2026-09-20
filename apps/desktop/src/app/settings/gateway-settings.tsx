@@ -31,6 +31,7 @@ import {
 import { coerceRemoteUrlScheme } from '@/lib/remote-url'
 import { selectableCardClass } from '@/lib/selectable-card'
 import { cn } from '@/lib/utils'
+import { useTheme } from '@/themes/context'
 import {
   $activeConnectionId,
   $connectionsRegistry,
@@ -167,6 +168,7 @@ function ModeCard({
 // reconnect action), so only the connection controls render.
 export function GatewaySettings({ embedded = false }: { embedded?: boolean } = {}) {
   const { t } = useI18n()
+  const { isWenjingHost } = useTheme()
   const g = t.settings.gateway
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -1184,14 +1186,16 @@ export function GatewaySettings({ embedded = false }: { embedded?: boolean } = {
             onSelect={() => setState(current => ({ ...current, mode: 'local' }))}
             title={g.localTitle}
           />
-          <ModeCard
-            active={state.mode === 'cloud'}
-            description={g.cloudDesc}
-            disabled={state.envOverride}
-            icon={Cloud}
-            onSelect={() => setState(current => ({ ...current, mode: 'cloud' }))}
-            title={g.cloudTitle}
-          />
+          {isWenjingHost ? null : (
+            <ModeCard
+              active={state.mode === 'cloud'}
+              description={g.cloudDesc}
+              disabled={state.envOverride}
+              icon={Cloud}
+              onSelect={() => setState(current => ({ ...current, mode: 'cloud' }))}
+              title={g.cloudTitle}
+            />
+          )}
           <ModeCard
             active={state.mode === 'remote'}
             description={g.remoteDesc}
@@ -1216,7 +1220,7 @@ export function GatewaySettings({ embedded = false }: { embedded?: boolean } = {
       {/* Mira Cloud panel: one portal sign-in, then a discovered-agent picker
           whose selection drives the silent per-agent cascade + a cloud
           connection. Replaces the URL/token form while in cloud mode. */}
-      {state.mode === 'cloud' && !state.envOverride ? (
+      {state.mode === 'cloud' && !isWenjingHost && !state.envOverride ? (
         <div className="mt-5 grid gap-1">
           {savedCloudConnections.length > 0 ? (
             <div className="mb-4 grid gap-1">

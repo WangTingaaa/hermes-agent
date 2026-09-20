@@ -19,6 +19,7 @@ const getUsageAnalytics = vi.fn()
 const getProfiles = vi.fn()
 const getSkillContent = vi.fn()
 const getOfficialSkills = vi.fn()
+const wenjingHost = { value: false }
 
 // Partial mock: keep the real module (CapabilitiesView pulls in @/store/profile,
 // whose import-time subscription calls setApiRequestProfile) and stub only the
@@ -44,6 +45,8 @@ vi.mock('@/store/notifications', () => ({
   notify: vi.fn(),
   notifyError: vi.fn()
 }))
+
+vi.mock('@/themes/context', () => ({ useTheme: () => ({ isWenjingHost: wenjingHost.value }) }))
 
 // The catalog Install button routes through the hub action pipeline — stub the
 // action entrypoint (real module kept: CapabilitiesView reads $hubActions and the
@@ -97,6 +100,7 @@ async function renderSkills() {
 }
 
 beforeEach(() => {
+  wenjingHost.value = false
   getSkills.mockResolvedValue([])
   getToolsets.mockResolvedValue([toolset()])
   setToolsetEnabled.mockResolvedValue({ ok: true, name: 'web', enabled: false })
@@ -308,6 +312,23 @@ describe('CapabilitiesView toolset management', { timeout: 60_000 }, () => {
         expect.objectContaining({ title: '"web-research" is already installed' })
       )
     )
+  })
+
+  it('does not mount the Skills Hub browser inside 文镜', async () => {
+    wenjingHost.value = true
+
+    await act(async () => {
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter initialEntries={['/capabilities?tab=skills']}>
+            <CapabilitiesView />
+          </MemoryRouter>
+        </QueryClientProvider>
+      )
+    })
+
+    await waitFor(() => expect(getSkills).toHaveBeenCalled())
+    expect(document.querySelector('iframe')).toBeNull()
   })
 
   it('mounts the hub iframe lazily and keeps it (hidden) across tab switches', async () => {
