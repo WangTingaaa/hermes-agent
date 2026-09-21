@@ -266,6 +266,8 @@ export interface Translations {
     copyDetailFailed: string
     backendOutOfDateTitle: string
     backendOutOfDateMessage: string
+    backendIncompatibleTitle: string
+    backendIncompatibleMessage: string
     installMethodUnsupportedTitle: string
     updateHermes: string
     updateReadyTitle: string
@@ -793,6 +795,10 @@ export interface Translations {
       seeWhatsNew: string
       updateNow: string
       releaseNotes: string
+      runtimeChanges: string
+      runtimeNoNotes: string
+      runtimeUpdateReady: (current?: null | string, target?: null | string) => string
+      runtimeUpdating: (target?: null | string, progress?: number) => string
       runtimeReleaseNotes: Record<string, string[]>
       onLatest: string
       installing: string

@@ -25354,6 +25354,13 @@
             "default": null,
             "title": "Desktop Contract"
           },
+          "desktop_capabilities": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Desktop Capabilities",
+            "type": "array"
+          },
           "version": {
             "default": "",
             "title": "Version",
@@ -26208,6 +26215,13 @@
             ],
             "default": null,
             "title": "Desktop Contract"
+          },
+          "desktop_capabilities": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Desktop Capabilities",
+            "type": "array"
           },
           "version": {
             "default": "",

@@ -610,6 +610,13 @@ declare global {
       /** Host facts for the guided first run. Optional: an older preload (a
        *  mid-upgrade managed install) simply doesn't answer. */
       getMachineProfile?: () => Promise<DesktopMachineProfile>
+      /** MesoInsights-owned Mira runtime lifecycle. Absent in the standalone Hermes shell. */
+      runtime?: {
+        getState: () => Promise<MiraRuntimeState>
+        check: () => Promise<MiraRuntimeState>
+        update: () => Promise<unknown>
+        onState: (callback: (state: MiraRuntimeState) => void) => () => void
+      }
       /** Restart the app in place — loads the swapped bundle when bundleSwapPending. */
       relaunchApp?: () => Promise<void>
       getRemoteDisplayReason?: () => Promise<string | null>
@@ -715,6 +722,19 @@ export interface DesktopMachineProfile {
    *  guided chat, never a default. The renderer blocklists handles that are
    *  not a name before offering it. */
   username: string
+}
+
+export interface MiraRuntimeState {
+  status: 'checking' | 'error' | 'idle' | 'installing' | 'ready'
+  phase?: string
+  message?: string
+  progress?: number
+  error?: null | string
+  installedVersion?: null | string
+  bundledVersion?: null | string
+  operation?: 'check' | 'install' | 'repair' | 'update'
+  updateAvailable?: boolean
+  checkedAt?: null | number
 }
 
 export type DesktopUninstallMode = 'full' | 'gui' | 'lite'

@@ -2017,13 +2017,23 @@ def _current_profile_name() -> str:
     return "default"
 
 
-# Monotonic GUI<->backend contract version: the desktop refuses a backend reporting less (or none) with a
-# one-click "update to align" prompt; bump whenever the desktop's backend contract changes. v2 file.attach;
+# Monotonic GUI<->backend contract version. The renderer gates breaking changes
+# with its minimum contract and maps pre-contract backends to the legacy baseline;
+# bump whenever the desktop's backend contract changes. v2 file.attach;
 # v3 approvals.mode RPCs + session.info reconciliation; v4 session.create fast=false = explicit normal tier;
 # v5 ws_max_size >16 MiB file.attach frames; v6 plugins.manage rows carry the canonical registry key;
 # v7 blocking prompts are JSON-RPC server->client requests (`srq-<n>` frames, `open_requests` replay) — a v6
-# backend still emits `<kind>.request` notifications the renderer no longer listens for.
+# backend still emits `<kind>.request` notifications the renderer no longer listens for. It also advertises
+# feature capabilities and adds foreign coding-session import RPCs.
 DESKTOP_BACKEND_CONTRACT = 7
+DESKTOP_BACKEND_CAPABILITIES = ("session.foreign",)
+
+
+def _desktop_contract_info() -> dict:
+    return {
+        "desktop_contract": DESKTOP_BACKEND_CONTRACT,
+        "desktop_capabilities": list(DESKTOP_BACKEND_CAPABILITIES),
+    }
 
 
 def _session_usage_snapshot(session: dict | None) -> dict:
@@ -2109,7 +2119,7 @@ def _session_info(agent, session: dict | None = None) -> dict:
         "terminal_backend": _effective_terminal_backend(), "personality": str(personality or ""),
         "running": bool(sess.get("running")), "turn_started_at": _turn_started_at(session),
         "title": _session_live_title(sess, session_key) if session_key else "",
-        "stored_session_id": session_key or "", "desktop_contract": DESKTOP_BACKEND_CONTRACT,
+        "stored_session_id": session_key or "", **_desktop_contract_info(),
         "version": "", "release_date": "", "update_behind": None, "update_command": "",
         "usage": _session_usage_snapshot(session),
         "profile_name": profile_name_for_home(sess.get("profile_home")) or _current_profile_name(),
@@ -2498,7 +2508,7 @@ def _lazy_resume_info(cwd: str, *, model: str = "", provider: str = "", profile:
     return {
         "cwd": cwd, "branch": git_probe.branch(cwd), "project": _project_info_for_cwd(cwd),
         "model": model or _resolve_model(), "tools": {}, "skills": {}, "lazy": True,
-        "desktop_contract": DESKTOP_BACKEND_CONTRACT, "profile_name": _response_profile_name(profile),
+        **_desktop_contract_info(), "profile_name": _response_profile_name(profile),
         **({"provider": provider} if provider else {}),
     }
 
@@ -2759,7 +2769,7 @@ def _fallback_session_info(session: dict) -> dict:
     cwd = _session_cwd(session)
     return {
         "cwd": cwd, "branch": git_probe.branch(cwd), "project": _project_info_for_cwd(cwd), "lazy": True,
-        "model": _resolve_model(), "skills": {}, "tools": {}, "desktop_contract": DESKTOP_BACKEND_CONTRACT,
+        "model": _resolve_model(), "skills": {}, "tools": {}, **_desktop_contract_info(),
     }
 
 

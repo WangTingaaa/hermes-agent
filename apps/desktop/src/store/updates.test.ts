@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { DesktopUpdateStatus } from '@/global'
+import { translateNow } from '@/i18n/runtime'
 
 const storage = new Map<string, string>()
 
@@ -182,7 +183,9 @@ describe('maybeNotifyUpdateAvailable', () => {
   it('still notifies with generic copy when the exact behind count is unknown', () => {
     maybeNotifyUpdateAvailable(status({ behind: null, updateAvailable: true }))
     expect(notifySpy).toHaveBeenCalledTimes(1)
-    expect(notifySpy.mock.calls[0]?.[0]).toMatchObject({ message: 'A new update is available.' })
+    expect(notifySpy.mock.calls[0]?.[0]).toMatchObject({
+      message: translateNow('notifications.updateReadyMessageUnknown')
+    })
   })
 })
 
@@ -236,7 +239,7 @@ describe('reportBackendContract', () => {
     notifySpy.mockClear()
 
     reportBackendContract(REQUIRED_BACKEND_CONTRACT) // backend updated → satisfied, snooze cleared
-    reportBackendContract(5) // a later regression must warn immediately
+    reportBackendContract(REQUIRED_BACKEND_CONTRACT - 1) // a later regression must warn immediately
     expect(notifySpy).toHaveBeenCalledTimes(1)
   })
 })

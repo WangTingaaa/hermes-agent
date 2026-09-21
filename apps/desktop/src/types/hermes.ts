@@ -750,6 +750,7 @@ export interface SessionRuntimeInfo {
   config_warning?: string
   credential_warning?: string
   cwd?: string
+  desktop_capabilities?: string[]
   desktop_contract?: number
   fast?: boolean
   install_warning?: string

@@ -219,11 +219,14 @@ export const en: Translations = {
     details: 'Details',
     copyDetail: 'Copy detail',
     copyDetailFailed: 'Could not copy notification detail',
-    backendOutOfDateTitle: 'Backend out of date',
+    backendOutOfDateTitle: 'Mira Agent update available',
     backendOutOfDateMessage:
-      'Your Mira backend is older than this desktop build and may not work correctly. Update to align them.',
+      'Your Agent runtime is older. You can update later and continue using the features it supports.',
+    backendIncompatibleTitle: 'Mira Agent update required',
+    backendIncompatibleMessage:
+      'This Mira interface requires a newer Agent runtime. Update Mira Agent to continue using OpenAgent.',
     installMethodUnsupportedTitle: 'Unsupported install method',
-    updateHermes: 'Update Mira',
+    updateHermes: 'Update Mira Agent',
     updateReadyTitle: 'Update ready',
     updateReadyMessage: count => `${count} new change${count === 1 ? '' : 's'} available.`,
     updateReadyMessageUnknown: 'A new update is available.',
@@ -935,12 +938,24 @@ export const en: Translations = {
       seeWhatsNew: "See what's new",
       updateNow: 'Update now',
       releaseNotes: 'Release notes',
+      runtimeChanges: 'What is changing',
+      runtimeNoNotes: 'Detailed notes are not available for this version.',
+      runtimeUpdateReady: (current, target) =>
+        `A Mira Agent update is available: ${current || 'current'} → ${target || 'latest'}`,
+      runtimeUpdating: (target, progress) => `Updating to Mira Agent ${target || 'latest'} (${progress || 0}%)`,
       runtimeReleaseNotes: {
         '0.21.3': [
           'Remote gateways are more reliable across redirects, authenticated requests, and media streams.',
           'Live subagent status and controls now make it easier to follow, steer, and stop delegated work.',
           'MCP and skill workflows are safer and more resilient, with clearer lazy-loading state and serialized installs.',
           'Credential and configuration handling now includes vault improvements, stronger 1Password support, and tighter profile isolation.'
+        ],
+        '0.21.0': [
+          'Improved token estimates for long-conversation compression and images',
+          'Fixed tool-result compatibility with strict model providers',
+          'Expanded API call logs with cache writes, response IDs, and upstream details',
+          'Improved memory-hook and external-prefetch reliability',
+          'Fixed session sidebar and filtering issues in the desktop app'
         ]
       },
       onLatest: "You're on the latest version.",

@@ -398,7 +398,7 @@ def _(rid, params: dict) -> dict:
         "info": {"model": override.get("model") if override else _resolve_model(),
                  **({"provider": override["provider"]} if override.get("provider") else {}),
                  "tools": {}, "skills": {}, "cwd": cwd, "branch": git_probe.branch(cwd),
-                 "project": _project_info_for_cwd(cwd), "lazy": True, "desktop_contract": DESKTOP_BACKEND_CONTRACT,
+                 "project": _project_info_for_cwd(cwd), "lazy": True, **_desktop_contract_info(),
                  "profile_name": _response_profile_name(profile)}})
 
 

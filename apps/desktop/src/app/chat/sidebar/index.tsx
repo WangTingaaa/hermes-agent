@@ -29,6 +29,12 @@ import { comboTokens } from '@/lib/keybinds/combo'
 import { sessionMatchesSearch } from '@/lib/session-search'
 import { normalizeSessionSource, sessionSourceLabel } from '@/lib/session-source'
 import { cn } from '@/lib/utils'
+import {
+  $backendCompatibility,
+  BACKEND_CAPABILITIES,
+  backendOwnerKey,
+  backendSupports
+} from '@/store/backend-compatibility'
 import { $activeConnectionId } from '@/store/connections'
 import { $cronJobs } from '@/store/cron'
 import { $bindings } from '@/store/keybinds'
@@ -74,6 +80,7 @@ import {
 } from '@/store/layout'
 import { notifyError } from '@/store/notifications'
 import {
+  $activeGatewayProfile,
   $newChatProfile,
   $profiles,
   $profileScope,
@@ -410,6 +417,16 @@ export function ChatSidebar({
   const profiles = useStore($profiles)
   const profileScope = useStore($profileScope)
   const activeConnectionId = useStore($activeConnectionId)
+  const activeGatewayProfile = useStore($activeGatewayProfile)
+  const backendCompatibility = useStore($backendCompatibility)
+
+  const canImportForeignSessions = backendSupports(
+    backendCompatibility,
+    backendOwnerKey(activeConnectionId, activeGatewayProfile),
+    BACKEND_CAPABILITIES.foreignSessionImport
+  )
+
+  const visibleSidebarNav = SIDEBAR_NAV.filter(item => item.id !== 'session-import' || canImportForeignSessions)
 
   // Toggle the persisted read-state watermark from a row menu. The row's own
   // `unread` prop mirrors what the dot paints; flip it and let the backend
@@ -1513,7 +1530,7 @@ export function ChatSidebar({
         <SidebarGroup className="shrink-0 p-0 pb-2 pt-[calc(var(--titlebar-height)+0.375rem)]">
           <SidebarGroupContent>
             <SidebarMenu className="gap-px">
-              {[...SIDEBAR_NAV, ...contributedNav].map(item => {
+              {[...visibleSidebarNav, ...contributedNav].map(item => {
                 const isInteractive = Boolean(item.action) || Boolean(item.route)
 
                 const active =

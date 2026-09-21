@@ -84,6 +84,7 @@ class SessionLiveInfo(OpenModel):
     title: str = ""
     stored_session_id: str = ""
     desktop_contract: int | str | None = None
+    desktop_capabilities: list[str] = Field(default_factory=list)
     version: str = ""
     release_date: str = ""
     update_behind: JsonValue | None = None

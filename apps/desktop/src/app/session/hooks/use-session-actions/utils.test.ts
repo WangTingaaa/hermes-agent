@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { textWithoutReferenceLines, WIRE_REFERENCE_KINDS } from '@/components/assistant-ui/reference-kinds'
 import { type ChatMessage, type ChatMessagePart, chatMessageText } from '@/lib/chat-messages'
 import { $approvalModes, approvalModeForProfile } from '@/store/approval-mode'
+import { $backendCompatibility, BACKEND_CAPABILITIES, backendOwnerKey } from '@/store/backend-compatibility'
 import { $desktopOnboarding, consumePendingCredentialWarning } from '@/store/onboarding'
 import { $activeGatewayProfile } from '@/store/profile'
 import {
@@ -117,6 +118,8 @@ describe('applyRuntimeInfo credential warnings', () => {
 
 describe('applyRuntimeInfo foreground scoping', () => {
   beforeEach(() => {
+    $backendCompatibility.set(null)
+    $activeGatewayProfile.set('default')
     setCurrentCwd('/main-repo')
     setCurrentBranch('main')
   })
@@ -142,6 +145,20 @@ describe('applyRuntimeInfo foreground scoping', () => {
     expect($currentBranch.get()).toBe('main')
     // ...while the caller still gets everything it needs for its own session.
     expect(patch).toMatchObject({ branch: 'bb/tile', cwd: '/other-worktree' })
+  })
+
+  it('publishes capabilities only from the foreground backend', () => {
+    applyRuntimeInfo({
+      desktop_capabilities: [BACKEND_CAPABILITIES.foreignSessionImport],
+      desktop_contract: 7
+    })
+    applyRuntimeInfo({ desktop_capabilities: [], desktop_contract: 7 }, { foreground: false })
+
+    expect($backendCompatibility.get()).toEqual({
+      capabilities: [BACKEND_CAPABILITIES.foreignSessionImport],
+      contract: 7,
+      ownerKey: backendOwnerKey(null, 'default')
+    })
   })
 
   // #71254: `if (info.cwd)` treated '' as "no opinion", so a detached session

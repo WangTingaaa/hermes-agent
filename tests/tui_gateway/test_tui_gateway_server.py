@@ -8747,6 +8747,11 @@ def test_desktop_contract_includes_approval_mode_rpc():
     assert server.DESKTOP_BACKEND_CONTRACT >= 3
 
 
+def test_desktop_contract_advertises_foreign_session_import():
+    assert server.DESKTOP_BACKEND_CONTRACT >= 7
+    assert "session.foreign" in server.DESKTOP_BACKEND_CAPABILITIES
+
+
 def test_config_set_approval_mode_rejects_unknown_value():
     resp = server.handle_request(
         {
@@ -15338,6 +15343,7 @@ def test_session_create_lazy_info_reports_desktop_contract(monkeypatch):
     info = resp["result"]["info"]
 
     assert info["desktop_contract"] == server.DESKTOP_BACKEND_CONTRACT
+    assert info["desktop_capabilities"] == list(server.DESKTOP_BACKEND_CAPABILITIES)
 
     server._sessions.pop(resp["result"]["session_id"], None)
 
@@ -15373,6 +15379,7 @@ def test_session_activate_lazy_info_reports_desktop_contract():
         info = resp["result"]["info"]
         assert info["lazy"] is True
         assert info["desktop_contract"] == server.DESKTOP_BACKEND_CONTRACT
+        assert info["desktop_capabilities"] == list(server.DESKTOP_BACKEND_CAPABILITIES)
     finally:
         server._sessions.pop(sid, None)
 

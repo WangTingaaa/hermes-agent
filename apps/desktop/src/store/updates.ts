@@ -104,7 +104,8 @@ function isUpdateToastSnoozed(): boolean {
 //     read-only in Capabilities → Plugins).
 // v7: requires JSON-RPC server->client requests for every blocking prompt
 //     (approval/clarify/sudo/secret/vault/MCP setup); a v6 backend's
-//     `<kind>.request` notifications would never render a card.
+//     `<kind>.request` notifications would never render a card. It also
+//     advertises capability-gated features such as foreign session import.
 export const REQUIRED_BACKEND_CONTRACT = 7
 const SKEW_TOAST_ID = 'backend-contract-skew'
 // The contract check runs on every session.resume (applyRuntimeInfo), so

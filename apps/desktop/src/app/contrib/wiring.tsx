@@ -15,6 +15,7 @@ import { useLocation, useNavigate } from 'react-router'
 
 import { graftRefreshedTailOntoBackfill } from '@/app/chat/transcript-backfill'
 import { formatRefValue } from '@/components/assistant-ui/directive-text'
+import { BackendCompatibilityOverlay } from '@/components/backend-compatibility-overlay'
 import { BootFailureOverlay } from '@/components/boot-failure-overlay'
 import { ConfirmHost } from '@/components/confirm-host'
 import { DesktopInstallOverlay } from '@/components/desktop-install-overlay'
@@ -44,6 +45,12 @@ import { isMessagingSource } from '@/lib/session-source'
 import { latestSessionTodos } from '@/lib/todos'
 import { activateWakeIndicator } from '@/lib/wake-indicator'
 import { playWakeSound } from '@/lib/wake-sound'
+import {
+  $backendCompatibility,
+  BACKEND_CAPABILITIES,
+  backendOwnerKey,
+  backendSupports
+} from '@/store/backend-compatibility'
 import { $billingSettingsRequest } from '@/store/billing-block'
 import { $desktopBoot } from '@/store/boot'
 import { requestVoiceConversationStart } from '@/store/composer'
@@ -254,9 +261,9 @@ export function ContribWiring({ children }: { children: ReactNode }) {
         return
       }
 
-      void window.hermesDesktop?.recycleBackend?.(normalizeProfileKey($activeGatewayProfile.get())).catch(err =>
-        notifyError(err, translateNow('notifications.errors.restartHermesFailed'))
-      )
+      void window.hermesDesktop
+        ?.recycleBackend?.(normalizeProfileKey($activeGatewayProfile.get()))
+        .catch(err => notifyError(err, translateNow('notifications.errors.restartHermesFailed')))
     }
   }, [backendRestartRequest])
 
@@ -312,6 +319,13 @@ export function ContribWiring({ children }: { children: ReactNode }) {
   const activeGatewayProfile = useStore($activeGatewayProfile)
   const profileScope = useStore($profileScope)
   const boot = useStore($desktopBoot)
+  const backendCompatibility = useStore($backendCompatibility)
+
+  const canImportForeignSessions = backendSupports(
+    backendCompatibility,
+    backendOwnerKey(activeConnectionId, activeGatewayProfile),
+    BACKEND_CAPABILITIES.foreignSessionImport
+  )
 
   const routedSessionId = routeSessionId(location.pathname)
   const routedSessionIdRef = useRef(routedSessionId)
@@ -966,6 +980,7 @@ export function ContribWiring({ children }: { children: ReactNode }) {
       // same listener this auto-arm claims.
       void armWakeWord(requestGateway)
     }
+
     if (isWenjingHost) {
       stopClientCapture()
       void requestGateway('wake.stop', { persist: false }).catch(() => undefined)
@@ -1373,6 +1388,7 @@ export function ContribWiring({ children }: { children: ReactNode }) {
         profile={activeGatewayProfile}
       />
       <UpdatesOverlay />
+      <BackendCompatibilityOverlay />
       <GatewayConnectingOverlay />
       <BootFailureOverlay />
       <CommandPalette />
@@ -1403,7 +1419,7 @@ export function ContribWiring({ children }: { children: ReactNode }) {
         </Suspense>
       )}
 
-      {currentView === 'session-import' && (
+      {currentView === 'session-import' && canImportForeignSessions && (
         <SessionImportView
           key={`${activeConnectionId}:${activeGatewayProfile}`}
           onClose={closeOverlayToPreviousRoute}

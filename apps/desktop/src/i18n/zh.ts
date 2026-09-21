@@ -192,10 +192,13 @@ export const zh = defineLocale({
     details: '详情',
     copyDetail: '复制详情',
     copyDetailFailed: '无法复制通知详情',
-    backendOutOfDateTitle: '后端版本过旧',
-    backendOutOfDateMessage: '你的 Mira 后端早于当前桌面构建，可能无法正常工作。请更新以保持一致。',
+    backendOutOfDateTitle: 'Mira Agent 有可用更新',
+    backendOutOfDateMessage: '当前 Agent Runtime 版本较旧；你可以稍后更新，不影响继续使用现有功能。',
+    backendIncompatibleTitle: '需要更新 Mira Agent',
+    backendIncompatibleMessage:
+      '当前 Mira 界面需要更新版本的 Agent Runtime。更新 Mira Agent 后才能继续使用 OpenAgent。',
     installMethodUnsupportedTitle: '不受支持的安装方式',
-    updateHermes: '更新 Mira',
+    updateHermes: '更新 Mira Agent',
     updateReadyTitle: '有可用更新',
     updateReadyMessage: count => `有 ${count} 项新更改可用。`,
     updateReadyMessageUnknown: '有新更新可用。',
@@ -1142,12 +1145,24 @@ export const zh = defineLocale({
       seeWhatsNew: '查看新增内容',
       updateNow: '立即更新',
       releaseNotes: '发行说明',
+      runtimeChanges: '本次更新内容',
+      runtimeNoNotes: '此版本暂未提供详细更新说明。',
+      runtimeUpdateReady: (current, target) =>
+        `Mira Agent 有可用更新：${current || '当前版本'} → ${target || '最新版本'}`,
+      runtimeUpdating: (target, progress) => `正在更新至 Mira Agent ${target || '最新版本'}（${progress || 0}%）`,
       runtimeReleaseNotes: {
         '0.21.3': [
           '远程网关连接更加可靠，重定向、鉴权请求头和媒体流都能正确处理。',
           '子智能体状态与控制更加完整，可查看进度、跟踪输出，并在运行中引导或中断任务。',
           'MCP 与技能流程更加稳健，改进了延迟加载状态、并发安装保护和安全校验。',
           '凭据与配置体验升级，包括凭据保险库、1Password 支持以及更严格的配置文件隔离。'
+        ],
+        '0.21.0': [
+          '提升长对话压缩与图片 Token 计算的准确性',
+          '修复严格模型服务下工具结果消息的兼容性',
+          '增强 API 调用日志，补充缓存写入、响应 ID 与上游信息',
+          '改进插件记忆钩子和外部预取的稳定性',
+          '修复桌面端会话侧边栏与筛选显示问题'
         ]
       },
       onLatest: '你已是最新版本。',

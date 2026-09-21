@@ -7,10 +7,12 @@ import { embeddedImageUrls, textWithoutEmbeddedImages } from '@/lib/embedded-ima
 import { parseErrorSurface } from '@/lib/error-surface'
 import { isMessagingSource, normalizeSessionSource } from '@/lib/session-source'
 import { reconcileApprovalModeForProfile } from '@/store/approval-mode'
+import { publishBackendCompatibility } from '@/store/backend-compatibility'
 import { requestDesktopOnboardingForCredentialWarning } from '@/store/onboarding'
 import { $activeGatewayProfile, $profiles, normalizeProfileKey } from '@/store/profile'
 import { $projectTree } from '@/store/projects'
 import {
+  $connection,
   $cronSessions,
   $currentCwd,
   $messagingSessions,
@@ -1783,6 +1785,10 @@ export function applyRuntimeInfo(
   // App/profile-level reporting is session-independent — a tile's runtime
   // reports backend skew and credential warnings just as usefully.
   reportBackendContract(info.desktop_contract)
+
+  if (foreground) {
+    publishBackendCompatibility(info, $connection.get()?.connectionId, $activeGatewayProfile.get())
+  }
 
   if (info.approval_mode !== undefined) {
     reconcileApprovalModeForProfile($activeGatewayProfile.get(), info.approval_mode)

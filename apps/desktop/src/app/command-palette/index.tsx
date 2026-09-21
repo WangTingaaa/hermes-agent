@@ -61,6 +61,12 @@ import { getServers } from '@/lib/mcp-servers'
 import { normalize } from '@/lib/text'
 import { cn } from '@/lib/utils'
 import { resolveVersionStatus } from '@/lib/version-status'
+import {
+  $backendCompatibility,
+  BACKEND_CAPABILITIES,
+  backendOwnerKey,
+  backendSupports
+} from '@/store/backend-compatibility'
 import { $repoWorktrees } from '@/store/coding-status'
 import {
   $commandPaletteOpen,
@@ -73,6 +79,7 @@ import { $bindings, bindingsFor } from '@/store/keybinds'
 import { $dismissedAutoProjectIds, filterVisibleProjects } from '@/store/layout'
 import { openPetGenerate } from '@/store/pet-generate'
 import { openBrowserTab } from '@/store/preview'
+import { $activeGatewayProfile } from '@/store/profile'
 import { $projectTree, goToProject, openFolderAsProject, requestStartWorkSession } from '@/store/projects'
 import { $connection } from '@/store/session'
 import { runGatewayRestart } from '@/store/system-actions'
@@ -567,6 +574,15 @@ function CommandPaletteBody({ onExited }: { onExited: () => void }) {
   // rewrites these stores on every progress line, and only a changed string
   // should rebuild the palette's groups.
   const connection = useStore($connection)
+  const activeGatewayProfile = useStore($activeGatewayProfile)
+  const backendCompatibility = useStore($backendCompatibility)
+
+  const canImportForeignSessions = backendSupports(
+    backendCompatibility,
+    backendOwnerKey(connection?.connectionId, activeGatewayProfile),
+    BACKEND_CAPABILITIES.foreignSessionImport
+  )
+
   const desktopVersion = useStore($desktopVersion)
   const clientStatus = useStore($updateStatus)
   const clientApply = useStore($updateApply)
@@ -885,13 +901,17 @@ function CommandPaletteBody({ onExited }: { onExited: () => void }) {
             label: cc.sections.sessions,
             run: go(`${COMMAND_CENTER_ROUTE}?section=sessions`)
           },
-          {
-            icon: Download,
-            id: 'session-import',
-            keywords: ['import', 'claude', 'codex', 'conversation'],
-            label: t.sessionImport.action,
-            run: go(SESSION_IMPORT_ROUTE)
-          },
+          ...(canImportForeignSessions
+            ? [
+                {
+                  icon: Download,
+                  id: 'session-import',
+                  keywords: ['import', 'claude', 'codex', 'conversation'],
+                  label: t.sessionImport.action,
+                  run: go(SESSION_IMPORT_ROUTE)
+                }
+              ]
+            : []),
           {
             icon: Activity,
             id: 'cc-system',
@@ -1000,6 +1020,7 @@ function CommandPaletteBody({ onExited }: { onExited: () => void }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     contributedItems,
+    canImportForeignSessions,
     dismissedAutoProjects,
     go,
     projectTree,

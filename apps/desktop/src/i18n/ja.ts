@@ -168,9 +168,12 @@ export const ja = defineLocale({
     details: '詳細',
     copyDetail: '詳細をコピー',
     copyDetailFailed: '通知の詳細をコピーできませんでした',
-    backendOutOfDateTitle: 'バックエンドが古いです',
+    backendOutOfDateTitle: 'Mira Agent の更新があります',
     backendOutOfDateMessage:
-      'Mira Agent バックエンドがこのデスクトップビルドより古く、正常に動作しない場合があります。更新して揃えてください。',
+      'Agent Runtime のバージョンが古くなっています。対応済みの機能はそのまま使用し、後で更新できます。',
+    backendIncompatibleTitle: 'Mira Agent の更新が必要です',
+    backendIncompatibleMessage:
+      '現在の Mira 画面には新しい Agent Runtime が必要です。OpenAgent を続けるには Mira Agent を更新してください。',
     installMethodUnsupportedTitle: 'サポート対象外のインストール方法',
     updateHermes: 'Mira Agent を更新',
     updateReadyTitle: '更新の準備ができました',
@@ -501,7 +504,8 @@ export const ja = defineLocale({
       sessionDensityComfortable: '標準',
       sessionDensityDetailed: '詳細',
       tabStripTitle: 'タブバー',
-      tabStripDesc: 'ゾーンの上にタブを表示します。自動では、他にチャットやタイルのゾーンがない限り、ペインが1つのときに隠します。',
+      tabStripDesc:
+        'ゾーンの上にタブを表示します。自動では、他にチャットやタイルのゾーンがない限り、ペインが1つのときに隠します。',
       tabStripAuto: '自動',
       tabStripAlways: '常に表示',
       tabStripNever: '表示しない',
@@ -897,12 +901,24 @@ export const ja = defineLocale({
       seeWhatsNew: '新機能を見る',
       updateNow: '今すぐ更新',
       releaseNotes: 'リリースノート',
+      runtimeChanges: '今回の更新内容',
+      runtimeNoNotes: 'このバージョンの詳しい更新内容はありません。',
+      runtimeUpdateReady: (current, target) =>
+        `Mira Agent の更新があります：${current || '現在のバージョン'} → ${target || '最新バージョン'}`,
+      runtimeUpdating: (target, progress) => `Mira Agent ${target || '最新バージョン'} に更新中（${progress || 0}%）`,
       runtimeReleaseNotes: {
         '0.21.3': [
           'リダイレクト、認証付きリクエスト、メディアストリームを含むリモートゲートウェイ接続の信頼性が向上しました。',
           'サブエージェントの進行状況を確認し、実行中に指示や中断を行えるライブ状態と操作機能を強化しました。',
           '遅延読み込み状態の明確化、インストールの直列化、安全検証により MCP とスキルの動作がより堅牢になりました。',
           '資格情報ボールト、1Password 対応、プロファイル分離の改善により、資格情報と設定の扱いを強化しました。'
+        ],
+        '0.21.0': [
+          '長い会話の圧縮と画像のトークン計算精度を改善',
+          '厳格なモデルプロバイダーでのツール結果メッセージの互換性を修正',
+          'API 呼び出しログにキャッシュ書き込み、レスポンス ID、アップストリーム情報を追加',
+          'メモリフックと外部プリフェッチの安定性を改善',
+          'デスクトップ版のセッションサイドバーとフィルター表示を修正'
         ]
       },
       onLatest: '最新バージョンです。',
@@ -2834,8 +2850,7 @@ export const ja = defineLocale({
       'セッショントークンまたはブラウザーサインインでリモートバックエンドを使用します。ローカルインストールは開始されません。',
     installLocalTitle: 'Mira をローカルにインストール',
     installLocalDesc: 'Mira をダウンロードし、Python 環境を作成して、このコンピューターでバックエンドを実行します。',
-    localStartUnavailable:
-      'ローカルインストールを開始できません。Mira Desktop を再起動して、もう一度お試しください。',
+    localStartUnavailable: 'ローカルインストールを開始できません。Mira Desktop を再起動して、もう一度お試しください。',
     remoteSetupTitle: '既存の Mira に接続',
     remoteSetupDesc:
       'ゲートウェイ URL を入力してください。Mira Desktop がトークンとブラウザーサインインのどちらが必要かを検出します。',
@@ -3568,7 +3583,8 @@ export const ja = defineLocale({
     sudoTitle: '管理者パスワード',
     sudoDesc:
       'sudo パスワードを入力する前にコマンドを確認してください。パスワードは実行するエージェントに送信され、このセッション中キャッシュされます。',
-    sudoCommandUnavailable: 'エージェントからコマンドが提供されていません。会話で確認できない場合はキャンセルしてください。',
+    sudoCommandUnavailable:
+      'エージェントからコマンドが提供されていません。会話で確認できない場合はキャンセルしてください。',
     sudoPlaceholder: 'sudo パスワード',
     secretTitle: 'シークレットが必要です',
     secretDesc: 'Hermes は続行するための認証情報が必要です。',

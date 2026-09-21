@@ -164,8 +164,11 @@ export const zhHant = defineLocale({
     details: '詳細資訊',
     copyDetail: '複製詳情',
     copyDetailFailed: '無法複製通知詳情',
-    backendOutOfDateTitle: '後端版本過舊',
-    backendOutOfDateMessage: '您的 Mira Agent 後端早於目前的桌面版本，可能無法正常運作。請更新以保持一致。',
+    backendOutOfDateTitle: 'Mira Agent 有可用更新',
+    backendOutOfDateMessage: '目前的 Agent Runtime 版本較舊；您可以稍後更新，並繼續使用現有功能。',
+    backendIncompatibleTitle: '需要更新 Mira Agent',
+    backendIncompatibleMessage:
+      '目前的 Mira 介面需要較新版本的 Agent Runtime。更新 Mira Agent 後才能繼續使用 OpenAgent。',
     installMethodUnsupportedTitle: '不受支援的安裝方式',
     updateHermes: '更新 Mira Agent',
     updateReadyTitle: '有可用更新',
@@ -937,12 +940,24 @@ export const zhHant = defineLocale({
       seeWhatsNew: '查看新增內容',
       updateNow: '立即更新',
       releaseNotes: '發行說明',
+      runtimeChanges: '本次更新內容',
+      runtimeNoNotes: '此版本暫未提供詳細更新說明。',
+      runtimeUpdateReady: (current, target) =>
+        `Mira Agent 有可用更新：${current || '目前版本'} → ${target || '最新版本'}`,
+      runtimeUpdating: (target, progress) => `正在更新至 Mira Agent ${target || '最新版本'}（${progress || 0}%）`,
       runtimeReleaseNotes: {
         '0.21.3': [
           '遠端閘道連線更加可靠，重新導向、驗證請求標頭和媒體串流都能正確處理。',
           '子代理程式狀態與控制更加完整，可查看進度、追蹤輸出，並在執行中引導或中斷工作。',
           'MCP 與技能流程更加穩健，改善了延遲載入狀態、並行安裝保護和安全驗證。',
           '憑證與設定體驗升級，包括憑證保險庫、1Password 支援，以及更嚴格的設定檔隔離。'
+        ],
+        '0.21.0': [
+          '提升長對話壓縮與圖片 Token 計算的準確性',
+          '修正嚴格模型服務下工具結果訊息的相容性',
+          '增強 API 呼叫日誌，補充快取寫入、回應 ID 與上游資訊',
+          '改善外掛記憶鉤子和外部預取的穩定性',
+          '修正桌面版工作階段側邊欄與篩選顯示問題'
         ]
       },
       onLatest: '你已是最新版本。',
