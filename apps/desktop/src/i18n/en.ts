@@ -1251,6 +1251,16 @@ export const en: Translations = {
         `A Mira Agent update is available: ${current || 'current'} → ${target || 'latest'}`,
       runtimeUpdating: (target, progress) => `Updating to Mira Agent ${target || 'latest'} (${progress || 0}%)`,
       runtimeReleaseNotes: {
+        '0.0.0': [
+          'Connectors now bring managed apps and local MCP servers into one page, with tool permissions, filters and connection recovery.',
+          'Guided setup improves local-model selection, browser sign-in and free access, with clearer recovery when setup cannot finish.',
+          'Chat recovery, branches, profile switching, queued runs and clarification cards better preserve conversation state.',
+          'The composer returns automatically after scrolling; projects support multiple folders and undoing sidebar hides.',
+          'Voice settings support live conversation, and local browsing can use a managed copy of your browser login profile.',
+          'Plugins gain more consistent enablement and discovery. Spotify, Home Assistant and several memory providers move to standalone catalog plugins.',
+          'Installation and updates improve bundled-runtime support, interrupted-update recovery and remote SSH compatibility.',
+          'Codex tool-call streaming and desktop backend readiness receive reliability fixes.'
+        ],
         '0.21.3': [
           'Remote gateways are more reliable across redirects, authenticated requests, and media streams.',
           'Live subagent status and controls now make it easier to follow, steer, and stop delegated work.',

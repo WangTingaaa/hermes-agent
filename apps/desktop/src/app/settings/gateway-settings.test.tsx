@@ -11,7 +11,12 @@ import { deferred } from '@/test/deferred'
 // Collect the component graph before the behavioral test deadline starts.
 import { GatewaySettings } from './gateway-settings'
 
-const render = (ui: ReactNode) => renderUi(<I18nProvider configClient={null} initialLocale="en">{ui}</I18nProvider>)
+const render = (ui: ReactNode) =>
+  renderUi(
+    <I18nProvider configClient={null} initialLocale="en">
+      {ui}
+    </I18nProvider>
+  )
 
 const { registry, activeId, selectConnection, wenjingHost } = vi.hoisted(() => ({
   registry: { value: null as any },

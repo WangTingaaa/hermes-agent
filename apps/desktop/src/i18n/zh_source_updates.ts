@@ -9,23 +9,29 @@ export const zhSourceUpdates = {
   },
   appTour: {
     sessions: {
-      text: '所有对话都在这里，可以搜索、置顶或重新打开。'
+      text: '所有对话都在这里，可以搜索、置顶或重新打开。',
+      title: '你的对话'
     },
     composer: {
-      text: '告诉 Mira 你想完成什么，输入 @ 添加文件。'
+      text: '告诉 Mira 你想完成什么，输入 @ 添加文件。',
+      title: '在这里提问'
     },
     newSession: {
-      text: '每个新会话都有独立上下文，建议每项任务使用一个会话。'
+      text: '每个新会话都有独立上下文，建议每项任务使用一个会话。',
+      title: '新建会话'
     },
     model: {
-      text: '选择为你回答的模型。'
+      text: '选择为你回答的模型。',
+      title: '模型选择'
     },
     modelLocal: '这台计算机可以运行本地模型：设置 → 提供商 → 本地模型。',
     capabilities: {
-      text: '在这里添加 Mira 可以使用的技能、工具和插件。'
+      text: '在这里添加 Mira 可以使用的技能、工具和插件。',
+      title: '能力'
     },
     messaging: {
-      text: '通过 Telegram、Slack、Discord 等平台与 Mira 交流。'
+      text: '通过 Telegram、Slack、Discord 等平台与 Mira 交流。',
+      title: '消息渠道'
     },
     rightPane: {
       title: '工作面板',
@@ -162,7 +168,11 @@ export const zhSourceUpdates = {
   boot: {
     errors: {
       gatewaySignInRequiredDetail: '请重新登录以恢复连接，你的对话和设置不会丢失。',
-      signInAgain: '重新登录'
+      signInAgain: '重新登录',
+      restartHermes: '重启 Mira',
+      openLogs: '打开日志',
+      reconnectNow: '立即重新连接',
+      connectionSettings: '连接设置'
     },
     causes: {
       exitedEarly: 'Mira 的后台服务刚启动就停止了。',
@@ -183,8 +193,18 @@ export const zhSourceUpdates = {
       confirmTitle: '在更新仍占用安装目录时启动 Mira？',
       confirmBody:
         '残留的更新进程可能仍在修改 Mira 文件。现在启动可能加载不完整的安装，需再次更新才能恢复。Mira 会记录此选择并保留更新标记。',
-      startAnywayRefused: 'Mira 启动前，安装目录的占用状态发生了变化，请检查后重试。'
-    }
+      startAnywayRefused: 'Mira 启动前，安装目录的占用状态发生了变化，请检查后重试。',
+      checkAgain: '再次检查',
+      quit: '退出 Mira',
+      openLogs: '打开日志',
+      startAnyway: '仍然启动…',
+      confirmKeepWaiting: '继续等待',
+      confirmStart: '仍然启动',
+      heldByProcess: pid => `更新进程（${pid}）已退出，但它启动的某个进程仍占用 Mira 安装目录。`,
+      since: time => `开始等待：${time}`,
+      lastChecked: time => `上次检查：${time}`
+    },
+    failure: { details: '详细信息' }
   },
   notifications: {
     compressDeferredDone: '上下文压缩已完成',
@@ -192,6 +212,12 @@ export const zhSourceUpdates = {
       storageFailure: 'Mira 无法保存到数据文件夹，请打开“维护”进行检查和修复。',
       rpcOutOfSync: '应用与后端版本不一致，请更新两者。',
       restartHermesFailed: '无法重启 Mira'
+    },
+    actions: {
+      restartHermes: '重启 Mira',
+      openKeys: '打开密钥设置',
+      openGateways: '打开网关设置',
+      openMaintenance: '打开维护'
     }
   },
   keybinds: {
@@ -207,8 +233,13 @@ export const zhSourceUpdates = {
       'view.tabSlot.6': '切换到选项卡 6',
       'view.tabSlot.7': '切换到选项卡 7',
       'view.tabSlot.8': '切换到选项卡 8',
-      'view.tabSlot.9': '切换到选项卡 9'
-    }
+      'view.tabSlot.9': '切换到选项卡 9',
+      'view.newTerminal': '新建终端',
+      'view.nextTerminal': '下一个终端',
+      'view.prevTerminal': '上一个终端',
+      'view.closeTerminal': '关闭终端'
+    },
+    clear: '清除'
   },
   settings: {
     fieldLabels: {
@@ -253,7 +284,64 @@ export const zhSourceUpdates = {
       'auxiliary.compression.timeout': '压缩模型超时（秒）',
       'delegation.maxIterations': '子智能体轮次上限',
       'delegation.reasoningEffort': '子智能体推理强度',
-      'updates.nonInteractiveLocalChanges': '应用内更新时的本地改动处理'
+      'updates.nonInteractiveLocalChanges': '应用内更新时的本地改动处理',
+      'display.showReasoning': '推理内容',
+      'agent.imageInputMode': '图片附件',
+      'agent.apiMaxRetries': 'API 重试次数',
+      'agent.serviceTier': '服务等级',
+      'agent.toolUseEnforcement': '强制使用工具',
+      'terminal.cwd': '工作目录',
+      'terminal.backend': '执行后端',
+      'terminal.timeout': '命令超时',
+      'terminal.persistentShell': '持久 Shell',
+      'terminal.envPassthrough': '环境变量透传',
+      'terminal.dockerImage': 'Docker 镜像',
+      'terminal.singularityImage': 'Singularity 镜像',
+      'terminal.modalImage': 'Modal 镜像',
+      'terminal.daytonaImage': 'Daytona 镜像',
+      'approvals.mode': '批准模式',
+      'approvals.timeout': '批准超时',
+      'security.redactSecrets': '隐藏密钥',
+      'checkpoints.enabled': '文件检查点',
+      'checkpoints.maxSnapshots': '检查点上限',
+      'voice.gptLive.voice': 'GPT-Live 声音',
+      'voice.gptLive.instructions': 'GPT-Live 角色',
+      'stt.echoTranscripts': '回显转录',
+      'stt.provider': '语音转文字提供商',
+      'stt.streaming': '实时转录',
+      'stt.local.language': '转录语言',
+      'stt.elevenlabs.languageCode': 'ElevenLabs 语言',
+      'stt.elevenlabs.diarize': '区分说话人',
+      'tts.provider': '语音合成提供商',
+      'tts.edge.voice': 'Edge 声音',
+      'tts.openai.voice': 'OpenAI 声音',
+      'tts.elevenlabs.voiceId': 'ElevenLabs 声音',
+      'tts.elevenlabs.modelId': 'ElevenLabs 模型',
+      'tts.xai.voiceId': 'xAI（Grok）声音',
+      'tts.xai.language': 'xAI 语言',
+      'tts.minimax.voiceId': 'MiniMax 声音',
+      'tts.mistral.voiceId': 'Mistral 声音',
+      'tts.gemini.voice': 'Gemini 声音',
+      'tts.neutts.model': 'NeuTTS 模型',
+      'tts.neutts.device': 'NeuTTS 设备',
+      'tts.kittentts.model': 'KittenTTS 模型',
+      'tts.kittentts.voice': 'KittenTTS 声音',
+      'tts.piper.voice': 'Piper 声音',
+      'tts.deepinfra.voice': 'DeepInfra 声音',
+      'memory.memoryEnabled': '长期记忆',
+      'memory.userProfileEnabled': '用户信息',
+      'memory.memoryCharLimit': '记忆容量',
+      'memory.userCharLimit': '用户信息容量',
+      'memory.provider': '记忆提供商',
+      'context.engine': '上下文引擎',
+      'compression.threshold': '压缩阈值',
+      'compression.targetRatio': '压缩目标',
+      'delegation.model': '子智能体模型',
+      'delegation.provider': '子智能体提供商',
+      'delegation.maxConcurrentChildren': '并行子智能体数',
+      'delegation.childTimeoutSeconds': '子智能体超时',
+      'display.personality': '个性',
+      'compression.enabled': '自动压缩'
     },
     fieldDescriptions: {
       'display.personality': '新会话使用的默认助手风格。',
@@ -299,21 +387,39 @@ export const zhSourceUpdates = {
       'stt.streaming': '说话时显示文字（OpenAI、xAI、ElevenLabs）；失败时回退到录音转录。',
       'stt.elevenlabs.languageCode': '可选的 ISO-639-3 语言代码，留空由 ElevenLabs 自动检测。',
       'updates.nonInteractiveLocalChanges':
-        'Mira 从应用内更新时，保留本地源码改动（stash）或丢弃（discard）；终端更新始终会询问。'
+        'Mira 从应用内更新时，保留本地源码改动（stash）或丢弃（discard）；终端更新始终会询问。',
+      'tts.xai.speed': '播放速度：0.7 较慢，1.0 正常，1.5 较快。',
+      'tts.xai.optimizeStreamingLatency': '延迟与音质的取舍：0 音质最佳，2 延迟最低。'
     },
     uninstallSection: {
       managedBody: '此安装由系统管理，Mira 无法自行卸载。',
-      openAppsSettings: '打开应用设置'
+      openAppsSettings: '打开应用设置',
+      dataKept: path => `你的配置、对话和密钥保存在 ${path}。移除应用不会删除它们。`
     },
     model: {
-      mainAppliedTitle: '主模型已更新'
+      mainAppliedTitle: '主模型已更新',
+      mainAppliedMessage: model => `新会话将使用 ${model}。`
     },
     toolsets: {
       terminalBackend: {
         unavailableTitle: '终端命令不可用',
         openBackendSettings: '打开终端设置',
-        switchedToLocal: '终端命令现在在本地运行，对新会话生效。'
-      }
+        switchedToLocal: '终端命令现在在本地运行，对新会话生效。',
+        useLocal: '使用本地后端',
+        unavailableMessage: backend =>
+          `Mira 暂时无法执行 Shell 命令：${backend} 尚未就绪。请切换到本地，或完成 ${backend} 的设置后重试。`
+      },
+      nousAuthFailedMessage: '请重试。',
+      nousAuthTryAgain: '重试',
+      postSetupOpenLogs: '打开日志',
+      postSetupRunAgain: '再次运行'
+    },
+    localModels: {
+      downloadEtaSeconds: seconds => `${seconds} 秒`,
+      downloadEtaMinutes: minutes => `${minutes} 分钟`,
+      downloadEtaHours: (hours, minutes) => `${hours} 小时 ${minutes} 分钟`,
+      downloadPauseFailed: model => `无法暂停 ${model} 的下载`,
+      downloadResumeFailed: model => `无法继续下载 ${model}`
     }
   },
   skills: {
@@ -323,27 +429,76 @@ export const zhSourceUpdates = {
         hermes_not_connected: '缺少 MCP 连接',
         no_interactive_session: '没有交互式会话',
         version_too_old: '版本过旧',
-        unsupported_gpu: '不支持此 GPU'
-      }
+        unsupported_gpu: '不支持此 GPU',
+        endpoint_unavailable: '端点不可用',
+        missing_app: '缺少应用',
+        unknown: '状态未知',
+        connected: '已连接'
+      },
+      updateConsentConfirm: '应用更新',
+      settingsForm: {
+        save: '保存设置',
+        secretSet: '••••••••（已设置）',
+        saved: name => `${name} 设置已保存。`,
+        saveFailed: name => `无法保存 ${name} 设置`,
+        secretStoredAs: key => `以 ${key} 保存到此配置档的 .env，不写入 config.yaml；留空则保留现有值。`,
+        required: '必填'
+      },
+      toolsetOn: (name, profile) => `已为 ${profile} 启用 ${name} 智能体工具`,
+      toolsetOff: (name, profile) => `已为 ${profile} 停用 ${name} 智能体工具`,
+      toolsetToggleFailed: name => `无法切换 ${name} 的智能体工具，桌面面板保持原状`,
+      updateConsentTitle: name => `${name} 请求更多权限`,
+      updateConsentBody: (name, sha) =>
+        `${name} 的新目录版本（${sha}）增加了当前版本没有的能力。请仅在信任这些能力时更新：`,
+      settingsToggle: name => `设置：${name}`,
+      halfAgent: '智能体',
+      kindAgent: '智能体'
+    },
+    hub: {
+      viewScan: '查看扫描结果',
+      openLog: '打开日志',
+      installBlockedTitle: name => `无法安装 ${name}`,
+      installBlockedMessage: count =>
+        `安全扫描发现 ${count} 项待检查内容，且技能来自未经验证的来源。请先阅读扫描结果，再决定是否信任作者。`
     }
   },
   messaging: {
-    restartFailedManualDetail: '请再次尝试重启；如果仍失败，请打开日志并发送诊断信息。'
+    restartFailedManualDetail: '请再次尝试重启；如果仍失败，请打开日志并发送诊断信息。',
+    restartAgain: '再次重启',
+    openLogs: '打开日志',
+    fieldCopy: {
+      MATRIX_HOMESERVER: {
+        label: '主服务器 URL'
+      }
+    }
   },
   cron: {
-    lastRunFailed: '上次运行失败：'
+    lastRunFailed: '上次运行失败：',
+    editJob: '编辑任务',
+    runAgain: '再次运行',
+    overdueSince: '逾期开始时间：'
   },
   sidebar: {
     storageCorrupt: {
       title: '会话数据库已损坏',
-      action: '请退出此配置档中的 Mira，然后以只读方式检查文件，或恢复快照：'
+      action: '请退出此配置档中的 Mira，然后以只读方式检查文件，或恢复快照：',
+      guide: '恢复指南',
+      body: profile => `Mira 无法读取 ${profile} 的完整会话历史。列表中缺失的对话并未被删除，而是存储文件已损坏。`
     }
   },
   updates: {
-    openDownloadPage: '打开下载页面'
+    openDownloadPage: '打开下载页面',
+    bundleOutOfSync: '桌面应用版本过旧',
+    connectionSettings: '连接设置',
+    applyStatus: {
+      owed: actions => `后端已更新，但仍有待完成的操作：${actions}。请重新运行 hermes update。`
+    }
   },
   onboarding: {
-    useApiKeyInstead: '改用 API 密钥'
+    useApiKeyInstead: '改用 API 密钥',
+    tryAgain: '重试',
+    signInDidNotFinish: provider => `${provider} 登录未完成。请检查网络后重试，或选择其他提供商。`,
+    errorDetails: '详细信息'
   },
   freeTier: {
     unreachableBody: 'Mira 无法连接 Nous 服务以完成登录，请检查网络后重试。你的会话仍然保留。',
@@ -355,8 +510,13 @@ export const zhSourceUpdates = {
       powRequired: 'Nous 服务器要求工作量证明，但当前 Agent 尚未实现。请登录或创建免费 Nous 账户以继续。',
       locked: '未登录无法继续此会话，请登录或创建免费 Nous 账户。',
       generic: 'Mira 无法启用免登录访问。你可以免费登录，或连接其他提供商。',
-      signInBelow: '登录免费，请在下方选择 Nous。'
-    }
+      signInBelow: '登录免费，请在下方选择 Nous。',
+      tryAgain: '重试',
+      retrying: '正在重试…',
+      rateLimited: wait => `当前开始使用的人较多，Mira 将在 ${wait} 后重试。免费登录可跳过等待。`
+    },
+    busyHeading: '即将完成',
+    busyBody: wait => `Nous 服务繁忙，Mira 暂时无法完成登录。请在 ${wait} 后重试，你的会话仍保留在这里。`
   },
   preview: {
     missingTarget: '此路径在当前计算机上不存在'
@@ -372,7 +532,8 @@ export const zhSourceUpdates = {
       },
       errorCodes: {
         billing: {
-          title: '余额不足'
+          title: '余额不足',
+          body: provider => `你的 ${provider} 账户余额不足，请充值或切换提供商后重新发送。`
         },
         stream_drop: {
           title: '回复中断',
@@ -383,7 +544,9 @@ export const zhSourceUpdates = {
           body: 'Mira 本轮未生成回复，请重试。'
         },
         upstream_blocked: {
-          title: '请求被防火墙阻止'
+          title: '请求被防火墙阻止',
+          body: provider =>
+            `${provider} 前的防火墙或 CDN 拦截了请求，密钥可能正常。请在设置中通过提供商的 extra_headers 配置 User-Agent 请求头，或切换提供商后重试。`
         },
         context_overflow: {
           title: '对话过长',
@@ -394,7 +557,8 @@ export const zhSourceUpdates = {
           body: '请求超出模型限制，请压缩对话或新建会话后重新发送。'
         },
         model_not_found: {
-          title: '此模型不可用'
+          title: '此模型不可用',
+          body: provider => `${provider} 未向你的账户提供此模型，请选择其他模型后重新发送。`
         },
         truncated: {
           title: '回复被截断',
@@ -409,7 +573,8 @@ export const zhSourceUpdates = {
           body: '此对话已在另一个 Mira 窗口或终端中打开。请在那里关闭后重新发送，或在这里新建会话。'
         },
         disk_full: {
-          body: '磁盘空间不足，Mira 无法保存此对话，请释放空间后重试。'
+          body: '磁盘空间不足，Mira 无法保存此对话，请释放空间后重试。',
+          title: '磁盘空间不足'
         },
         free_tier_disabled: {
           title: '免登录使用 Mira 暂时关闭',
@@ -438,6 +603,14 @@ export const zhSourceUpdates = {
         free_tier_refused: {
           title: '未登录时，Mira 无法发送此请求',
           body: '登录 Nous 账户是免费的。'
+        },
+        auth: {
+          title: provider => `${provider} 拒绝了登录`,
+          body: provider => `${provider} 未接受已保存的凭据。请在设置中修正或切换提供商后重新发送。`
+        },
+        auth_permanent: {
+          title: provider => `${provider} 拒绝了登录`,
+          body: provider => `${provider} 的凭据无效或已撤销。请更新凭据或切换提供商后重新发送。`
         }
       },
       errorToastTitle: 'Mira 无法完成回复',
@@ -446,19 +619,79 @@ export const zhSourceUpdates = {
       errorOpenHermesFolder: '打开 Mira 文件夹',
       errorOpenHermesFolderFailed: '无法打开 Mira 文件夹',
       errorUpdateApiKey: '更新 API 密钥',
-      errorSignInFreeTier: '登录 Nous 账户'
+      errorSignInFreeTier: '登录 Nous 账户',
+      responseStopped: '回复已停止',
+      errorCompressConversation: '压缩对话',
+      errorAuthKinds: {
+        api_key: {
+          title: provider => `${provider} 拒绝了 API 密钥`,
+          body: provider => `${provider} 的密钥无效或已撤销，请更新后重试。`
+        },
+        oauth: {
+          title: provider => `你的 ${provider} 登录已过期`
+        }
+      },
+      errorDetails: '详细信息'
     },
     approval: {
       timedOutSystemLine: '批准请求已超时，命令未执行。请让 Mira 重试，或在设置 → 安全 → 批准超时中增加等待时间。',
-      openSafetySettings: '打开安全设置'
+      openSafetySettings: '打开安全设置',
+      commandDetails: '命令详情',
+      reconnect: '重新连接'
     },
     catalogInstall: {
       phase: {
         python_packages: '正在安装 Python 包…',
-        loading_tools: '正在加载工具…'
+        loading_tools: '正在加载工具…',
+        downloading: '正在下载…'
       },
       notEnabled: '已安装，但尚未启用',
-      alreadyInstalled: '已安装，保留现有状态'
+      alreadyInstalled: '已安装，保留现有状态',
+      envVar: name => `${name} 环境变量`,
+      serverNotConnected: (name, reason) => `MCP 服务器 ${name} 未连接${reason ? `：${reason}` : ''}`,
+      missingEnv: key => `请设置 ${key} 以完成配置`
     }
-  }
+  },
+  sendDiagnostics: {
+    links: {
+      github: 'GitHub 问题反馈'
+    }
+  },
+  webhooks: {
+    webhookUrl: 'Webhook 地址'
+  },
+  composer: {
+    hiddenQueued: '设置说明'
+  },
+  install: {
+    openLogs: '打开日志',
+    probeErrorDetails: '详细信息'
+  },
+  shell: {
+    statusbar: {
+      toggleFreeTier: '免费额度',
+      connectionRemoteTooltip: url => `远程 · ${url}`,
+      contextUsagePanel: {
+        tokenSummary: (used, total) => `${used} / ${total} 个 token`
+      }
+    },
+    modelOptions: { ultrafast: '极速' }
+  },
+  desktop: {
+    handoff: {
+      startMessaging: '开始消息交流'
+    }
+  },
+  errors: {
+    sendDiagnostics: '发送诊断信息',
+    boundaryDetails: '详细信息'
+  },
+  profiles: {
+    status: {
+      unread: count => `${count} 个未读会话`,
+      needsInput: count => `${count} 个会话等待你的答复`,
+      working: count => `${count} 个会话正在运行`
+    }
+  },
+  prompts: { reconnect: '重新连接' }
 } satisfies TranslationOverrides
