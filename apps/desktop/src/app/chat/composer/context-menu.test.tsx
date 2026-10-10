@@ -44,6 +44,22 @@ describe('composer Add context menu', () => {
     expect(onUploadCloudFavorite).toHaveBeenCalledOnce()
   })
 
+  it('opens host file generation from the row below prompt snippets', async () => {
+    const onGenerateFile = vi.fn()
+    render(
+      <I18nProvider configClient={null} initialLocale="zh">
+        <ContextMenu onGenerateFile={onGenerateFile} onInsertText={vi.fn()} onOpenUrlDialog={vi.fn()} state={state} />
+      </I18nProvider>
+    )
+    fireEvent.pointerDown(screen.getByLabelText('Add context'), { button: 0, ctrlKey: false })
+    const generateFile = await screen.findByText('生成文件')
+    expect(screen.getByText('提示词片段…').closest('[role="menuitem"]')?.nextElementSibling).toBe(
+      generateFile.closest('[role="menuitem"]')
+    )
+    fireEvent.click(generateFile)
+    expect(onGenerateFile).toHaveBeenCalledOnce()
+  })
+
   it('hides the host-only option when the cloud bridge is unavailable', () => {
     render(
       <I18nProvider configClient={null} initialLocale="en">
@@ -55,5 +71,6 @@ describe('composer Add context menu', () => {
 
     expect(screen.queryByText('引用收藏文件')).toBeNull()
     expect(screen.queryByText('上传收藏文件')).toBeNull()
+    expect(screen.queryByText('Generate file…')).toBeNull()
   })
 })

@@ -3,6 +3,7 @@ import { useCallback, useRef } from 'react'
 import { interceptsTypedVoiceStop } from '@/lib/voice-stop-word'
 
 import { runComposerMiddleware } from '../contrib'
+import { stripFileGenerationTags } from '../file-generation-tag'
 import type { ChatBarProps } from '../types'
 
 interface VoiceStopHandle {
@@ -37,7 +38,7 @@ export function useMiddlewareSubmit(onSubmitProp: ChatBarProps['onSubmit']) {
         return true
       }
 
-      const draft = await runComposerMiddleware({ text: value, attachments: options?.attachments })
+      const draft = await runComposerMiddleware({ text: stripFileGenerationTags(value), attachments: options?.attachments })
 
       if (!draft) {
         return false

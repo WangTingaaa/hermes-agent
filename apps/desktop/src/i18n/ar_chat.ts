@@ -174,6 +174,7 @@ export const arChat = {
     pasteImage: 'لصق صورة',
     url: 'رابط',
     promptSnippets: 'مقتطفات جاهزة',
+    generateFile: 'إنشاء ملف…',
     tipPre: 'نصيحة: اكتب ',
     tipPost: ' للإشارة إلى الملفات ضمن النص.',
     snippetsTitle: 'مقتطفات الموجّهات',

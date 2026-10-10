@@ -360,6 +360,12 @@ declare global {
         saved: boolean
       }>
       saveImageFromUrl: (url: string) => Promise<boolean>
+      previewGatewayFile?: (payload: {
+        connectionId?: null | string
+        path: string
+        profile?: null | string
+        sessionId?: string
+      }) => Promise<{ opened: boolean }>
       /** Edit verb against the window's focused element (the custom context
        *  menu's Cut/Copy/Paste/Select all). */
       contextMenuEdit?: (command: 'copy' | 'cut' | 'paste' | 'selectAll') => Promise<void>
@@ -442,6 +448,9 @@ declare global {
         onChanged: (callback: (appearance: WenjingHostAppearance) => void) => () => void
       }
       /** Available only when Desktop is embedded by MesoInsights/Wenjing. */
+      fileGeneration?: {
+        open: (options: { initialMarkdown: string }) => Promise<string | null>
+      }
       cloudFiles?: {
         pickFavorite: () => Promise<WenjingCloudFile | null>
         pickForUpload: () => Promise<WenjingDownloadedCloudFile | null>

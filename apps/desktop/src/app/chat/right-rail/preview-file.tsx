@@ -52,6 +52,7 @@ import { markPreviewTabMissing, openPreview, type PreviewTarget } from '@/store/
 import { setPreviewDirty } from '@/store/preview-edit'
 import { $connection, $currentCwd } from '@/store/session'
 import { notifyWorkspaceChanged } from '@/store/workspace-events'
+import type { LocalFilePreviewProps } from './type'
 
 const SHIKI_THEME = { dark: 'github-dark-default', light: 'github-light-default' } as const
 const TEXT_PREVIEW_MAX_BYTES = 512 * 1024
@@ -197,7 +198,7 @@ function fileEditScopeKey() {
   return JSON.stringify([desktopFsCacheKey(), getApiRequestConnection()])
 }
 
-function filePathForTarget(target: PreviewTarget) {
+export function filePathForTarget(target: PreviewTarget) {
   if (target.path) {
     return target.path
   }
@@ -745,20 +746,7 @@ export function SourceView({ filePath, language, text }: { filePath?: string; la
 
 export type PreviewViewMode = 'diff' | 'rendered' | 'source'
 
-export function LocalFilePreview({
-  onClose,
-  onSelectRendered,
-  reloadKey,
-  target
-}: {
-  /** Closes the preview's tab; offered when the file can't be shown. */
-  onClose?: () => void
-  /** Present when the pane can render this file live (HTML). Adds the
-   *  `rendered` mode to the switcher and routes its selection to the pane. */
-  onSelectRendered?: () => void
-  reloadKey: number
-  target: PreviewTarget
-}) {
+export function LocalFilePreview({ onClose, onSelectRendered, reloadKey, target }: LocalFilePreviewProps) {
   const { t } = useI18n()
   const [state, setState] = useState<LocalPreviewState>({ loading: true })
   const [forcePreview, setForcePreview] = useState(false)

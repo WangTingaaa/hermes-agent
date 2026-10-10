@@ -20,6 +20,7 @@ import { notify } from '@/store/notifications'
 import { hasBlockingPromptRequest } from '@/store/prompts'
 
 import { cloneAttachments, type QueueEditState } from '../composer-utils'
+import { stripFileGenerationTags } from '../file-generation-tag'
 import { onComposerSubmitRequest } from '../focus'
 import { pathifyRefs } from '../path-refs'
 import { composerPlainText } from '../rich-editor'
@@ -186,7 +187,7 @@ export function useComposerSubmit({
           // the model's next tool result, and keeps its kind if it has to queue.
           if (displayKind) {
             if (current.onSteerHidden) {
-              void Promise.resolve(current.onSteerHidden(text))
+              void Promise.resolve(current.onSteerHidden(stripFileGenerationTags(text)))
                 .then(accepted => {
                   if (!accepted) {
                     enqueue()
@@ -206,7 +207,7 @@ export function useComposerSubmit({
             text.trim() &&
             !SLASH_COMMAND_RE.test(text.trim())
           ) {
-            void Promise.resolve(current.onSteer(text))
+            void Promise.resolve(current.onSteer(stripFileGenerationTags(text)))
               .then(accepted => {
                 if (!accepted) {
                   enqueue()
@@ -432,7 +433,7 @@ export function useComposerSubmit({
       }
     }
 
-    void Promise.resolve(onSteer(frozen.transportText))
+    void Promise.resolve(onSteer(stripFileGenerationTags(frozen.transportText)))
       .then(accepted => {
         if (!accepted) {
           keep()

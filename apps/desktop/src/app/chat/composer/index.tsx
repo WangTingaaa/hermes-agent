@@ -43,7 +43,7 @@ import { $autoSpeakReplies } from '@/store/voice-prefs'
 import { useTheme } from '@/themes'
 
 import { AttachmentList } from './attachments'
-import { cloudFavoriteReference } from './cloud-files'
+import { createCloudFavoritePicker, createCloudFavoriteUploader } from './cloud-files'
 import {
   acceptsTriggerCompletion,
   COMPOSER_FADE_BACKGROUND,
@@ -59,6 +59,7 @@ import { COMPOSER_AREAS } from './contrib'
 import { ComposerControls } from './controls'
 import { ComposerDirectiveActions } from './directive-actions'
 import { COMPOSER_DROP_ACTIVE_CLASS, COMPOSER_DROP_FADE_CLASS } from './drop-affordance'
+import { useFileGeneration } from './file-generation'
 import { markActiveComposer, onComposerAttachImagesRequest } from './focus'
 import { HelpHint } from './help-hint'
 import { useAtCompletions } from './hooks/use-at-completions'
@@ -115,7 +116,6 @@ import {
   selectionLinkLabel
 } from './url-refs'
 import { VoiceActivity, VoicePlaybackActivity } from './voice-activity'
-import { notify } from '@/store/notifications'
 
 export function ChatBar({
   busy,
@@ -329,44 +329,10 @@ export function ChatBar({
     onAddUrl
   })
 
-  const cloudFiles = window.hermesDesktop?.cloudFiles
+  const handleGenerateFile = useFileGeneration({ draftRef, editorRef, insertText, scopeRef: activeQueueSessionKeyRef })
 
-  const pickCloudFavorite = cloudFiles
-    ? async () => {
-        const file = await cloudFiles.pickFavorite()
-
-        if (!file) {
-          return
-        }
-
-        insertText(cloudFavoriteReference(file))
-      }
-    : undefined
-
-  const uploadCloudFavorite =
-    cloudFiles?.pickForUpload && onAttachDroppedItems
-      ? async () => {
-          try {
-            const file = await cloudFiles.pickForUpload()
-
-            if (!file) {
-              return
-            }
-
-            const attached = await onAttachDroppedItems([{ path: file.localPath }])
-
-            if (attached !== false) {
-              notify({ kind: 'success', message: `${file.fileName} 已添加为附件` })
-            }
-          } catch (error) {
-            notify({
-              kind: 'error',
-              title: '云端文件下载失败',
-              message: error instanceof Error ? error.message : '请稍后重试'
-            })
-          }
-        }
-      : undefined
+  const pickCloudFavorite = createCloudFavoritePicker(insertText)
+  const uploadCloudFavorite = createCloudFavoriteUploader(onAttachDroppedItems)
 
   // The queue engine — queued turns, in-place editing, the shared drain lock,
   // and bounded auto-drain. Consumes the draft API and writes `queueEditRef`.
@@ -1135,6 +1101,7 @@ export function ChatBar({
 
   const contextMenu = (
     <ContextMenu
+      onGenerateFile={handleGenerateFile}
       onInsertText={insertText}
       onOpenUrlDialog={openUrlDialog}
       onPasteClipboardImage={onPasteClipboardImage}

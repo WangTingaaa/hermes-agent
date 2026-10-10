@@ -10,6 +10,7 @@ import { esOnboarding } from './es_onboarding'
 import { esProjects } from './es_projects'
 import { esSharedMetrics } from './es_shared_metrics'
 import { introEs } from './intro-es'
+import { esPromptSnippets } from './prompt-snippets'
 
 export const esOverrides = {
   sharedMetrics: esSharedMetrics,
@@ -4032,6 +4033,7 @@ export const esOverrides = {
     pasteImage: 'Pegar imagen',
     url: 'URL…',
     promptSnippets: 'Fragmentos de prompt…',
+    generateFile: 'Generar archivo…',
     tipPre: 'Consejo: escribe ',
     tipPost: ' para referenciar archivos en línea.',
     snippetsTitle: 'Fragmentos de prompt',
@@ -4075,23 +4077,7 @@ export const esOverrides = {
       done: 'Marcado para programar',
       doneTip: 'Envíalo y el agente creará la tarea'
     },
-    snippets: {
-      codeReview: {
-        label: 'Revisión de código',
-        description: 'Audita el cambio actual en busca de regresiones, casos límite omitidos y pruebas faltantes.',
-        text: 'Revisa esto para detectar bugs, regresiones y pruebas faltantes.'
-      },
-      implementationPlan: {
-        label: 'Plan de implementación',
-        description: 'Esboza un enfoque antes de tocar código para mantener el diff enfocado.',
-        text: 'Haz un plan de implementación conciso antes de cambiar código.'
-      },
-      explainThis: {
-        label: 'Explica esto',
-        description: 'Recorre cómo funciona el código seleccionado y enlaza los archivos clave.',
-        text: 'Explica cómo funciona esto y señala los archivos clave.'
-      }
-    }
+    snippets: esPromptSnippets
   },
   statusStack: {
     hideStack: 'Ocultar la pila de estado',

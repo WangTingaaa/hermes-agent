@@ -10,6 +10,7 @@ import { deProjects } from './de_projects'
 import { deSharedMetrics } from './de_shared_metrics'
 import { defineLocale, type TranslationOverrides } from './define-locale'
 import { introDe } from './intro-de'
+import { dePromptSnippets } from './prompt-snippets'
 
 export const deOverrides = {
   sharedMetrics: deSharedMetrics,
@@ -4038,6 +4039,7 @@ export const deOverrides = {
     pasteImage: 'Bild einfügen',
     url: 'URL…',
     promptSnippets: 'Prompt-Schnipsel…',
+    generateFile: 'Datei erstellen…',
     tipPre: 'Tipp: Geben Sie ',
     tipPost: ' ein, um Dateien inline zu referenzieren.',
     snippetsTitle: 'Prompt-Schnipsel',
@@ -4081,23 +4083,7 @@ export const deOverrides = {
       done: 'Für Planung markiert',
       doneTip: 'Senden Sie die Nachricht, und der Agent erstellt den Job'
     },
-    snippets: {
-      codeReview: {
-        label: 'Code-Review',
-        description: 'Prüft die aktuelle Änderung auf Regressionen, übersehene Randfälle und fehlende Tests.',
-        text: 'Bitte prüfe dies auf Bugs, Regressionen und fehlende Tests.'
-      },
-      implementationPlan: {
-        label: 'Implementierungsplan',
-        description: 'Skizziert einen Ansatz, bevor Code angefasst wird, damit der Diff fokussiert bleibt.',
-        text: 'Bitte erstelle einen prägnanten Implementierungsplan, bevor du Code änderst.'
-      },
-      explainThis: {
-        label: 'Erkläre dies',
-        description: 'Erklärt, wie der ausgewählte Code funktioniert, und verlinkt die wichtigsten Dateien.',
-        text: 'Bitte erkläre, wie das funktioniert, und zeige mir die Schlüsseldateien.'
-      }
-    }
+    snippets: dePromptSnippets
   },
   statusStack: {
     hideStack: 'Statusstapel ausblenden',

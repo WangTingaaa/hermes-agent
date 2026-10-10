@@ -933,6 +933,7 @@
     "composer.preparingAudio",
     "composer.previewLabel",
     "composer.previewUnavailable",
+    "composer.generateFile",
     "composer.promptSnippets",
     "composer.queueCollapse",
     "composer.queueDelete",

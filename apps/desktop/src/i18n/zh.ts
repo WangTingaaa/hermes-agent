@@ -1,17 +1,19 @@
 import { mergeTranslations } from '@hermes/shared/i18n'
+
 import { defineFieldCopy } from '@/app/settings/field-copy'
 
 import { defineLocale, type TranslationOverrides } from './define-locale'
 import { introZh } from './intro-zh'
-import { zhConnectorsPage } from './zh_connectors_page'
+import { zhPromptSnippets } from './prompt-snippets'
 import { zhAuxTasks } from './zh_aux_tasks'
+import { zhConnectorsPage } from './zh_connectors_page'
 import { zhLocalModels } from './zh_local_models'
 import { zhModelMenu } from './zh_model_menu'
 import { zhNotices } from './zh_notices'
 import { zhOnboarding } from './zh_onboarding'
 import { zhProjects } from './zh_projects'
-import { zhSourceUpdates } from './zh_source_updates'
 import { zhSharedMetrics } from './zh_shared_metrics'
+import { zhSourceUpdates } from './zh_source_updates'
 
 const zhBaseOverrides = {
   ...zhNotices,
@@ -3453,6 +3455,7 @@ const zhBaseOverrides = {
     pasteImage: '粘贴图片',
     url: 'URL…',
     promptSnippets: '提示词片段…',
+    generateFile: '生成文件',
     tipPre: '提示：输入 ',
     tipPost: ' 以内联引用文件。',
     snippetsTitle: '提示词片段',
@@ -3496,23 +3499,7 @@ const zhBaseOverrides = {
       done: '已标记为定时任务',
       doneTip: '发送后由智能体创建任务'
     },
-    snippets: {
-      codeReview: {
-        label: '代码审查',
-        description: '审查当前更改是否存在回归、遗漏的边界情况和缺失的测试。',
-        text: '请审查这部分是否存在缺陷、回归和缺失的测试。'
-      },
-      implementationPlan: {
-        label: '实现计划',
-        description: '在动代码之前先勾勒方案，让 diff 保持聚焦。',
-        text: '请在修改代码前制定一个简洁的实现计划。'
-      },
-      explainThis: {
-        label: '解释这段',
-        description: '讲解所选代码的工作方式，并链接到关键文件。',
-        text: '请解释这是如何工作的，并指给我关键文件。'
-      }
-    },
+    snippets: zhPromptSnippets,
     introHeadline: '今天想一起完成什么？',
     introBody: '用你自己的话描述任务即可。我会选择合适的工具，说明计划，并在执行高风险步骤前先和你确认。'
   },

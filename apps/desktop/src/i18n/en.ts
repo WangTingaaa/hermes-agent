@@ -12,6 +12,7 @@ import { enOnboarding } from './en_onboarding'
 import { enProjects } from './en_projects'
 import { enSharedMetrics } from './en_shared_metrics'
 import { enUninstallSection } from './en_uninstall_section'
+import { enPromptSnippets } from './prompt-snippets'
 import type { Translations } from './types'
 
 export const en: Translations = {
@@ -3737,6 +3738,7 @@ export const en: Translations = {
     pasteImage: 'Paste image',
     url: 'URL…',
     promptSnippets: 'Prompt snippets…',
+    generateFile: 'Generate file…',
     tipPre: 'Tip: type ',
     tipPost: ' to reference files inline.',
     snippetsTitle: 'Prompt snippets',
@@ -3780,23 +3782,7 @@ export const en: Translations = {
       done: 'Marked for scheduling',
       doneTip: 'Send it and the agent creates the job'
     },
-    snippets: {
-      codeReview: {
-        label: 'Code review',
-        description: 'Audit the current change for regressions, dropped edge cases, and missing tests.',
-        text: 'Please review this for bugs, regressions, and missing tests.'
-      },
-      implementationPlan: {
-        label: 'Implementation plan',
-        description: 'Outline an approach before touching code so the diff stays focused.',
-        text: 'Please make a concise implementation plan before changing code.'
-      },
-      explainThis: {
-        label: 'Explain this',
-        description: 'Walk through how the selected code works and link to the key files.',
-        text: 'Please explain how this works and point me to the key files.'
-      }
-    },
+    snippets: enPromptSnippets,
     introHeadline: 'What are we building today?',
     introBody:
       "Describe the task in your own words. I'll pick the right tools, explain my plan, and check in before risky steps."

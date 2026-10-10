@@ -10,6 +10,7 @@ import { jaOnboarding } from './ja_onboarding'
 import { jaPluginSettings } from './ja_plugins'
 import { jaProjects } from './ja_projects'
 import { jaSharedMetrics } from './ja_shared_metrics'
+import { jaPromptSnippets } from './prompt-snippets'
 
 export const jaOverrides = {
   ...jaNotices,
@@ -2579,29 +2580,14 @@ export const jaOverrides = {
     pasteImage: '画像を貼り付け',
     url: 'URL…',
     promptSnippets: 'プロンプトスニペット…',
+    generateFile: 'ファイルを生成…',
     tipPre: 'ヒント: ',
     tipPost: ' と入力してファイルをインラインで参照。',
     snippetsTitle: 'プロンプトスニペット',
     snippetsDesc: 'スターターのプロンプトをコンポーザーに挿入します。',
     dropFiles: 'ファイルをドロップして添付',
     dropSession: 'ドロップしてこのチャットをリンク',
-    snippets: {
-      codeReview: {
-        label: 'コードレビュー',
-        description: '回帰、エッジケースの欠落、テストの欠如を確認します。',
-        text: 'バグ、回帰、テストの欠如を確認してください。'
-      },
-      implementationPlan: {
-        label: '実装計画',
-        description: 'コードに手をつける前にアプローチを概説して、差分を集中させます。',
-        text: 'コードを変更する前に簡潔な実装計画を立ててください。'
-      },
-      explainThis: {
-        label: 'これを説明する',
-        description: '選択したコードがどのように機能するかを説明し、主要なファイルにリンクします。',
-        text: 'これがどのように機能するか説明し、主要なファイルを教えてください。'
-      }
-    }
+    snippets: jaPromptSnippets
   },
   statusStack: {
     hideStack: 'ステータススタックを隠す',

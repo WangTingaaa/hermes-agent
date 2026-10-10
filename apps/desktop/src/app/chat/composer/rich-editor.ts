@@ -17,6 +17,7 @@ import {
 } from '@/components/assistant-ui/directive-text'
 import { referenceKind, referenceRe, unwrapReferenceValue } from '@/components/assistant-ui/reference-kinds'
 
+import { fileGenerationTagSpans } from './file-generation-tag'
 import { slashCommandMatches, type SlashCommandScanOptions } from './slash-refs'
 
 export const RICH_INPUT_SLOT = 'composer-rich-input'
@@ -198,7 +199,7 @@ function chipSpans(text: string, options: SlashCommandScanOptions) {
     start: match.start
   }))
 
-  return [...refs, ...commands].sort((a, b) => a.start - b.start)
+  return [...refs, ...commands, ...fileGenerationTagSpans(text)].sort((a, b) => a.start - b.start)
 }
 
 /** Build the chip/text DOM for `text`. Directives hydrate back to their pills —

@@ -29,6 +29,7 @@ import { notify } from '@/store/notifications'
 import { $sessionsLoading } from '@/store/session'
 
 import { cloneAttachments, type QueueEditState } from '../composer-utils'
+import { stripFileGenerationTags } from '../file-generation-tag'
 import { useComposerScope } from '../scope'
 import type { ChatBarProps } from '../types'
 
@@ -451,7 +452,7 @@ export function useComposerQueue({
 
       triggerHaptic('submit')
 
-      const accepted = await Promise.resolve(onSteer(resolved.transportText))
+      const accepted = await Promise.resolve(onSteer(stripFileGenerationTags(resolved.transportText)))
 
       // Rejected (turn already settling, gateway said no): leave the entry
       // queued exactly where it was — the settle drain picks it up, so the

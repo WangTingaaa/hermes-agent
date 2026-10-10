@@ -15,28 +15,19 @@ import {
 import { Kbd } from '@/components/ui/kbd'
 import { Tip } from '@/components/ui/tooltip'
 import { useI18n } from '@/i18n'
-import {
-  Clipboard,
-  Cloud,
-  FileText,
-  FolderOpen,
-  type IconComponent,
-  ImageIcon,
-  Link,
-  MessageSquareText,
-  Upload
-} from '@/lib/icons'
+import { Clipboard, Cloud, FileText, FolderOpen, ImageIcon, Link, MessageSquareText, Upload } from '@/lib/icons'
 import { cn } from '@/lib/utils'
 
 import { useComposerAttachmentProviders } from './contrib'
 import { GHOST_ICON_BTN } from './controls'
-import type { ChatBarState } from './types'
+import type { ContextMenuItemProps, ContextMenuProps, PromptSnippetsDialogProps } from './type'
 
 const SNIPPET_KEYS = ['codeReview', 'implementationPlan', 'explainThis']
 
 export function ContextMenu({
   state,
   onInsertText,
+  onGenerateFile,
   onOpenUrlDialog,
   onPasteClipboardImage,
   onPickCloudFavorite,
@@ -55,6 +46,73 @@ export function ContextMenu({
   // `composer.attachments` contributions — plugin/core-registered rows that
   // extend this menu through the same registry as every other surface.
   const attachmentProviders = useComposerAttachmentProviders()
+
+  const renderAttachments = () => (
+    <>
+      <DropdownMenuLabel className="px-2 pb-0.5 pt-0.5 text-[0.625rem] font-semibold uppercase tracking-wider text-(--ui-text-tertiary)">
+        {c.attachLabel}
+      </DropdownMenuLabel>
+      <ContextMenuItem disabled={!onPickFiles} icon={FileText} onSelect={onPickFiles}>
+        {c.files}
+      </ContextMenuItem>
+      <ContextMenuItem disabled={!onPickFolders} icon={FolderOpen} onSelect={onPickFolders}>
+        {c.folder}
+      </ContextMenuItem>
+      <ContextMenuItem disabled={!onPickImages} icon={ImageIcon} onSelect={onPickImages}>
+        {c.images}
+      </ContextMenuItem>
+      <ContextMenuItem
+        disabled={!onPasteClipboardImage}
+        icon={Clipboard}
+        onSelect={onPasteClipboardImage ? () => void onPasteClipboardImage() : undefined}
+      >
+        {c.pasteImage}
+      </ContextMenuItem>
+      {onUploadCloudFavorite ? (
+        <ContextMenuItem icon={Upload} onSelect={() => void onUploadCloudFavorite()}>
+          上传收藏文件
+        </ContextMenuItem>
+      ) : null}
+      {onPickCloudFavorite ? (
+        <ContextMenuItem icon={Cloud} onSelect={() => void onPickCloudFavorite()}>
+          引用收藏文件
+        </ContextMenuItem>
+      ) : null}
+      <ContextMenuItem icon={Link} onSelect={onOpenUrlDialog}>
+        {c.url}
+      </ContextMenuItem>
+    </>
+  )
+
+  const renderActions = () => (
+    <>
+      <DropdownMenuSeparator />
+
+      <ContextMenuItem icon={MessageSquareText} onSelect={() => setSnippetsOpen(true)}>
+        {c.promptSnippets}
+      </ContextMenuItem>
+
+      {onGenerateFile && (
+        <ContextMenuItem icon={FileText} onSelect={() => void onGenerateFile()}>
+          {c.generateFile}
+        </ContextMenuItem>
+      )}
+
+      {attachmentProviders.length > 0 && <DropdownMenuSeparator />}
+      {attachmentProviders.map(provider => (
+        <DropdownMenuItem
+          className="text-[length:var(--conversation-tool-font-size)] focus:bg-(--ui-bg-tertiary)"
+          key={provider.key}
+          onSelect={() => void provider.run({ insertText: onInsertText })}
+        >
+          <Codicon name={provider.icon ?? 'plug'} size="0.875rem" />
+          <span>{provider.label}</span>
+        </DropdownMenuItem>
+      ))}
+
+      <DropdownMenuSeparator />
+    </>
+  )
 
   return (
     <>
@@ -76,59 +134,14 @@ export function ContextMenu({
             </Button>
           </DropdownMenuTrigger>
         </Tip>
-        <DropdownMenuContent align="start" className={cn('w-60', composerPanelCard)} side="top" sideOffset={6}>
-          <DropdownMenuLabel className="px-2 pb-0.5 pt-0.5 text-[0.625rem] font-semibold uppercase tracking-wider text-(--ui-text-tertiary)">
-            {c.attachLabel}
-          </DropdownMenuLabel>
-          <ContextMenuItem disabled={!onPickFiles} icon={FileText} onSelect={onPickFiles}>
-            {c.files}
-          </ContextMenuItem>
-          <ContextMenuItem disabled={!onPickFolders} icon={FolderOpen} onSelect={onPickFolders}>
-            {c.folder}
-          </ContextMenuItem>
-          <ContextMenuItem disabled={!onPickImages} icon={ImageIcon} onSelect={onPickImages}>
-            {c.images}
-          </ContextMenuItem>
-          <ContextMenuItem
-            disabled={!onPasteClipboardImage}
-            icon={Clipboard}
-            onSelect={onPasteClipboardImage ? () => void onPasteClipboardImage() : undefined}
-          >
-            {c.pasteImage}
-          </ContextMenuItem>
-          {onUploadCloudFavorite ? (
-            <ContextMenuItem icon={Upload} onSelect={() => void onUploadCloudFavorite()}>
-              上传收藏文件
-            </ContextMenuItem>
-          ) : null}
-          {onPickCloudFavorite ? (
-            <ContextMenuItem icon={Cloud} onSelect={() => void onPickCloudFavorite()}>
-              引用收藏文件
-            </ContextMenuItem>
-          ) : null}
-          <ContextMenuItem icon={Link} onSelect={onOpenUrlDialog}>
-            {c.url}
-          </ContextMenuItem>
-
-          <DropdownMenuSeparator />
-
-          <ContextMenuItem icon={MessageSquareText} onSelect={() => setSnippetsOpen(true)}>
-            {c.promptSnippets}
-          </ContextMenuItem>
-
-          {attachmentProviders.length > 0 && <DropdownMenuSeparator />}
-          {attachmentProviders.map(provider => (
-            <DropdownMenuItem
-              className="text-[length:var(--conversation-tool-font-size)] focus:bg-(--ui-bg-tertiary)"
-              key={provider.key}
-              onSelect={() => void provider.run({ insertText: onInsertText })}
-            >
-              <Codicon name={provider.icon ?? 'plug'} size="0.875rem" />
-              <span>{provider.label}</span>
-            </DropdownMenuItem>
-          ))}
-
-          <DropdownMenuSeparator />
+        <DropdownMenuContent
+          align="start"
+          className={cn('max-h-[70vh] w-60 overflow-y-auto', composerPanelCard)}
+          side="top"
+          sideOffset={6}
+        >
+          {renderAttachments()}
+          {renderActions()}
 
           <div className="px-2 py-1 text-[0.7rem] text-muted-foreground/80">
             {c.tipPre}
@@ -197,29 +210,4 @@ export function ContextMenuItem({ children, disabled, icon: Icon, onSelect }: Co
       <span>{children}</span>
     </DropdownMenuItem>
   )
-}
-
-interface ContextMenuItemProps {
-  children: string
-  disabled?: boolean
-  icon: IconComponent
-  onSelect?: () => void
-}
-
-interface ContextMenuProps {
-  onInsertText: (text: string) => void
-  onOpenUrlDialog: () => void
-  onPasteClipboardImage?: (opts?: { silent?: boolean }) => Promise<boolean> | void
-  onPickCloudFavorite?: () => Promise<void> | void
-  onUploadCloudFavorite?: () => Promise<void> | void
-  onPickFiles?: () => void
-  onPickFolders?: () => void
-  onPickImages?: () => void
-  state: ChatBarState
-}
-
-interface PromptSnippetsDialogProps {
-  onInsertText: (text: string) => void
-  onOpenChange: (open: boolean) => void
-  open: boolean
 }

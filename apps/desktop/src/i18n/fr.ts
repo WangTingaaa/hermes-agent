@@ -10,6 +10,7 @@ import { frOnboarding } from './fr_onboarding'
 import { frProjects } from './fr_projects'
 import { frSharedMetrics } from './fr_shared_metrics'
 import { introFr } from './intro-fr'
+import { frPromptSnippets } from './prompt-snippets'
 
 export const frOverrides = {
   sharedMetrics: frSharedMetrics,
@@ -4049,6 +4050,7 @@ export const frOverrides = {
     pasteImage: 'Coller une image',
     url: 'URL…',
     promptSnippets: "Extraits d'invite…",
+    generateFile: 'Générer un fichier…',
     tipPre: 'Conseil : tapez ',
     tipPost: ' pour référencer des fichiers en ligne.',
     snippetsTitle: "Extraits d'invite",
@@ -4092,24 +4094,7 @@ export const frOverrides = {
       done: 'Marqué pour planification',
       doneTip: "Envoyez-le pour que l'agent crée la tâche"
     },
-    snippets: {
-      codeReview: {
-        label: 'Revue de code',
-        description:
-          'Audit des modifications actuelles à la recherche de régressions, de cas limites oubliés et de tests manquants.',
-        text: 'Veuillez examiner cela à la recherche de bugs, de régressions et de tests manquants.'
-      },
-      implementationPlan: {
-        label: "Plan d'implémentation",
-        description: 'Élaborez une approche avant de toucher au code pour que la différence reste ciblée.',
-        text: "Veuillez élaborer un plan d'implémentation concis avant de modifier le code."
-      },
-      explainThis: {
-        label: 'Expliquez ceci',
-        description: 'Parcourez comment le code sélectionné fonctionne et liez les fichiers clés.',
-        text: 'Veuillez expliquer comment cela fonctionne et pointez-moi vers les fichiers clés.'
-      }
-    }
+    snippets: frPromptSnippets
   },
   statusStack: {
     hideStack: 'Masquer la pile d’état',

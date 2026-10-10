@@ -474,6 +474,11 @@ def _model_names_provider(model_cfg: dict[str, Any], provider_key: str, entry: O
         str(entry.get("name") or "") if isinstance(entry, dict) else "", provider_key
     )
     current = str(model_cfg.get("provider") or "").strip().lower()
+    if current == "custom" and isinstance(entry, dict):
+        # Older model switches used the bare provider name and only the URL
+        # identifies which saved endpoint owns the main-slot mirror.
+        endpoint_url = str(entry.get("base_url") or entry.get("url") or entry.get("api") or "").strip().rstrip("/")
+        return bool(endpoint_url and str(model_cfg.get("base_url") or "").strip().rstrip("/") == endpoint_url)
     return current.removeprefix("custom:") in names
 
 
@@ -844,7 +849,8 @@ def delete_custom_endpoint(endpoint_id: str, profile: Optional[str] = None):
             else:
                 # A legacy ``custom_providers:`` row is addressed by its slug.
                 provider_key = _custom_endpoint_id(endpoint_id)
-                if _pop_legacy_custom_provider(cfg, provider_key) is None:
+                entry = _pop_legacy_custom_provider(cfg, provider_key)
+                if entry is None:
                     raise HTTPException(status_code=404, detail="custom endpoint not found")
             _detach_main_model_from_provider(cfg, provider_key, entry)
             remove_env_value(custom_endpoint_key_env(provider_key))

@@ -1,6 +1,7 @@
 import { defineFieldCopy } from '@/app/settings/field-copy'
 
 import { defineLocale, type TranslationOverrides } from './define-locale'
+import { ruPromptSnippets } from './prompt-snippets'
 import { ruAuxTasks } from './ru_aux_tasks'
 import { ruModelMenu } from './ru_model_menu'
 import { ruNotices } from './ru_notices'
@@ -2779,6 +2780,7 @@ export const ruOverrides = {
     pasteImage: 'Вставить изображение',
     url: 'URL…',
     promptSnippets: 'Фрагменты промптов…',
+    generateFile: 'Создать файл…',
     tipPre: 'Подсказка: введите ',
     tipPost: ' чтобы ссылаться на файлы inline.',
     snippetsTitle: 'Фрагменты промптов',
@@ -2822,23 +2824,7 @@ export const ruOverrides = {
       done: 'Отмечено для планирования',
       doneTip: 'Отправьте, и агент создаст задачу'
     },
-    snippets: {
-      codeReview: {
-        label: 'Рецензия кода',
-        description: 'Аудит текущих изменений на предмет регрессий, упущенных граничных случаев и недостающих тестов.',
-        text: 'Пожалуйста, проверьте это на баги, регрессии и недостающие тесты.'
-      },
-      implementationPlan: {
-        label: 'План реализации',
-        description: 'Опишите подход перед правкой кода, чтобы diff остался сфокусированным.',
-        text: 'Пожалуйста, составьте краткий план реализации перед изменением кода.'
-      },
-      explainThis: {
-        label: 'Объяснить это',
-        description: 'Разберите, как работает выделенный код, и дайте ссылки на ключевые файлы.',
-        text: 'Пожалуйста, объясните, как это работает, и укажите ключевые файлы.'
-      }
-    }
+    snippets: ruPromptSnippets
   },
   statusStack: {
     hideStack: 'Скрыть панель состояния',

@@ -195,6 +195,7 @@ export const zhHantChat = {
     pasteImage: '貼上圖片',
     url: 'URL…',
     promptSnippets: '提示詞片段…',
+    generateFile: '產生檔案',
     tipPre: '提示：輸入 ',
     tipPost: ' 以行內參照檔案。',
     snippetsTitle: '提示詞片段',
