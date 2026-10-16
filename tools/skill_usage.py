@@ -193,7 +193,7 @@ def read_official_optional_skill_names() -> set[str]:
     """
     lock_path = _skills_dir() / ".hub" / "lock.json"
     try:
-        data = json.loads(lock_path.read_text(encoding="utf-8"))
+        data = json.loads(lock_path.read_text(encoding="utf-8-sig"))
         installed = data.get("installed", {}) if isinstance(data, dict) else {}
         if not isinstance(installed, dict):
             return set()

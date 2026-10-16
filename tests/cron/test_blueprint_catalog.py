@@ -9,6 +9,7 @@ cron job store.
 import importlib
 import json
 from pathlib import Path
+from unittest.mock import Mock
 
 import pytest
 
@@ -24,6 +25,17 @@ import itertools
 
 
 class TestCatalog:
+
+    def test_morning_brief_runs_without_google_credentials(self, monkeypatch):
+        from cron.scheduler_preflight import _preflight_check_skills
+
+        skill_view = Mock(return_value=json.dumps({"success": True, "setup_needed": True,
+                                                  "missing_credential_files": ["google_token.json"]}))
+        monkeypatch.setattr("tools.skills_tool.skill_view", skill_view)
+        spec = fill_blueprint(get_blueprint("morning-brief"), {"deliver": "local"})
+        assert _preflight_check_skills(spec) is None
+        assert not spec.get("skills")
+        skill_view.assert_not_called()
 
 
     def test_bad_slot_type_rejected(self):

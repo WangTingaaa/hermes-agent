@@ -520,8 +520,10 @@ class TestTranscribeLocalExtended:
             result = _transcribe_local(str(audio), "base")
 
         assert result["success"] is True
+        from tools.transcription_local import _should_force_faster_whisper_cpu
+        expected_compute = "int8" if _should_force_faster_whisper_cpu() else "float32"
         mock_whisper_cls.assert_called_once_with(
-            "base", local_files_only=True, device="cpu", compute_type="float32"
+            "base", local_files_only=True, device="cpu", compute_type=expected_compute
         )
 
 
@@ -689,14 +691,16 @@ class TestTranscribeAudioDispatch:
         mock_local.assert_called_once()
 
 
-    def test_no_provider_returns_error(self, sample_ogg):
+    def test_missing_local_provider_reports_setup_failure(self, sample_ogg):
         with patch("tools.transcription_tools._load_stt_config", return_value={}), \
-             patch("tools.transcription_tools._get_provider", return_value="none"):
+             patch("tools.transcription_tools._get_provider", return_value="none"), \
+             patch("tools.transcription_tools._HAS_FASTER_WHISPER", False), \
+             patch("tools.transcription_tools._try_lazy_install_stt", return_value=False):
             from tools.transcription_tools import transcribe_audio
             result = transcribe_audio(sample_ogg)
 
         assert result["success"] is False
-        assert "No STT provider" in result["error"]
+        assert "hermes pm install stt-whisper" in result["error"]
 
 
     def test_silk_symlink_is_rejected_before_preprocessing(self, tmp_path):

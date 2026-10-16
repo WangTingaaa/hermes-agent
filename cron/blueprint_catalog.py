@@ -122,7 +122,8 @@ CATALOG: list[AutomationBlueprint] = [
             "good-morning with the date and offer to connect calendar/email."
         ),
         slots=[_TIME("08:00"), _DELIVER],
-        skills=("google-workspace",),
+        # Google is optional: attaching the skill would make preflight require
+        # OAuth credentials even for the prompt's no-connected-sources fallback.
         tags=("daily", "briefing"),
     ),
     AutomationBlueprint(

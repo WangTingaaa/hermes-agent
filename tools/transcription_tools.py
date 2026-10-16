@@ -370,7 +370,10 @@ def _transcribe_local(
 ) -> dict[str, Any]:
     """Transcribe using faster-whisper (local, free)."""
     if not _HAS_FASTER_WHISPER and not _try_lazy_install_stt():
-        return _error_result("faster-whisper not installed")
+        return _error_result(
+            "faster-whisper not installed. Enable Local Whisper under Tools > Speech-to-Text "
+            "or run `hermes pm install stt-whisper`, then restart Hermes."
+        )
     try:
         stt_config = _load_stt_config()
         local_cfg = stt_config.get("local") or {}
@@ -444,6 +447,10 @@ def _transcribe_prepared_audio(
     if not is_stt_enabled(stt_config):
         return _error_result("STT is disabled in config.yaml (stt.enabled: false).")
     provider = _get_provider(stt_config)
+    # Passive status checks must never install dependencies. A validated,
+    # explicit transcription request can reach the local handler's PM setup.
+    if provider == "none" and stt_config.get("provider", DEFAULT_PROVIDER) in (None, "local"):
+        provider = "local"
     remote = not _is_local_stt_provider(provider, stt_config)
     with ExitStack() as cleanup:
         # Never overwrite a neighboring WAV or leave converted voice notes behind.

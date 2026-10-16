@@ -190,6 +190,14 @@ def _create_whisper_model(model_name: str, *, device: str, compute_type: str):
     try:
         return WhisperModel(model_name, local_files_only=False, **kwargs)
     except OSError as exc:
+        endpoint = os.environ.get("HF_ENDPOINT", "").rstrip("/")
+        if endpoint and endpoint != "https://huggingface.co":
+            from tools.transcription_model_download import download_mirror_model
+            try:
+                model_path = download_mirror_model(model_name)
+                return WhisperModel(model_path, local_files_only=True, **kwargs)
+            except (OSError, ValueError) as mirror_error:
+                logger.warning("Verified Whisper mirror download failed: %s", mirror_error)
         raise RuntimeError(
             f"Unable to download faster-whisper model '{model_name}': {exc}. "
             "If huggingface.co is unreachable, set HF_ENDPOINT to an accessible mirror; "
