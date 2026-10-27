@@ -69,7 +69,7 @@ export const zhHantOverrides = {
     retry: '再試一次',
     more: '顯示更多',
     pinned: '已審核的提交',
-    snapshotHint: '內容來自 Hermes 目錄。瀏覽時不會連線至來源程式碼儲存庫。',
+    snapshotHint: '內容來自 Mira 目錄。瀏覽時不會連線至來源程式碼儲存庫。',
     installHint: '安裝前請檢查原始碼。變更將於新的工作階段生效。',
     results: (count: number) => `${count.toLocaleString('zh-Hant')} 個結果`,
     back: '返回結果'

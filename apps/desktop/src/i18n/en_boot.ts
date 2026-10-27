@@ -49,7 +49,7 @@ export const enBoot = {
       remoteTitle: 'Remote gateway sign-in required',
       remoteDescription:
         'Your remote gateway session has expired. Sign in again to reconnect. Nothing here deletes your chats or settings.',
-      webappTitle: 'Sign in to Hermes',
+      webappTitle: 'Sign in to Mira',
       webappDescription: 'Run hermes webapp on this computer to sign this browser in.',
       retry: 'Retry',
       repairInstall: 'Repair install',

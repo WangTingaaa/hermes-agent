@@ -1837,9 +1837,8 @@ export const deOverrides = {
       sshErrInteractiveAuth:
         'Tailscale SSH erfordert eine interaktive Browser-Prüfung. Führen Sie im Terminal `ssh <host> true` aus, schließen Sie die Prüfung ab und versuchen Sie es erneut – Mira führt SSH nicht interaktiv aus.',
       sshErrUnknown: 'SSH-Verbindung fehlgeschlagen.',
-unavailableTitle: 'Gateway-Einstellungen nicht verfügbar',
-unavailableDesc: 'Die Desktop-IPC-Brücke stellt keine Gateway-Einstellungen bereit.',
-
+      unavailableTitle: 'Gateway-Einstellungen nicht verfügbar',
+      unavailableDesc: 'Die Desktop-IPC-Brücke stellt keine Gateway-Einstellungen bereit.'
     },
     keys: {
       loading: 'API-Schlüssel und Anmeldedaten werden geladen…',
@@ -2006,7 +2005,7 @@ unavailableDesc: 'Die Desktop-IPC-Brücke stellt keine Gateway-Einstellungen ber
       keepGoingOnCredits: {
         title: 'Mit Credits weitermachen',
         description:
-          'Nutzt Ihre Credits, wenn die enthaltene Nutzung aufgebraucht ist. Aus: Hermes wartet auf das Zurücksetzen.',
+          'Nutzt Ihre Credits, wenn die enthaltene Nutzung aufgebraucht ist. Aus: Mira wartet auf das Zurücksetzen.',
         approveInBrowser:
           'Bestätige Remote Spending im Browser, um das zu ändern. Es wird übernommen, sobald du bestätigst.',
         openAgain: 'Erneut öffnen',
@@ -2530,15 +2529,14 @@ unavailableDesc: 'Die Desktop-IPC-Brücke stellt keine Gateway-Einstellungen ber
         secretStoredAs: (env: string) =>
           `Wird in der .env des Profils als ${env} gespeichert, nie in config.yaml; leer lassen, um den aktuellen Wert zu behalten.`
       },
-updateToPin: sha => `Auf ${sha} aktualisieren`,
-updateFailed: name => `${name} konnte nicht aktualisiert werden`,
-updated: name =>
+      updateToPin: sha => `Auf ${sha} aktualisieren`,
+      updateFailed: name => `${name} konnte nicht aktualisiert werden`,
+      updated: name =>
         `${name} wurde auf den aktuellen Katalog-Pin aktualisiert. Starten Sie das Gateway neu, damit es wirksam wird.`,
-updateConsentTitle: (name: string) => `${name} fordert mehr an`,
-updateConsentBody: (name: string, sha: string) =>
+      updateConsentTitle: (name: string) => `${name} fordert mehr an`,
+      updateConsentBody: (name: string, sha: string) =>
         `Der neue Katalog-Pin von ${name} (${sha}) fügt Oberflächen hinzu, die die installierte Version nicht hat. Wenden Sie ihn nur an, wenn Sie ihnen vertrauen:`,
-updateConsentConfirm: 'Update anwenden',
-
+      updateConsentConfirm: 'Update anwenden'
     },
     officialCatalog: 'Verfügbar zum Installieren',
     officialPill: 'Offiziell',
@@ -3218,7 +3216,7 @@ updateConsentConfirm: 'Update anwenden',
     failedImport: 'Profil konnte nicht importiert werden',
     failedExport: 'Profil konnte nicht exportiert werden',
     exportNeedsHost: name =>
-      `Der Browser kann kein Profilarchiv speichern. Führe auf dem Hermes-Host aus: hermes profile export ${name}`,
+      `Der Browser kann kein Profilarchiv speichern. Führe auf dem Mira-Host aus: hermes profile export ${name}`,
     allProfiles: 'Alle Profile',
     showAllProfiles: 'Alle Profile anzeigen',
     notServedHere: 'Hier nicht bereitgestellt',
@@ -5059,32 +5057,35 @@ updateConsentConfirm: 'Update anwenden',
       goForward: 'Vorwärts',
       sendEdited: 'Bearbeitete Nachricht senden',
       attachingFile: 'Hängt an…',
-errorLayers: {auth: 'Authentifizierungsfehler',
-billing: 'Keine Credits mehr',
-disk: 'Festplatte voll',
-endpoint: 'Benutzerdefinierter Endpunktfehler',
-gateway: 'Gateway-Fehler',
-generic: 'Turn fehlgeschlagen',
-provider: 'Anbieterfehler',
-runtime: 'Lokaler Laufzeitfehler',
-streaming: 'Streaming-Verbindungsfehler'},
-errorLayerBodies: {auth: 'Der KI-Dienst hat Ihre Anmeldung abgelehnt. Prüfen Sie die Zugangsdaten für diesen Anbieter und senden Sie Ihre Nachricht erneut.',
-billing:
+      errorLayers: {
+        auth: 'Authentifizierungsfehler',
+        billing: 'Keine Credits mehr',
+        disk: 'Festplatte voll',
+        endpoint: 'Benutzerdefinierter Endpunktfehler',
+        gateway: 'Gateway-Fehler',
+        generic: 'Turn fehlgeschlagen',
+        provider: 'Anbieterfehler',
+        runtime: 'Lokaler Laufzeitfehler',
+        streaming: 'Streaming-Verbindungsfehler'
+      },
+      errorLayerBodies: {
+        auth: 'Der KI-Dienst hat Ihre Anmeldung abgelehnt. Prüfen Sie die Zugangsdaten für diesen Anbieter und senden Sie Ihre Nachricht erneut.',
+        billing:
           'Ihr Konto hat bei diesem Anbieter kein Guthaben mehr. Laden Sie Guthaben auf oder wechseln Sie den Anbieter und senden Sie erneut.',
-disk: 'Ihre Festplatte ist voll, daher konnte Mira dieses Gespräch nicht speichern. Geben Sie Speicherplatz frei und versuchen Sie es erneut.',
-endpoint:
+        disk: 'Ihre Festplatte ist voll, daher konnte Mira dieses Gespräch nicht speichern. Geben Sie Speicherplatz frei und versuchen Sie es erneut.',
+        endpoint:
           'Mira erreicht Ihren eigenen Modellserver nicht. Prüfen Sie, ob er läuft, und senden Sie Ihre Nachricht erneut.',
-gateway:
+        gateway:
           'Beim Starten dieser Antwort ist in Mira ein internes Problem aufgetreten. Senden Sie Ihre Nachricht erneut; wenn es bestehen bleibt, senden Sie Diagnosedaten.',
-generic:
+        generic:
           'Beim Antworten ist etwas schiefgelaufen. Versuchen Sie es erneut oder kopieren Sie die Details, wenn es bestehen bleibt.',
-provider:
+        provider:
           'Der KI-Dienst konnte diese Anfrage nicht abschließen. Versuchen Sie es gleich erneut oder wechseln Sie den Anbieter.',
-runtime:
+        runtime:
           'Beim Starten dieser Antwort ist in Mira ein internes Problem aufgetreten. Senden Sie Ihre Nachricht erneut; wenn es bestehen bleibt, senden Sie Diagnosedaten.',
-streaming:
-          'Die Verbindung ist abgebrochen, bevor die Antwort fertig war. Versuchen Sie es erneut, um sie noch einmal zu senden.'},
-
+        streaming:
+          'Die Verbindung ist abgebrochen, bevor die Antwort fertig war. Versuchen Sie es erneut, um sie noch einmal zu senden.'
+      }
     },
     approval: {
       gatewayDisconnected: 'Mira-Gateway ist nicht verbunden',
@@ -5553,13 +5554,14 @@ streaming:
       toggle: open => `${open ? 'Anzeigen' : 'Ausblenden'}: Sidebar`
     }
   },
-billingBlock: {titleNous: 'Keine Nous-Credits mehr',
-titleProvider: provider => `Keine Credits mehr — ${provider}`,
-fallbackMessage: 'Auf Ihrem Konto sind keine Credits mehr übrig. Fügen Sie Credits hinzu, um fortzufahren.',
-openBilling: 'Billing öffnen',
-addCredits: 'Credits hinzufügen',
-dismiss: 'Schließen'},
-
+  billingBlock: {
+    titleNous: 'Keine Nous-Credits mehr',
+    titleProvider: provider => `Keine Credits mehr — ${provider}`,
+    fallbackMessage: 'Auf Ihrem Konto sind keine Credits mehr übrig. Fügen Sie Credits hinzu, um fortzufahren.',
+    openBilling: 'Billing öffnen',
+    addCredits: 'Credits hinzufügen',
+    dismiss: 'Schließen'
+  }
 } satisfies TranslationOverrides
 
 export const de = defineLocale(deOverrides)

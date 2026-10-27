@@ -665,10 +665,10 @@ function GroupExecutionGate(props: GroupChatWorkspaceProps) {
   const canCreate = mode === 'canonical' && lookupStatus === 'missing' && canonicalGroupKeyRoute(props.group, props.origin ?? 'name') === null
 
   const message = mode !== 'canonical'
-    ? mode === 'unavailable' ? b.canonical.driverUnavailable : 'Checking group driver…'
+    ? mode === 'unavailable' ? b.canonical.driverUnavailable : b.canonical.checkingDriver
     : lookupStatus === 'pending' ? t.gatewayGroupOpen.opening
       : lookupStatus === 'failed' ? t.gatewayGroupOpen.lookupFailed
-        : canCreate ? 'This is a legacy Desktop room. Start a gateway-owned group with these members; the old history stays here and is not replayed.'
+        : canCreate ? b.canonical.legacyRoom
           : t.gatewayGroupOpen.missing
 
   return <div className="grid gap-3 p-3">
@@ -694,7 +694,7 @@ function GroupExecutionGate(props: GroupChatWorkspaceProps) {
           if (sourceCurrent()) {openGroupChat(registerCanonicalGroup(route, room), 'key')}
         })
         .catch(e => { if (sourceCurrent()) {setError(String(e))} }).finally(() => setBusy(false))
-    }}>Start gateway group</Button>
+    }}>{b.canonical.startGatewayGroup}</Button>
   </div>
 }
 

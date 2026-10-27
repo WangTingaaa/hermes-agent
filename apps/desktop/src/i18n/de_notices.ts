@@ -31,9 +31,9 @@ export const deNotices = {
     desktopCommands: deDesktopCommands
   },
   keepAwakeOffer: {
-    title: 'Ihr Computer ist eingeschlafen, während Hermes gearbeitet hat',
+    title: 'Ihr Computer ist eingeschlafen, während Mira gearbeitet hat',
     message:
-      'Hermes kann den Computer wach halten, solange eine Aufgabe läuft. Der Bildschirm schaltet sich weiterhin aus, und im Akkubetrieb kann der Computer trotzdem einschlafen.',
+      'Mira kann den Computer wach halten, solange eine Aufgabe läuft. Der Bildschirm schaltet sich weiterhin aus, und im Akkubetrieb kann der Computer trotzdem einschlafen.',
     action: 'Während der Arbeit wach halten'
   },
   billingBlock: {

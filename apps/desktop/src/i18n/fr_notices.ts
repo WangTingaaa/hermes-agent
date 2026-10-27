@@ -31,9 +31,9 @@ export const frNotices = {
     desktopCommands: frDesktopCommands
   },
   keepAwakeOffer: {
-    title: 'Votre ordinateur s’est mis en veille pendant que Hermes travaillait',
+    title: 'Votre ordinateur s’est mis en veille pendant que Mira travaillait',
     message:
-      'Hermes peut empêcher la mise en veille pendant qu’une tâche s’exécute. L’écran s’éteint toujours, et sur batterie l’ordinateur peut quand même se mettre en veille.',
+      'Mira peut empêcher la mise en veille pendant qu’une tâche s’exécute. L’écran s’éteint toujours, et sur batterie l’ordinateur peut quand même se mettre en veille.',
     action: 'Empêcher la veille pendant le travail'
   },
   billingBlock: {

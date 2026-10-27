@@ -1844,9 +1844,8 @@ export const frOverrides = {
       sshErrInteractiveAuth:
         'Tailscale SSH exige une vérification interactive dans le navigateur. Exécutez `ssh <host> true` dans le terminal, terminez la vérification, puis réessayez — Mira exécute SSH de façon non interactive.',
       sshErrUnknown: 'Échec de la connexion SSH.',
-unavailableTitle: 'Paramètres du gateway indisponibles',
-unavailableDesc: "Le pont IPC du desktop n'expose pas les paramètres du gateway.",
-
+      unavailableTitle: 'Paramètres du gateway indisponibles',
+      unavailableDesc: "Le pont IPC du desktop n'expose pas les paramètres du gateway."
     },
     keys: {
       loading: 'Chargement des clés API et des identifiants...',
@@ -2011,7 +2010,7 @@ unavailableDesc: "Le pont IPC du desktop n'expose pas les paramètres du gateway
       keepGoingOnCredits: {
         title: 'Continuer avec les crédits',
         description:
-          'Utilise vos crédits quand l’usage inclus est épuisé. Désactivé : Hermes attend la réinitialisation.',
+          'Utilise vos crédits quand l’usage inclus est épuisé. Désactivé : Mira attend la réinitialisation.',
         approveInBrowser:
           "Approuvez Remote Spending dans votre navigateur pour modifier ce réglage. Il s'applique dès votre approbation.",
         openAgain: 'Rouvrir',
@@ -2537,15 +2536,14 @@ unavailableDesc: "Le pont IPC du desktop n'expose pas les paramètres du gateway
         secretStoredAs: (env: string) =>
           `Stocké dans le .env du profil sous ${env}, jamais dans config.yaml ; laissez vide pour conserver la valeur actuelle.`
       },
-updateToPin: (sha: string) => `Mettre à jour vers ${sha}`,
-updateFailed: (name: string) => `Impossible de mettre à jour ${name}`,
-updated: (name: string) =>
+      updateToPin: (sha: string) => `Mettre à jour vers ${sha}`,
+      updateFailed: (name: string) => `Impossible de mettre à jour ${name}`,
+      updated: (name: string) =>
         `${name} mis à jour vers l’épinglage actuel du catalogue. Redémarrez le gateway pour l’appliquer.`,
-updateConsentTitle: (name: string) => `${name} demande davantage`,
-updateConsentBody: (name: string, sha: string) =>
+      updateConsentTitle: (name: string) => `${name} demande davantage`,
+      updateConsentBody: (name: string, sha: string) =>
         `Le nouvel épinglage de ${name} dans le catalogue (${sha}) ajoute des surfaces que la version installée n’a pas. Appliquez-le uniquement si vous leur faites confiance :`,
-updateConsentConfirm: 'Appliquer la mise à jour',
-
+      updateConsentConfirm: 'Appliquer la mise à jour'
     },
     officialCatalog: "Disponibles à l'installation",
     officialPill: 'Officiel',
@@ -3223,7 +3221,7 @@ updateConsentConfirm: 'Appliquer la mise à jour',
     failedImport: "Échec de l'importation du profil",
     failedExport: "Échec de l'exportation du profil",
     exportNeedsHost: name =>
-      `Le navigateur ne peut pas enregistrer une archive de profil. Sur l'hôte Hermes, exécutez : hermes profile export ${name}`,
+      `Le navigateur ne peut pas enregistrer une archive de profil. Sur l'hôte Mira, exécutez : hermes profile export ${name}`,
     allProfiles: 'Tous les profils',
     showAllProfiles: 'Afficher tous les profils',
     notServedHere: 'Non proposé ici',
@@ -5065,31 +5063,34 @@ updateConsentConfirm: 'Appliquer la mise à jour',
       goForward: 'Avancer',
       sendEdited: 'Envoyer le message modifié',
       attachingFile: 'Ajout en cours…',
-errorLayers: {auth: "Erreur d'authentification",
-billing: 'Crédits épuisés',
-disk: 'Disque plein',
-endpoint: 'Erreur du point de terminaison personnalisé',
-gateway: 'Erreur du gateway',
-generic: 'Échec du tour',
-provider: 'Erreur du fournisseur',
-runtime: "Erreur d'exécution locale",
-streaming: 'Erreur de connexion au flux'},
-errorLayerBodies: {auth: "Le service d'IA a refusé votre connexion. Vérifiez les identifiants de ce fournisseur, puis renvoyez votre message.",
-billing:
+      errorLayers: {
+        auth: "Erreur d'authentification",
+        billing: 'Crédits épuisés',
+        disk: 'Disque plein',
+        endpoint: 'Erreur du point de terminaison personnalisé',
+        gateway: 'Erreur du gateway',
+        generic: 'Échec du tour',
+        provider: 'Erreur du fournisseur',
+        runtime: "Erreur d'exécution locale",
+        streaming: 'Erreur de connexion au flux'
+      },
+      errorLayerBodies: {
+        auth: "Le service d'IA a refusé votre connexion. Vérifiez les identifiants de ce fournisseur, puis renvoyez votre message.",
+        billing:
           "Votre compte n'a plus de crédits chez ce fournisseur. Rechargez-le ou changez de fournisseur, puis réessayez.",
-disk: "Votre disque est plein ; Mira n'a pas pu enregistrer cette conversation. Libérez de l'espace, puis réessayez.",
-endpoint:
+        disk: "Votre disque est plein ; Mira n'a pas pu enregistrer cette conversation. Libérez de l'espace, puis réessayez.",
+        endpoint:
           "Mira ne parvient pas à joindre votre serveur de modèle personnalisé. Vérifiez qu'il fonctionne, puis renvoyez votre message.",
-gateway:
+        gateway:
           'Mira a rencontré un problème interne au démarrage de cette réponse. Renvoyez votre message ; si cela persiste, envoyez les diagnostics.',
-generic:
+        generic:
           "Une erreur s'est produite pendant la réponse de Mira. Réessayez ou copiez les détails si cela persiste.",
-provider:
+        provider:
           "Le service d'IA n'a pas pu traiter cette demande. Réessayez dans un instant ou changez de fournisseur.",
-runtime:
+        runtime:
           'Mira a rencontré un problème interne au démarrage de cette réponse. Renvoyez votre message ; si cela persiste, envoyez les diagnostics.',
-streaming: 'La connexion a été interrompue avant la fin de la réponse. Réessayez pour la renvoyer.'},
-
+        streaming: 'La connexion a été interrompue avant la fin de la réponse. Réessayez pour la renvoyer.'
+      }
     },
     approval: {
       gatewayDisconnected: "La Gateway Mira n'est pas connectée",
@@ -5557,13 +5558,14 @@ streaming: 'La connexion a été interrompue avant la fin de la réponse. Réess
       toggle: open => `${open ? 'Afficher' : 'Masquer'} la barre latérale`
     }
   },
-billingBlock: {titleNous: 'Plus de crédits Nous',
-titleProvider: provider => `Plus de crédits — ${provider}`,
-fallbackMessage: 'Votre compte est à court de crédits. Ajoutez-en pour continuer.',
-openBilling: 'Ouvrir la facturation',
-addCredits: 'Ajouter des crédits',
-dismiss: 'Fermer'},
-
+  billingBlock: {
+    titleNous: 'Plus de crédits Nous',
+    titleProvider: provider => `Plus de crédits — ${provider}`,
+    fallbackMessage: 'Votre compte est à court de crédits. Ajoutez-en pour continuer.',
+    openBilling: 'Ouvrir la facturation',
+    addCredits: 'Ajouter des crédits',
+    dismiss: 'Fermer'
+  }
 } satisfies TranslationOverrides
 
 export const fr = defineLocale(frOverrides)

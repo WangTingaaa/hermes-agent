@@ -27,6 +27,7 @@ import { zhSharedMetrics } from './zh_shared_metrics'
 import { zhSourceUpdates } from './zh_source_updates'
 import { zhThemePicker } from './zh_theme_picker'
 import { zhUpdateChannel } from './zh_update_channel'
+import { zhUpstreamUpdates } from './zh_upstream_updates'
 
 const zhBaseOverrides = {
   connectorsPage: zhConnectorsPage,
@@ -1544,7 +1545,7 @@ const zhBaseOverrides = {
       },
       keepGoingOnCredits: {
         title: '用额度继续',
-        description: '包含的用量用完后，使用你的额度。关闭时，Hermes 等待重置。',
+        description: '包含的用量用完后，使用你的额度。关闭时，Mira 等待重置。',
         approveInBrowser: '请在浏览器中批准 Remote Spending 以更改此设置。批准后立即生效。',
         openAgain: '再次打开',
         cancel: '取消',
@@ -2645,7 +2646,7 @@ const zhBaseOverrides = {
     exported: '配置档案已导出',
     failedImport: '导入配置档案失败',
     failedExport: '导出配置档案失败',
-    exportNeedsHost: name => `浏览器无法保存配置档案归档。请在 Hermes 主机上运行：hermes profile export ${name}`,
+    exportNeedsHost: name => `浏览器无法保存配置档案归档。请在 Mira 主机上运行：hermes profile export ${name}`,
     allProfiles: '全部配置档案',
     showAllProfiles: '显示全部配置档案',
     notServedHere: '此处未提供',
@@ -4641,6 +4642,9 @@ const zhBaseOverrides = {
   }
 } satisfies TranslationOverrides
 
-export const zhOverrides = mergeTranslations<TranslationOverrides>(zhBaseOverrides, zhSourceUpdates)
+export const zhOverrides = mergeTranslations<TranslationOverrides>(
+  mergeTranslations<TranslationOverrides>(zhBaseOverrides, zhSourceUpdates),
+  zhUpstreamUpdates
+)
 
 export const zh = defineLocale(zhOverrides)

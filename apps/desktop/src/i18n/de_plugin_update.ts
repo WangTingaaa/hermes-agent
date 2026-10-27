@@ -12,7 +12,7 @@ export const dePluginUpdate: PluginUpdateTranslations = {
     pickerTitle: (name: string) => `Ordner für ${name} auswählen`,
     pickerButton: 'Zugriff erlauben',
     refusedProtected: (name: string) =>
-      `${name} kann diesen Ordner nicht verwenden: Er enthält Hermes-Einstellungen, Schlüssel oder Plugin-Daten. Wählen Sie einen Ordner, der sie nicht enthält.`,
+      `${name} kann diesen Ordner nicht verwenden: Er enthält Mira-Einstellungen, Schlüssel oder Plugin-Daten. Wählen Sie einen Ordner, der sie nicht enthält.`,
     loadFailed: (name: string) => `Die für ${name} freigegebenen Ordner konnten nicht geladen werden.`
   },
   updateToPin: sha => `Auf ${sha} aktualisieren`,
@@ -30,5 +30,5 @@ export const dePluginUpdate: PluginUpdateTranslations = {
   updateScanConfirm: 'Trotzdem aktualisieren',
   updateScanBlocked: name =>
     `Die Sicherheitsprüfung hat das Update von ${name} blockiert (Urteil „gefährlich“). Das lässt sich nicht übergehen.`,
-  updatedGit: name => `${name} wurde auf den neuesten Commit aktualisiert.`,
+  updatedGit: name => `${name} wurde auf den neuesten Commit aktualisiert.`
 }

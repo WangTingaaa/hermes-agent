@@ -68,7 +68,7 @@ export const arOverrides = {
     retry: 'حاول مرة أخرى',
     more: 'عرض المزيد',
     pinned: 'التزام تمت مراجعته',
-    snapshotHint: 'من كتالوج Hermes. لا يتصل التصفح بمستودعات المصدر مطلقًا.',
+    snapshotHint: 'من كتالوج Mira. لا يتصل التصفح بمستودعات المصدر مطلقًا.',
     installHint: 'راجع المصدر قبل التثبيت. تسري التغييرات على الجلسات الجديدة.',
     results: (count: number) => `النتائج: ${count.toLocaleString('ar')}`,
     back: 'العودة إلى النتائج'

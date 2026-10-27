@@ -4,7 +4,8 @@ import type { PluginUpdateTranslations } from './types_plugin_update'
 export const frPluginUpdate: PluginUpdateTranslations = {
   folderAccess: {
     title: 'Accès aux dossiers',
-    hint: (name: string) => `${name} peut lire et modifier les fichiers de ces dossiers. Une révocation prend effet immédiatement.`,
+    hint: (name: string) =>
+      `${name} peut lire et modifier les fichiers de ces dossiers. Une révocation prend effet immédiatement.`,
     revoke: 'Révoquer',
     revokeLabel: (path: string) => `Révoquer l’accès à ${path}`,
     revoked: (name: string, path: string) => `${name} ne peut plus utiliser ${path}.`,
@@ -12,7 +13,7 @@ export const frPluginUpdate: PluginUpdateTranslations = {
     pickerTitle: (name: string) => `Choisir un dossier pour ${name}`,
     pickerButton: 'Autoriser l’accès',
     refusedProtected: (name: string) =>
-      `${name} ne peut pas utiliser ce dossier : il contient des réglages, des clés ou des données de plugins Hermes. Choisissez un dossier qui ne les contient pas.`,
+      `${name} ne peut pas utiliser ce dossier : il contient des réglages, des clés ou des données de plugins Mira. Choisissez un dossier qui ne les contient pas.`,
     loadFailed: (name: string) => `Impossible de charger les dossiers partagés avec ${name}.`
   },
   updateToPin: (sha: string) => `Mettre à jour vers ${sha}`,
@@ -30,5 +31,5 @@ export const frPluginUpdate: PluginUpdateTranslations = {
   updateScanConfirm: 'Mettre à jour quand même',
   updateScanBlocked: (name: string) =>
     `L’analyse de sécurité a bloqué la mise à jour de ${name} (verdict « dangereux »). Impossible de passer outre.`,
-  updatedGit: (name: string) => `${name} a été mis à jour vers le dernier commit.`,
+  updatedGit: (name: string) => `${name} a été mis à jour vers le dernier commit.`
 }

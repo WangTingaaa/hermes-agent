@@ -16,7 +16,7 @@ export const zhHantCapabilities = {
         pickerTitle: (name: string) => `為 ${name} 選擇資料夾`,
         pickerButton: '允許存取',
         refusedProtected: (name: string) =>
-          `${name} 不能使用該資料夾：其中包含 Hermes 的設定、金鑰或外掛資料。請選擇不包含它們的資料夾。`,
+          `${name} 不能使用該資料夾：其中包含 Mira 的設定、金鑰或外掛資料。請選擇不包含它們的資料夾。`,
         loadFailed: (name: string) => `無法載入與 ${name} 共用的資料夾。`
       }
     },

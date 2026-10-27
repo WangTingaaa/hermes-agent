@@ -3,9 +3,9 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import type { HermesConfigRecord } from '@/hermes'
 
-import { DEFAULT_LOCALE } from './languages'
 import { TRANSLATIONS } from './catalog'
 import { type I18nConfigClient, I18nProvider, useI18n } from './context'
+import { DEFAULT_LOCALE } from './languages'
 import { registerAppLocale } from './registry'
 import { $requestedLocale } from './runtime'
 import type { Locale } from './types'

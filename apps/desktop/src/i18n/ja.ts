@@ -248,7 +248,7 @@ export const jaOverrides = {
     billing: {
       keepGoingOnCredits: {
         title: 'クレジットで続行',
-        description: '含まれる利用量を使い切ったらクレジットを使います。オフ: Hermes はリセットを待ちます。',
+        description: '含まれる利用量を使い切ったらクレジットを使います。オフ: Mira はリセットを待ちます。',
         approveInBrowser: '変更するにはブラウザでリモート支出を承認してください。承認するとすぐに適用されます。',
         openAgain: 'もう一度開く',
         cancel: 'キャンセル',
@@ -732,21 +732,24 @@ export const jaOverrides = {
       stt: {},
       updates: {}
     }),
-    about: { updates: '更新', channel: jaUpdateChannel,
-heading: 'Mira Agent Desktop',
-version: value => `バージョン ${value}`,
-versionUnavailable: 'バージョンを取得できません',
-checkNow: '今すぐ確認',
-checking: '確認中…',
-seeWhatsNew: '新機能を見る',
-updateNow: '今すぐ更新',
-releaseNotes: 'リリースノート',
-runtimeChanges: '今回の更新内容',
-runtimeNoNotes: 'このバージョンの詳しい更新内容はありません。',
-runtimeUpdateReady: (current, target) =>
+    about: {
+      updates: '更新',
+      channel: jaUpdateChannel,
+      heading: 'Mira Agent Desktop',
+      version: value => `バージョン ${value}`,
+      versionUnavailable: 'バージョンを取得できません',
+      checkNow: '今すぐ確認',
+      checking: '確認中…',
+      seeWhatsNew: '新機能を見る',
+      updateNow: '今すぐ更新',
+      releaseNotes: 'リリースノート',
+      runtimeChanges: '今回の更新内容',
+      runtimeNoNotes: 'このバージョンの詳しい更新内容はありません。',
+      runtimeUpdateReady: (current, target) =>
         `Mira Agent の更新があります：${current || '現在のバージョン'} → ${target || '最新バージョン'}`,
-runtimeUpdating: (target, progress) => `Mira Agent ${target || '最新バージョン'} に更新中（${progress || 0}%）`,
-runtimeReleaseNotes: {'0.0.0': [
+      runtimeUpdating: (target, progress) => `Mira Agent ${target || '最新バージョン'} に更新中（${progress || 0}%）`,
+      runtimeReleaseNotes: {
+        '0.0.0': [
           'コネクター画面に管理アプリとローカル MCP サーバーを統合し、ツール権限、絞り込み、接続の復旧に対応しました。',
           '初期設定でのローカルモデル選択、ブラウザーでのログイン、無料アクセスを改善し、設定を完了できない場合の復旧案内を明確にしました。',
           '会話の復元、分岐、プロファイル切り替え、実行待ち、確認カードを改善し、会話状態が失われにくくなりました。',
@@ -756,37 +759,38 @@ runtimeReleaseNotes: {'0.0.0': [
           'インストールと更新で、同梱ランタイム、中断した更新の復旧、リモート SSH の互換性を改善しました。',
           'Codex のツール呼び出しストリームの関連付けと、デスクトップのバックエンド起動確認を修正し、安定性を向上しました。'
         ],
-'0.21.3': [
+        '0.21.3': [
           'リダイレクト、認証付きリクエスト、メディアストリームを含むリモートゲートウェイ接続の信頼性が向上しました。',
           'サブエージェントの進行状況を確認し、実行中に指示や中断を行えるライブ状態と操作機能を強化しました。',
           '遅延読み込み状態の明確化、インストールの直列化、安全検証により MCP とスキルの動作がより堅牢になりました。',
           '資格情報ボールト、1Password 対応、プロファイル分離の改善により、資格情報と設定の扱いを強化しました。'
         ],
-'0.21.0': [
+        '0.21.0': [
           '長い会話の圧縮と画像のトークン計算精度を改善',
           '厳格なモデルプロバイダーでのツール結果メッセージの互換性を修正',
           'API 呼び出しログにキャッシュ書き込み、レスポンス ID、アップストリーム情報を追加',
           'メモリフックと外部プリフェッチの安定性を改善',
           'デスクトップ版のセッションサイドバーとフィルター表示を修正'
-        ]},
-onLatest: '最新バージョンです。',
-installing: '更新をインストール中です。',
-cantUpdate: 'このビルドはアプリ内から更新できません。',
-cantReach: '更新サーバーに接続できませんでした。',
-tapCheck: '更新を探すには「今すぐ確認」を押してください。',
-updateReady: count => `新しい更新の準備ができました (${count} 件の変更を含みます)。`,
-updateReadyUnknown: '新しい更新の準備ができました。',
-lastChecked: age => `前回確認: ${age}`,
-justNowSuffix: ' · たった今',
-automaticUpdates: '自動更新',
-automaticUpdatesDesc: 'Mira Agent はバックグラウンドで自動的に更新を確認し、利用可能になったら通知します。',
-branchCommit: (branch, commit) => `ブランチ ${branch} · コミット ${commit}`,
-never: '未確認',
-justNow: 'たった今',
-minAgo: count => `${count} 分前`,
-hoursAgo: count => `${count} 時間前`,
-daysAgo: count => `${count} 日前`,
- },
+        ]
+      },
+      onLatest: '最新バージョンです。',
+      installing: '更新をインストール中です。',
+      cantUpdate: 'このビルドはアプリ内から更新できません。',
+      cantReach: '更新サーバーに接続できませんでした。',
+      tapCheck: '更新を探すには「今すぐ確認」を押してください。',
+      updateReady: count => `新しい更新の準備ができました (${count} 件の変更を含みます)。`,
+      updateReadyUnknown: '新しい更新の準備ができました。',
+      lastChecked: age => `前回確認: ${age}`,
+      justNowSuffix: ' · たった今',
+      automaticUpdates: '自動更新',
+      automaticUpdatesDesc: 'Mira Agent はバックグラウンドで自動的に更新を確認し、利用可能になったら通知します。',
+      branchCommit: (branch, commit) => `ブランチ ${branch} · コミット ${commit}`,
+      never: '未確認',
+      justNow: 'たった今',
+      minAgo: count => `${count} 分前`,
+      hoursAgo: count => `${count} 時間前`,
+      daysAgo: count => `${count} 日前`
+    },
     config: {
       minimizeToTrayTitle: 'トレイに最小化',
       minimizeToTrayDesc:
@@ -1000,9 +1004,8 @@ daysAgo: count => `${count} 日前`,
       sshErrInteractiveAuth:
         'Tailscale SSH では対話的なブラウザー確認が必要です。ターミナルで `ssh <host> true` を実行して確認を完了し、再試行してください。Mira は SSH を非対話的に実行します。',
       sshErrUnknown: 'SSH 接続に失敗しました。',
-unavailableTitle: 'ゲートウェイ設定は利用できません',
-unavailableDesc: 'デスクトップ IPC ブリッジはゲートウェイ設定を公開していません。',
-
+      unavailableTitle: 'ゲートウェイ設定は利用できません',
+      unavailableDesc: 'デスクトップ IPC ブリッジはゲートウェイ設定を公開していません。'
     },
     keys: {
       loading: 'API キーと認証情報を読み込み中...',
@@ -1218,10 +1221,12 @@ unavailableDesc: 'デスクトップ IPC ブリッジはゲートウェイ設定
 
   skillDeepLink: jaSkillDeepLink,
   skills: {
-    plugins: { ...jaPluginPreviewAccess, ...jaPluginsTab,
-pageBlurb:
-        'プラグインはこのアプリ、エージェント、または両方を拡張できます。それぞれに独立したスイッチがあります。',
- },
+    plugins: {
+      ...jaPluginPreviewAccess,
+      ...jaPluginsTab,
+      pageBlurb:
+        'プラグインはこのアプリ、エージェント、または両方を拡張できます。それぞれに独立したスイッチがあります。'
+    },
     hub: {
       search: '検索',
       searching: '検索中…',
@@ -1744,7 +1749,7 @@ pageBlurb:
     failedImport: 'プロファイルのインポートに失敗しました',
     failedExport: 'プロファイルのエクスポートに失敗しました',
     exportNeedsHost: name =>
-      `ブラウザーではプロファイルのアーカイブを保存できません。Hermes ホストで次を実行してください: hermes profile export ${name}`,
+      `ブラウザーではプロファイルのアーカイブを保存できません。Mira ホストで次を実行してください: hermes profile export ${name}`,
     allProfiles: 'すべてのプロファイル',
     showAllProfiles: 'すべてのプロファイルを表示',
     notServedHere: 'ここでは提供されていません',
@@ -3305,23 +3310,26 @@ pageBlurb:
       sendEdited: '編集済みメッセージを送信',
       attachingFile: '添付中…',
       thinkingStatus: 'Mira Agent が思考中',
-errorLayerBodies: {generic:
+      errorLayerBodies: {
+        generic:
           'Mira の返信中に問題が発生しました。再試行してください。問題が続く場合はエラー詳細をコピーしてください。',
-provider:
+        provider:
           'AI サービスがリクエストを完了できませんでした。少し待って再試行するか、プロバイダーを切り替えてください。',
-endpoint:
+        endpoint:
           'カスタムモデルサーバーに接続できません。サーバーが起動しているか確認し、メッセージを再送してください。',
-streaming: '返信が完了する前に接続が切れました。再試行してもう一度送信してください。'},
-errorLayers: {auth: '認証エラー',
-billing: 'クレジット不足',
-disk: 'ディスク容量不足',
-endpoint: 'カスタムエンドポイントのエラー',
-gateway: 'ゲートウェイのエラー',
-generic: 'ターンが失敗しました',
-provider: 'プロバイダーのエラー',
-runtime: 'ローカルランタイムのエラー',
-streaming: 'ストリーミング接続のエラー'},
-
+        streaming: '返信が完了する前に接続が切れました。再試行してもう一度送信してください。'
+      },
+      errorLayers: {
+        auth: '認証エラー',
+        billing: 'クレジット不足',
+        disk: 'ディスク容量不足',
+        endpoint: 'カスタムエンドポイントのエラー',
+        gateway: 'ゲートウェイのエラー',
+        generic: 'ターンが失敗しました',
+        provider: 'プロバイダーのエラー',
+        runtime: 'ローカルランタイムのエラー',
+        streaming: 'ストリーミング接続のエラー'
+      }
     },
     approval: {
       gatewayDisconnected: 'Mira Agent ゲートウェイが接続されていません',
@@ -3734,13 +3742,14 @@ streaming: 'ストリーミング接続のエラー'},
       notNow: '今はしない'
     }
   },
-billingBlock: {titleNous: 'Nous クレジットが不足しています',
-titleProvider: provider => `クレジット不足 — ${provider}`,
-fallbackMessage: 'アカウントのクレジットが不足しています。続行するにはクレジットを追加してください。',
-openBilling: '請求を開く',
-addCredits: 'クレジットを追加',
-dismiss: '閉じる'},
-
+  billingBlock: {
+    titleNous: 'Nous クレジットが不足しています',
+    titleProvider: provider => `クレジット不足 — ${provider}`,
+    fallbackMessage: 'アカウントのクレジットが不足しています。続行するにはクレジットを追加してください。',
+    openBilling: '請求を開く',
+    addCredits: 'クレジットを追加',
+    dismiss: '閉じる'
+  }
 } satisfies TranslationOverrides
 
 export const ja = defineLocale(jaOverrides)

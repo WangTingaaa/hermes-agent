@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it } from 'vitest'
 
 import { TRANSLATIONS } from './catalog'
 import {
+  DEFAULT_LOCALE,
   isLocale,
   isSupportedLocaleValue,
   languageOptions,
@@ -18,10 +19,11 @@ import {
   resolveTranslations,
   unregisterAppLocaleSource
 } from './registry'
-import { translateNow } from './runtime'
+import { setRuntimeI18nLocale, translateNow } from './runtime'
 
 afterEach(() => {
   resetAppLocaleRegistry()
+  setRuntimeI18nLocale(DEFAULT_LOCALE)
 })
 
 describe('registerAppLocale', () => {
@@ -140,14 +142,14 @@ describe('registerAppLocale', () => {
 describe('languages + registry', () => {
   it('accepts a registered id as a locale and its config value, still mapping aliases first', () => {
     expect(isLocale('pl')).toBe(false)
-    expect(normalizeLocale('pl')).toBe('en')
-    expect(localeConfigValue('pl')).toBe('en')
+    expect(normalizeLocale('pl')).toBe(DEFAULT_LOCALE)
+    expect(localeConfigValue('pl')).toBe(DEFAULT_LOCALE)
 
     registerAppLocale('pl', { endonym: 'Polski' })
 
     expect(isLocale('pl')).toBe(true)
     expect(isSupportedLocaleValue('PL')).toBe(true)
-    expect(normalizeLocale('pl_PL')).toBe('en')
+    expect(normalizeLocale('pl_PL')).toBe(DEFAULT_LOCALE)
     expect(normalizeLocale('PL')).toBe('pl')
     expect(localeConfigValue('pl')).toBe('pl')
     expect(normalizeLocale('zh-TW')).toBe('zh-hant')
@@ -176,6 +178,7 @@ describe('languages + registry', () => {
 
 describe('translateNow', () => {
   it('reads registered packs for the runtime locale', () => {
+    setRuntimeI18nLocale('en')
     registerAppLocale('en', { translations: { common: { save: 'Keep' } } }, 'backend')
 
     expect(translateNow('common.save')).toBe('Keep')

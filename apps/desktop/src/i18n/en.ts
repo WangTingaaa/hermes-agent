@@ -1737,7 +1737,7 @@ export const en: Translations = {
       },
       keepGoingOnCredits: {
         title: 'Keep going on credits',
-        description: 'Use your credits when included usage runs out. Off: Hermes waits for the reset.',
+        description: 'Use your credits when included usage runs out. Off: Mira waits for the reset.',
         approveInBrowser: 'Approve Remote Spending in your browser to change this. It applies as soon as you approve.',
         openAgain: 'Open again',
         cancel: 'Cancel',
@@ -2920,7 +2920,7 @@ export const en: Translations = {
     failedImport: 'Failed to import profile',
     failedExport: 'Failed to export profile',
     exportNeedsHost: name =>
-      `The browser can't save a profile archive. On the Hermes host, run: hermes profile export ${name}`,
+      `The browser can't save a profile archive. On the Mira host, run: hermes profile export ${name}`,
     allProfiles: 'All profiles',
     showAllProfiles: 'Show all profiles',
     notServedHere: 'Not served here',

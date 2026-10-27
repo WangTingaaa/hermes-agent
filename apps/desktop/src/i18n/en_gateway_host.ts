@@ -3,13 +3,14 @@ import type { GatewayHostTranslations } from './types_gateway_host'
 // Settings → Gateways copy where the connection cannot change, spread into en.ts.
 export const enGatewayHost: GatewayHostTranslations = {
   unavailableTitle: 'Gateway settings unavailable',
-  unavailableDesc: 'Connection settings can only be changed from the Hermes Desktop app on the computer running it.',
-  webappHostTitle: 'Hermes host',
+  unavailableDesc: 'Connection settings can only be changed from the Mira Desktop app on the computer running it.',
+  webappHostTitle: 'Mira host',
   webappHostDesc:
-    'The Webapp always uses the Hermes host that serves it. To switch gateways, sign in to Hermes Cloud or manage saved connections, use the Hermes Desktop app.',
+    'The Webapp always uses the Mira host that serves it. To switch gateways, sign in to Mira Cloud or manage saved connections, use the Mira Desktop app.',
   webAccess: {
     title: 'Web access',
-    intro: 'Open Hermes on this computer from your phone or another computer, signed in with your Nous account. Whoever signs in can run commands on this computer.',
+    intro:
+      'Open Mira on this computer from your phone or another computer, signed in with your Nous account. Whoever signs in can run commands on this computer.',
     failed: "Couldn't change web access",
     running: 'Running',
     stopped: 'Stopped',
@@ -17,7 +18,7 @@ export const enGatewayHost: GatewayHostTranslations = {
     stopping: 'Stopping',
     restartNeeded: 'Restart needed',
     unavailable: 'Unavailable',
-    notRunningDetail: 'Start it to open Hermes from another device.',
+    notRunningDetail: 'Start it to open Mira from another device.',
     needsNous: 'Sign in to your Nous account under Providers first.',
     runningLan: 'Open this address on a device on the same network.',
     runningPublic: 'Served through your URL.',
@@ -37,6 +38,7 @@ export const enGatewayHost: GatewayHostTranslations = {
     lanUnencrypted: 'The connection is not encrypted: others on this network could read what you send and receive.',
     noLan: 'This computer has no network address other devices can reach.',
     modePublic: 'My own URL',
-    modePublicDetail: port => `An HTTPS address you already run, such as Tailscale Serve or a tunnel, forwarding to http://127.0.0.1:${port}.`
+    modePublicDetail: port =>
+      `An HTTPS address you already run, such as Tailscale Serve or a tunnel, forwarding to http://127.0.0.1:${port}.`
   }
 }

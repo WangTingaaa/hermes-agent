@@ -335,7 +335,7 @@ export const ruOverrides = {
     billing: {
       keepGoingOnCredits: {
         title: 'Продолжать за кредиты',
-        description: 'Тратить кредиты, когда включённый объём закончится. Выключено: Hermes ждёт сброса.',
+        description: 'Тратить кредиты, когда включённый объём закончится. Выключено: Mira ждёт сброса.',
         approveInBrowser:
           'Чтобы изменить это, одобрите удалённые траты в браузере. Изменение применится сразу после одобрения.',
         openAgain: 'Открыть снова',
@@ -682,34 +682,36 @@ export const ruOverrides = {
       stt: {},
       updates: {}
     }),
-    about: { updates: 'Обновления', channel: ruUpdateChannel,
-heading: 'Mira Desktop',
-version: value => `Версия ${value}`,
-versionUnavailable: 'Версия недоступна',
-checkNow: 'Проверить сейчас',
-checking: 'Проверка…',
-seeWhatsNew: 'Смотреть, что нового',
-updateNow: 'Обновить сейчас',
-releaseNotes: 'Заметки о выпуске',
-onLatest: 'У вас последняя версия.',
-installing: 'Сейчас устанавливается обновление.',
-cantUpdate: 'Эта сборка не может обновляться изнутри приложения.',
-cantReach: 'Не удалось связаться с сервером обновлений.',
-tapCheck: 'Нажмите «Проверить сейчас», чтобы найти обновления.',
-updateReady: count =>
+    about: {
+      updates: 'Обновления',
+      channel: ruUpdateChannel,
+      heading: 'Mira Desktop',
+      version: value => `Версия ${value}`,
+      versionUnavailable: 'Версия недоступна',
+      checkNow: 'Проверить сейчас',
+      checking: 'Проверка…',
+      seeWhatsNew: 'Смотреть, что нового',
+      updateNow: 'Обновить сейчас',
+      releaseNotes: 'Заметки о выпуске',
+      onLatest: 'У вас последняя версия.',
+      installing: 'Сейчас устанавливается обновление.',
+      cantUpdate: 'Эта сборка не может обновляться изнутри приложения.',
+      cantReach: 'Не удалось связаться с сервером обновлений.',
+      tapCheck: 'Нажмите «Проверить сейчас», чтобы найти обновления.',
+      updateReady: count =>
         `Готово новое обновление (включено ${count} ${RU_PLURAL(count, 'изменение', 'изменения', 'изменений')}).`,
-updateReadyUnknown: 'Готово новое обновление.',
-lastChecked: age => `Проверено ${age}`,
-justNowSuffix: ' · только что',
-automaticUpdates: 'Автоматические обновления',
-automaticUpdatesDesc: 'Mira автоматически проверяет обновления в фоне и сообщает, когда они готовы.',
-branchCommit: (branch, commit) => `Ветка ${branch} · Коммит ${commit}`,
-never: 'никогда',
-justNow: 'только что',
-minAgo: count => `${count} ${RU_NOUN(count, 'минуту', 'минуты', 'минут')} назад`,
-hoursAgo: count => `${count} ${RU_NOUN(count, 'час', 'часа', 'часов')} назад`,
-daysAgo: count => `${count} ${RU_NOUN(count, 'день', 'дня', 'дней')} назад`,
- },
+      updateReadyUnknown: 'Готово новое обновление.',
+      lastChecked: age => `Проверено ${age}`,
+      justNowSuffix: ' · только что',
+      automaticUpdates: 'Автоматические обновления',
+      automaticUpdatesDesc: 'Mira автоматически проверяет обновления в фоне и сообщает, когда они готовы.',
+      branchCommit: (branch, commit) => `Ветка ${branch} · Коммит ${commit}`,
+      never: 'никогда',
+      justNow: 'только что',
+      minAgo: count => `${count} ${RU_NOUN(count, 'минуту', 'минуты', 'минут')} назад`,
+      hoursAgo: count => `${count} ${RU_NOUN(count, 'час', 'часа', 'часов')} назад`,
+      daysAgo: count => `${count} ${RU_NOUN(count, 'день', 'дня', 'дней')} назад`
+    },
     config: {
       minimizeToTrayTitle: 'Сворачивать в трей',
       minimizeToTrayDesc:
@@ -1032,9 +1034,8 @@ daysAgo: count => `${count} ${RU_NOUN(count, 'день', 'дня', 'дней')} 
       sshErrInteractiveAuth:
         'Tailscale SSH требует интерактивной проверки в браузере. Выполните `ssh <host> true` в терминале, завершите проверку и повторите попытку — Mira запускает SSH неинтерактивно.',
       sshErrUnknown: 'SSH-соединение не удалось.',
-unavailableTitle: 'Настройки шлюза недоступны',
-unavailableDesc: 'IPC-мост приложения не предоставляет настройки шлюза.',
-
+      unavailableTitle: 'Настройки шлюза недоступны',
+      unavailableDesc: 'IPC-мост приложения не предоставляет настройки шлюза.'
     },
     keys: {
       loading: 'Загрузка API-ключей и учётных данных…',
@@ -1247,9 +1248,11 @@ unavailableDesc: 'IPC-мост приложения не предоставля�
   },
   skillDeepLink: ruSkillDeepLink,
   skills: {
-    plugins: { ...ruPluginPreviewAccess, ...ruPluginsTab,
-pageBlurb: 'Плагин может расширять приложение, агента или оба сразу — у каждой части свой переключатель.',
- },
+    plugins: {
+      ...ruPluginPreviewAccess,
+      ...ruPluginsTab,
+      pageBlurb: 'Плагин может расширять приложение, агента или оба сразу — у каждой части свой переключатель.'
+    },
     tabSkills: 'Навыки',
     tabToolsets: 'Инструменты',
     configuringProfile: 'Настраивается:',
@@ -1964,7 +1967,7 @@ pageBlurb: 'Плагин может расширять приложение, а�
     failedImport: 'Не удалось импортировать профиль',
     failedExport: 'Не удалось экспортировать профиль',
     exportNeedsHost: name =>
-      `Браузер не может сохранить архив профиля. На хосте Hermes выполните: hermes profile export ${name}`,
+      `Браузер не может сохранить архив профиля. На хосте Mira выполните: hermes profile export ${name}`,
     allProfiles: 'Все профили',
     showAllProfiles: 'Показать все профили',
     notServedHere: 'Здесь не обслуживается',
@@ -3794,13 +3797,14 @@ pageBlurb: 'Плагин может расширять приложение, а�
       notNow: 'Не сейчас'
     }
   },
-billingBlock: {titleNous: 'Кредиты Nous закончились',
-titleProvider: provider => `Кредиты закончились — ${provider}`,
-fallbackMessage: 'В вашем аккаунте закончились кредиты. Пополните баланс, чтобы продолжить.',
-openBilling: 'Открыть биллинг',
-addCredits: 'Пополнить кредиты',
-dismiss: 'Скрыть'},
-
+  billingBlock: {
+    titleNous: 'Кредиты Nous закончились',
+    titleProvider: provider => `Кредиты закончились — ${provider}`,
+    fallbackMessage: 'В вашем аккаунте закончились кредиты. Пополните баланс, чтобы продолжить.',
+    openBilling: 'Открыть биллинг',
+    addCredits: 'Пополнить кредиты',
+    dismiss: 'Скрыть'
+  }
 } satisfies TranslationOverrides
 
 export const ru = defineLocale(ruOverrides)

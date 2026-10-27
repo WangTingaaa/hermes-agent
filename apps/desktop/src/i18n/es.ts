@@ -1831,10 +1831,9 @@ export const esOverrides = {
       sshErrInteractiveAuth:
         'Tailscale SSH requiere una comprobación interactiva del navegador. Ejecuta `ssh <host> true` en la terminal, completa la comprobación y vuelve a intentarlo; Mira ejecuta SSH de forma no interactiva.',
       sshErrUnknown: 'Falló la conexión SSH.',
-unavailableTitle: 'Ajustes del gateway no disponibles',
-unavailableDesc:
-        'Los ajustes de conexión solo se pueden cambiar desde la app Mira Desktop en el equipo que la ejecuta.',
-
+      unavailableTitle: 'Ajustes del gateway no disponibles',
+      unavailableDesc:
+        'Los ajustes de conexión solo se pueden cambiar desde la app Mira Desktop en el equipo que la ejecuta.'
     },
     keys: {
       loading: 'Cargando claves API y credenciales...',
@@ -1998,7 +1997,7 @@ unavailableDesc:
       },
       keepGoingOnCredits: {
         title: 'Seguir con créditos',
-        description: 'Usa tus créditos cuando se agote el uso incluido. Desactivado: Hermes espera al reinicio.',
+        description: 'Usa tus créditos cuando se agote el uso incluido. Desactivado: Mira espera al reinicio.',
         approveInBrowser: 'Aprueba Remote Spending en tu navegador para cambiar esto. Se aplica en cuanto lo apruebes.',
         openAgain: 'Abrir de nuevo',
         cancel: 'Cancelar',
@@ -2522,15 +2521,14 @@ unavailableDesc:
         secretStoredAs: (env: string) =>
           `Se guarda en el .env del perfil como ${env}, nunca en config.yaml; déjalo en blanco para conservar el valor actual.`
       },
-updateToPin: (sha: string) => `Actualizar a ${sha}`,
-updateFailed: (name: string) => `No se pudo actualizar ${name}`,
-updated: (name: string) =>
+      updateToPin: (sha: string) => `Actualizar a ${sha}`,
+      updateFailed: (name: string) => `No se pudo actualizar ${name}`,
+      updated: (name: string) =>
         `${name} se actualizó al commit fijado actual del catálogo. Reinicia el gateway para aplicarlo.`,
-updateConsentTitle: (name: string) => `${name} pide más`,
-updateConsentBody: (name: string, sha: string) =>
+      updateConsentTitle: (name: string) => `${name} pide más`,
+      updateConsentBody: (name: string, sha: string) =>
         `El nuevo commit fijado de ${name} en el catálogo (${sha}) añade superficies que la versión instalada no tiene. Aplícalo solo si confías en ellas:`,
-updateConsentConfirm: 'Aplicar actualización',
-
+      updateConsentConfirm: 'Aplicar actualización'
     },
     officialCatalog: 'Disponibles para instalar',
     officialPill: 'Oficial',
@@ -3208,7 +3206,7 @@ updateConsentConfirm: 'Aplicar actualización',
     failedImport: 'No se pudo importar el perfil',
     failedExport: 'No se pudo exportar el perfil',
     exportNeedsHost: name =>
-      `El navegador no puede guardar un archivo de perfil. En el host de Hermes, ejecuta: hermes profile export ${name}`,
+      `El navegador no puede guardar un archivo de perfil. En el host de Mira, ejecuta: hermes profile export ${name}`,
     allProfiles: 'Todos los perfiles',
     showAllProfiles: 'Mostrar todos los perfiles',
     notServedHere: 'No se ofrece aquí',
@@ -5044,29 +5042,32 @@ updateConsentConfirm: 'Aplicar actualización',
       goForward: 'Avanzar',
       sendEdited: 'Enviar edición',
       attachingFile: 'Adjuntando…',
-errorLayers: {auth: 'Problema de inicio de sesión',
-billing: 'Créditos agotados',
-disk: 'Disco lleno',
-endpoint: 'No se puede conectar con tu servidor de modelos',
-gateway: 'Mira tuvo un problema',
-generic: 'Mira no pudo terminar esta respuesta',
-provider: 'El servicio de IA devolvió un error',
-runtime: 'Mira tuvo un problema',
-streaming: 'La respuesta se cortó'},
-errorLayerBodies: {auth: 'El servicio de IA rechazó tu inicio de sesión. Revisa las credenciales de este proveedor y vuelve a enviar el mensaje.',
-billing: 'Tu cuenta no tiene créditos para este proveedor. Recarga o cambia de proveedor y vuelve a enviarlo.',
-disk: 'Tu disco está lleno, así que Mira no pudo guardar esta conversación. Libera espacio y reinténtalo.',
-endpoint:
+      errorLayers: {
+        auth: 'Problema de inicio de sesión',
+        billing: 'Créditos agotados',
+        disk: 'Disco lleno',
+        endpoint: 'No se puede conectar con tu servidor de modelos',
+        gateway: 'Mira tuvo un problema',
+        generic: 'Mira no pudo terminar esta respuesta',
+        provider: 'El servicio de IA devolvió un error',
+        runtime: 'Mira tuvo un problema',
+        streaming: 'La respuesta se cortó'
+      },
+      errorLayerBodies: {
+        auth: 'El servicio de IA rechazó tu inicio de sesión. Revisa las credenciales de este proveedor y vuelve a enviar el mensaje.',
+        billing: 'Tu cuenta no tiene créditos para este proveedor. Recarga o cambia de proveedor y vuelve a enviarlo.',
+        disk: 'Tu disco está lleno, así que Mira no pudo guardar esta conversación. Libera espacio y reinténtalo.',
+        endpoint:
           'Mira no puede conectar con tu servidor de modelos personalizado. Comprueba que esté en ejecución y vuelve a enviar el mensaje.',
-gateway:
+        gateway:
           'Mira tuvo un problema interno al iniciar esta respuesta. Vuelve a enviar el mensaje; si sigue ocurriendo, envía un diagnóstico.',
-generic: 'Algo salió mal mientras Mira respondía. Reinténtalo o copia los detalles si sigue ocurriendo.',
-provider:
+        generic: 'Algo salió mal mientras Mira respondía. Reinténtalo o copia los detalles si sigue ocurriendo.',
+        provider:
           'El servicio de IA no pudo completar esta solicitud. Reinténtalo en un momento o cambia de proveedor.',
-runtime:
+        runtime:
           'Mira tuvo un problema interno al iniciar esta respuesta. Vuelve a enviar el mensaje; si sigue ocurriendo, envía un diagnóstico.',
-streaming: 'La conexión se cortó antes de que terminara la respuesta. Reinténtalo para enviarla de nuevo.'},
-
+        streaming: 'La conexión se cortó antes de que terminara la respuesta. Reinténtalo para enviarla de nuevo.'
+      }
     },
     approval: {
       gatewayDisconnected:
@@ -5534,13 +5535,14 @@ streaming: 'La conexión se cortó antes de que terminara la respuesta. Reintén
       toggle: open => `${open ? 'Mostrar' : 'Ocultar'} barra lateral`
     }
   },
-billingBlock: {titleNous: 'Sin créditos de Nous',
-titleProvider: provider => `Sin créditos — ${provider}`,
-fallbackMessage: 'Tu cuenta se quedó sin créditos. Añade créditos para continuar.',
-openBilling: 'Abrir facturación',
-addCredits: 'Añadir créditos',
-dismiss: 'Descartar'},
-
+  billingBlock: {
+    titleNous: 'Sin créditos de Nous',
+    titleProvider: provider => `Sin créditos — ${provider}`,
+    fallbackMessage: 'Tu cuenta se quedó sin créditos. Añade créditos para continuar.',
+    openBilling: 'Abrir facturación',
+    addCredits: 'Añadir créditos',
+    dismiss: 'Descartar'
+  }
 } satisfies TranslationOverrides
 
 export const es = defineLocale(esOverrides)

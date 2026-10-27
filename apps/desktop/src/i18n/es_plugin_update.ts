@@ -4,7 +4,8 @@ import type { PluginUpdateTranslations } from './types_plugin_update'
 export const esPluginUpdate: PluginUpdateTranslations = {
   folderAccess: {
     title: 'Acceso a carpetas',
-    hint: (name: string) => `${name} puede leer y modificar archivos en estas carpetas. Revocar el acceso surte efecto al instante.`,
+    hint: (name: string) =>
+      `${name} puede leer y modificar archivos en estas carpetas. Revocar el acceso surte efecto al instante.`,
     revoke: 'Revocar',
     revokeLabel: (path: string) => `Revocar el acceso a ${path}`,
     revoked: (name: string, path: string) => `${name} ya no puede usar ${path}.`,
@@ -12,7 +13,7 @@ export const esPluginUpdate: PluginUpdateTranslations = {
     pickerTitle: (name: string) => `Elige una carpeta para ${name}`,
     pickerButton: 'Permitir acceso',
     refusedProtected: (name: string) =>
-      `${name} no puede usar esa carpeta: contiene ajustes, claves o datos de plugins de Hermes. Elige una carpeta que no los contenga.`,
+      `${name} no puede usar esa carpeta: contiene ajustes, claves o datos de plugins de Mira. Elige una carpeta que no los contenga.`,
     loadFailed: (name: string) => `No se pudieron cargar las carpetas compartidas con ${name}.`
   },
   updateToPin: (sha: string) => `Actualizar a ${sha}`,
@@ -30,5 +31,5 @@ export const esPluginUpdate: PluginUpdateTranslations = {
   updateScanConfirm: 'Actualizar de todos modos',
   updateScanBlocked: (name: string) =>
     `El análisis de seguridad bloqueó la actualización de ${name} (veredicto «peligroso»). No se puede omitir.`,
-  updatedGit: (name: string) => `${name} se actualizó al último commit.`,
+  updatedGit: (name: string) => `${name} se actualizó al último commit.`
 }

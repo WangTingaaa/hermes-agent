@@ -27,8 +27,8 @@ export const zhNotices = {
     desktopCommands: zhDesktopCommands
   },
   keepAwakeOffer: {
-    title: '电脑在 Hermes 工作时进入了睡眠',
-    message: 'Hermes 可以在任务运行时保持电脑唤醒。屏幕仍会照常关闭，使用电池时电脑仍可能睡眠。',
+    title: '电脑在 Mira 工作时进入了睡眠',
+    message: 'Mira 可以在任务运行时保持电脑唤醒。屏幕仍会照常关闭，使用电池时电脑仍可能睡眠。',
     action: '运行期间保持唤醒'
   },
   billingBlock: {

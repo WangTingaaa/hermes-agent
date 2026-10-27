@@ -868,9 +868,9 @@ export const zhHantSettings = {
       loading: '正在載入閘道設定...',
       unavailableTitle: '閘道設定不可用',
       unavailableDesc: '桌面 IPC 橋接器未公開閘道設定。',
-      webappHostTitle: 'Hermes 主機',
+      webappHostTitle: 'Mira 主機',
       webappHostDesc:
-        'Webapp 一律使用提供它的 Hermes 主機。如需切換閘道、登入 Hermes Cloud 或管理已儲存的連線，請使用 Hermes Desktop 應用程式。',
+        'Webapp 一律使用提供它的 Mira 主機。如需切換閘道、登入 Mira Cloud 或管理已儲存的連線，請使用 Mira Desktop 應用程式。',
       title: '閘道連線',
       envOverride: '環境變數覆寫',
       intro:
@@ -1335,7 +1335,7 @@ export const zhHantSettings = {
       },
       keepGoingOnCredits: {
         title: '用額度繼續',
-        description: '包含的用量用完後，使用你的額度。關閉時，Hermes 等待重設。',
+        description: '包含的用量用完後，使用你的額度。關閉時，Mira 等待重設。',
         approveInBrowser: '請在瀏覽器中核准 Remote Spending 以變更此設定。核准後立即生效。',
         openAgain: '再次開啟',
         cancel: '取消',
