@@ -1,3 +1,4 @@
+import { fileUrlToNativePath } from '@hermes/shared'
 import { useStore } from '@nanostores/react'
 import type * as React from 'react'
 import type {
@@ -52,6 +53,7 @@ import { markPreviewTabMissing, openPreview, type PreviewTarget } from '@/store/
 import { setPreviewDirty } from '@/store/preview-edit'
 import { $connection, $currentCwd } from '@/store/session'
 import { notifyWorkspaceChanged } from '@/store/workspace-events'
+
 import type { LocalFilePreviewProps } from './type'
 
 const SHIKI_THEME = { dark: 'github-dark-default', light: 'github-light-default' } as const
@@ -203,13 +205,7 @@ export function filePathForTarget(target: PreviewTarget) {
     return target.path
   }
 
-  try {
-    const url = new URL(target.url)
-
-    return url.protocol === 'file:' ? decodeURIComponent(url.pathname) : target.url
-  } catch {
-    return target.url
-  }
+  return fileUrlToNativePath(target.url) ?? target.url
 }
 
 function formatBytes(bytes: number | undefined) {
@@ -288,9 +284,9 @@ function dataUrlToBlob(dataUrl: string) {
   return new Blob([bytes], { type: 'application/pdf' })
 }
 
-async function readTextPreview(filePath: string) {
+async function readTextPreview(filePath: string, sessionId?: string) {
   try {
-    return await readDesktopFileText(filePath)
+    return await readDesktopFileText(filePath, { sessionId })
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error)
 
@@ -746,7 +742,7 @@ export function SourceView({ filePath, language, text }: { filePath?: string; la
 
 export type PreviewViewMode = 'diff' | 'rendered' | 'source'
 
-export function LocalFilePreview({ onClose, onSelectRendered, reloadKey, target }: LocalFilePreviewProps) {
+export function LocalFilePreview({ onClose, onSelectRendered, reloadKey, sessionId, target }: LocalFilePreviewProps) {
   const { t } = useI18n()
   const [state, setState] = useState<LocalPreviewState>({ loading: true })
   const [forcePreview, setForcePreview] = useState(false)
@@ -821,7 +817,7 @@ export function LocalFilePreview({ onClose, onSelectRendered, reloadKey, target 
         if (isImage || isPdf) {
           // Prefer bytes the caller already handed us (a pasted/dropped
           // screenshot) over re-reading a path that may be transient/unreadable.
-          const dataUrl = target.dataUrl || (await readDesktopFileDataUrl(filePath))
+          const dataUrl = target.dataUrl || (await readDesktopFileDataUrl(filePath, { sessionId }))
 
           if (active) {
             setState({ dataUrl, loading: false })
@@ -830,7 +826,7 @@ export function LocalFilePreview({ onClose, onSelectRendered, reloadKey, target 
           return
         }
 
-        const result = await readTextPreview(filePath)
+        const result = await readTextPreview(filePath, sessionId)
 
         if (active) {
           const shouldBlock = !forcePreview && (result.binary || (result.byteSize ?? 0) > TEXT_PREVIEW_MAX_BYTES)
@@ -895,6 +891,7 @@ export function LocalFilePreview({ onClose, onSelectRendered, reloadKey, target 
     isText,
     reloadKey,
     selfReload,
+    sessionId,
     target.dataUrl,
     target.language,
     target.url
@@ -1043,7 +1040,7 @@ export function LocalFilePreview({ onClose, onSelectRendered, reloadKey, target 
       // choice. `force` is the user picking "overwrite" from that banner.
       if (!force) {
         try {
-          const current = await readTextPreview(filePath)
+          const current = await readTextPreview(filePath, sessionId)
 
           if (!current.binary && (current.text ?? '') !== baselineRef.current) {
             setConflict(true)
@@ -1059,7 +1056,7 @@ export function LocalFilePreview({ onClose, onSelectRendered, reloadKey, target 
       // Also guards Overwrite: bypassing a content conflict never authorizes
       // writing the same path on another connection/profile or this device.
       requireEditorOwner()
-      await writeDesktopFileText(filePath, draftRef.current)
+      await writeDesktopFileText(filePath, draftRef.current, { sessionId })
       baselineRef.current = draftRef.current
       setDirty(false)
       setConflict(false)

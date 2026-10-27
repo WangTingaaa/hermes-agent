@@ -1,52 +1,35 @@
+// health: allow FILE_LINES -- locale data: translated copy for the usage-window plan UI (allowance gauges, Large/Free tags, the limit card), one key per string
 import { defineFieldCopy } from '@/app/settings/field-copy'
 
 import { defineLocale, type TranslationOverrides } from './define-locale'
-import { esAuxTasks } from './es_aux_tasks'
 import { esBoot } from './es_boot'
+import { esClarify } from './es_clarify'
+import { esConnectorAccounts } from './es_connector_accounts'
+import { esConnectorCard } from './es_connector_card'
+import { esErrorCodes } from './es_error_codes'
+import { esErrorLayers } from './es_error_layers'
+import { esFirstRun } from './es_first_run'
+import { esGatewayHost } from './es_gateway_host'
 import { esLocalModels } from './es_local_models'
 import { esModelMenu } from './es_model_menu'
+import { esModelSettings } from './es_model_settings'
 import { esNotices } from './es_notices'
+import { esNotifications } from './es_notifications'
 import { esOnboarding } from './es_onboarding'
+import { esPluginPreviewAccess } from './es_plugin_preview_access'
+import { esPluginUpdate } from './es_plugin_update'
+import { esPreviewWeb } from './es_preview_web'
 import { esProjects } from './es_projects'
 import { esSharedMetrics } from './es_shared_metrics'
+import { esThemePicker } from './es_theme_picker'
+import { esUpdateChannel } from './es_update_channel'
 import { introEs } from './intro-es'
-import { esPromptSnippets } from './prompt-snippets'
 
 export const esOverrides = {
   sharedMetrics: esSharedMetrics,
+  firstRun: esFirstRun,
   intro: introEs,
-  connectors: {
-    title: 'Conecta tus apps',
-    connect: 'Conectar',
-    skip: 'Ahora no',
-    cancel: 'Dejar de esperar',
-    retry: 'Reintentar',
-    grant: 'Volver a conectar',
-    connected: 'Conectado',
-    checking: 'Comprobando tus apps…',
-    notConnected: 'No conectado',
-    skipped: 'Omitido',
-    disabled: 'No disponible',
-    failed: 'No se pudo conectar',
-    needsAuth: 'Acceso caducado',
-    opening: 'Abriendo el inicio de sesión…',
-    waiting: 'Esperando a tu navegador…',
-    timeout: 'Seguimos esperando la autorización.',
-    refresh: 'Actualizar estado',
-    connectError: 'No se pudo iniciar la autorización. Inténtalo de nuevo.',
-    connectErrorFor: (app: string) => `No se pudo iniciar la autorización para ${app}.`,
-    unavailable: 'Los conectores no están disponibles en esta sesión.',
-    ownerMissing: 'Vuelve a abrir esta conversación para gestionar sus conexiones.',
-    search: 'Buscar una app',
-    empty: 'No hay apps que coincidan',
-    disclaimer: 'Conectar es opcional. Autoriza solo las apps que quieras que use Mira.',
-    execution: 'Herramientas de conectores',
-    setup: server => `Configurar ${server}`,
-    openInBrowser: 'Abrir en el navegador',
-    setupCancel: 'Cancelar',
-    authorizedToolsUnavailable: 'Autorizado. Herramientas no disponibles.',
-    required: 'Obligatorio'
-  },
+  connectors: esConnectorCard,
   connectorsPage: {
     title: 'Conectores',
     searchPlaceholder: (count: number) => `Buscar entre ${count} apps`,
@@ -203,6 +186,9 @@ export const esOverrides = {
       advanced: 'Avanzado',
       advancedHint: 'la entrada de mcp.json y los registros'
     },
+
+    accounts: esConnectorAccounts,
+
     tools: {
       title: 'Herramientas',
       notInstalledBody: 'Instálalo en este dispositivo para ver las herramientas que incluye.',
@@ -481,6 +467,8 @@ export const esOverrides = {
       microphoneConstraintsUnsupported: 'Este dispositivo no admite las restricciones del micrófono.',
       microphoneFailed: 'Falló el micrófono',
       microphoneInUse: 'El micrófono ya está en uso por otra app.',
+      microphoneNeedsHttps:
+        'El micrófono necesita una conexión segura. Abre la Webapp por HTTPS, o mediante un túnel SSH a 127.0.0.1, para usarlo.',
       microphonePermissionDenied: 'Se denegó el permiso del micrófono.',
       microphoneStartFailed: 'No se pudo iniciar la grabación del micrófono.',
       microphoneUnsupported: 'Este runtime no admite grabación de micrófono.',
@@ -518,14 +506,6 @@ export const esOverrides = {
     }
   },
   ...esNotices,
-  billingBlock: {
-    titleNous: 'Sin créditos de Nous',
-    titleProvider: provider => `Sin créditos — ${provider}`,
-    fallbackMessage: 'Tu cuenta se quedó sin créditos. Añade créditos para continuar.',
-    openBilling: 'Abrir facturación',
-    addCredits: 'Añadir créditos',
-    dismiss: 'Descartar'
-  },
   sendDiagnostics: {
     title: 'Enviar diagnóstico a Nous',
     privacyNotice:
@@ -817,11 +797,6 @@ export const esOverrides = {
         profileLabel: 'Instalar para el perfil',
         agentTargetLocal: (profile, dir) => `Se instala en el backend ${profile} (${dir})`,
         agentTargetRemote: profile => `Se instala en el backend ${profile} conectado`,
-        catalogPinned: (name, sha) =>
-          `Entrada del catálogo de Mira “${name}”: el componente del agente se instala en la versión fijada revisada${sha ? ` ${sha}` : ''}, no en la punta de la rama.`,
-        reviewedHeading: 'Entrada del catálogo revisada',
-        reviewedIntro:
-          'Una persona revisó esta entrada en su commit fijado. Aun así, puedes inspeccionar el código exacto abajo.',
         toolsConnected: n => (n === 1 ? '1 herramienta conectada' : `${n} herramientas conectadas`),
         skillsReady: names => (names.length === 1 ? `skill ${names[0]} lista` : `${names.length} skills listas`),
         nextChat: 'más herramientas disponibles en tu próximo chat',
@@ -834,13 +809,11 @@ export const esOverrides = {
         desktopOnlyNote: 'Los paquetes solo de escritorio no instalan un plugin del agente en el backend.',
         insecureWarning:
           'Esta URL usa un esquema inseguro o local. Para instalaciones de producción, usa https:// o git@.',
-        securityHeading: 'Antes de instalar',
         securityIntro:
           'Instala solo desde fuentes de confianza; revisa el repositorio de abajo si quieres ver qué se añadirá.',
         sourceHeading: 'Código fuente',
         viewRepository: 'Ver repositorio',
         viewPluginFiles: 'Ver archivos del plugin',
-        gitCloneLabel: 'URL de git clone',
         enableAgent: 'Activar el plugin del agente tras instalarlo',
         forceReinstall: 'Forzar reinstalación (reemplazar si ya está instalado)',
         pinToCommit: 'Fijar a un commit (opcional)',
@@ -861,7 +834,17 @@ export const esOverrides = {
           'Mira dejó de esperar el resultado de la instalación, pero es posible que el plugin siga instalándose. Cierra este cuadro y actualiza la lista de plugins antes de volver a instalarlo.',
         desktopFailed: 'Error al instalar el plugin de escritorio',
         missingEnv: (name, vars) =>
-          `${name} está instalado, pero necesita una clave para funcionar: ${vars}. Añádela ahora o las herramientas del plugin fallarán.`
+          `${name} está instalado, pero necesita una clave para funcionar: ${vars}. Añádela ahora o las herramientas del plugin fallarán.`,
+        verified: 'Verificado',
+        unverified: 'Sin verificar',
+        reviewedByNous: 'Revisado por Nous.',
+        installsAndEnables: profile => `Se instala para ${profile} y se activa al momento.`,
+        installsOnly: profile => `Se instala para ${profile}.`,
+        advanced: 'Avanzado',
+        versionLabel: 'Versión',
+        reviewedPin: sha => (sha ? `Pin revisado ${sha}` : 'Pin revisado'),
+        latestCommit: 'Último commit',
+        nothingToInstall: 'Este paquete no tiene nada que instalar aquí.'
       }
     },
     vault: {
@@ -950,53 +933,7 @@ export const esOverrides = {
         masterPasswordPlaceholder: 'Contraseña maestra'
       }
     },
-    notifications: {
-      title: 'Notificaciones',
-      intro: 'Notificaciones del sistema operativo (no avisos dentro de la app). Por dispositivo.',
-      enableAll: 'Activar notificaciones',
-      enableAllDesc: 'Desactivado silencia todas las notificaciones siguientes.',
-      focusedHint: 'Los avisos de finalización solo se activan cuando Mira está en segundo plano.',
-      kinds: {
-        approval: {
-          label: 'Se necesita aprobación',
-          description: 'Un comando espera que lo apruebes o rechaces.'
-        },
-        input: {
-          label: 'Se necesita información',
-          description: 'Mira hizo una pregunta o necesita una contraseña o un secreto.'
-        },
-        turnDone: {
-          label: 'Respuesta lista',
-          description: 'Terminó un turno mientras Mira estaba en segundo plano.'
-        },
-        turnError: {
-          label: 'El turno falló',
-          description: 'Errores de turnos en segundo plano.'
-        },
-        backgroundDone: {
-          label: 'Tarea en segundo plano finalizada',
-          description: 'Se completó un comando de terminal en segundo plano.'
-        },
-        credits: {
-          label: 'Avisos de crédito',
-          description: 'El acceso a los créditos se pausa o se restablece.'
-        },
-        plugin: {
-          label: 'Notificaciones de complementos',
-          description: 'Un complemento de escritorio envió una notificación mientras Mira estaba en segundo plano.'
-        }
-      },
-      test: 'Enviar notificación de prueba',
-      testTitle: 'Mira',
-      testBody: 'Las notificaciones funcionan.',
-      testSent:
-        'Prueba enviada. Si no aparece nada, revisa los permisos de notificaciones del sistema operativo y el modo Concentración o No molestar.',
-      testUnsupported: 'Este sistema no admite notificaciones nativas.',
-      completionSoundTitle: 'Sonido de finalización',
-      completionSoundDesc:
-        'Reproduce un sonido cuando termina el turno de un agente. Elige un ajuste predefinido y pruébalo aquí.',
-      completionSoundPreview: 'Vista previa'
-    },
+    notifications: esNotifications,
     sections: {
       model: 'Modelo',
       chat: 'Chat',
@@ -1235,9 +1172,7 @@ export const esOverrides = {
         maxLines: 'Límite de páginas de archivo',
         maxLineLength: 'Límite de longitud de línea'
       },
-      codeExecution: {
-        mode: 'Modo de ejecución de código'
-      },
+      codeExecution: { mode: 'Modo de ejecución de código' },
       approvals: {
         mode: 'Modo de aprobación',
         timeout: 'Tiempo límite de aprobación',
@@ -1510,12 +1445,6 @@ export const esOverrides = {
         }
       }
     },
-    poolLimits: {
-      warmBotBackendsAria: 'Backends de bots en caliente',
-      warmBotBackendsTitle: 'Backends de bots en caliente',
-      backendIdleTimeoutAria: 'Tiempo de inactividad del backend en milisegundos',
-      backendIdleTimeoutTitle: 'Tiempo de inactividad del backend'
-    },
     customEndpoints: {
       active: 'Activo',
       apiKeySet: 'Clave API configurada',
@@ -1562,9 +1491,7 @@ export const esOverrides = {
       screenRecording: 'Grabación de pantalla',
       driverHealth: 'Estado del controlador'
     },
-    about: {
-      updates: 'Actualizaciones'
-    },
+    about: { updates: 'Actualizaciones', channel: esUpdateChannel },
     config: {
       minimizeToTrayTitle: 'Minimizar a la bandeja',
       minimizeToTrayDesc:
@@ -1597,12 +1524,6 @@ export const esOverrides = {
       disableF12Title: 'Desactivar DevTools con F12',
       disableF12Desc:
         'Impide que F12 abra las herramientas para desarrolladores. Ctrl+Shift+I (o Cmd+Opt+I en Mac) sigue funcionando.',
-      developerTitle: 'Desarrollador',
-      resetOnboardingTitle: 'Restablecer la configuración inicial',
-      resetOnboardingDesc:
-        'Borra los chats de configuración, reconstruye el perfil de configuración y vuelve a ejecutar la configuración inicial. Tus propios perfiles, chats y plugins se conservan.',
-      resetOnboardingAction: 'Restablecer',
-      resetOnboardingFailed: 'No se pudo restablecer la configuración inicial',
       attachmentSizeTitle: 'Tamaño máximo de vista previa / carga de imagen',
       attachmentSizeDesc:
         'Tamaño máximo de archivo local que el escritorio cargará para vistas previas y adjuntos de imagen, en MB. El valor por defecto es 16. Los adjuntos remotos no-imagen usan un límite separado de 256 MB. Un valor muy alto carga el archivo completo en memoria y puede congelar o bloquear la app.',
@@ -1761,9 +1682,7 @@ export const esOverrides = {
     },
     gateway: {
       loading: 'Cargando ajustes del gateway...',
-      unavailableTitle: 'Ajustes del gateway no disponibles',
-      unavailableDesc:
-        'Los ajustes de conexión solo se pueden cambiar desde la app Mira Desktop en el equipo que la ejecuta.',
+      ...esGatewayHost,
       title: 'Conexión del gateway',
       envOverride: 'anulación de entorno',
       intro:
@@ -1773,8 +1692,7 @@ export const esOverrides = {
         'Un ajuste de inicio externo a la app eligió esta conexión, así que las opciones de abajo son de solo lectura. Reinicia Mira sin ese ajuste (o pregunta a quien lo configuró) para cambiarla aquí.',
       modeTitle: 'Modo de conexión',
       localTitle: 'Gateway local',
-      localDesc:
-        'Inicia un backend privado de Mira en localhost. Es el valor predeterminado y funciona sin conexión.',
+      localDesc: 'Inicia un backend privado de Mira en localhost. Es el valor predeterminado y funciona sin conexión.',
       remoteTitle: 'Gateway remoto',
       remoteDesc: 'Conecta esta shell de escritorio a un backend remoto de Mira.',
       remoteAuthHint:
@@ -1912,7 +1830,11 @@ export const esOverrides = {
       sshErrUpdateRequired: 'Actualiza Mira en el host remoto antes de conectarte con Desktop SSH.',
       sshErrInteractiveAuth:
         'Tailscale SSH requiere una comprobación interactiva del navegador. Ejecuta `ssh <host> true` en la terminal, completa la comprobación y vuelve a intentarlo; Mira ejecuta SSH de forma no interactiva.',
-      sshErrUnknown: 'Falló la conexión SSH.'
+      sshErrUnknown: 'Falló la conexión SSH.',
+unavailableTitle: 'Ajustes del gateway no disponibles',
+unavailableDesc:
+        'Los ajustes de conexión solo se pueden cambiar desde la app Mira Desktop en el equipo que la ejecuta.',
+
     },
     keys: {
       loading: 'Cargando claves API y credenciales...',
@@ -1971,70 +1893,7 @@ export const esOverrides = {
       deepLinkErrorUrl: 'Solo se permiten URL de servidor http:// y https://.',
       deepLinkErrorTooLarge: 'La configuración supera el límite de 32 KB.'
     },
-    model: {
-      setupProviderFallback: 'proveedor',
-      setUpProvider: name => `Configurar ${name}`,
-      staleAuxBefore: (count, names) =>
-        count === 1
-          ? `${count} tarea auxiliar (${names}) todavía se ejecuta en `
-          : `${count} tareas auxiliares (${names}) todavía se ejecutan en `,
-      staleAuxAfter: ', no en tu modelo principal.',
-      staleAuxOtherProviders: 'otros proveedores',
-      moaEnabled: 'Activado',
-      moaSetDefault: 'Establecer como predeterminado',
-      moaNewPresetPlaceholder: 'nuevo preajuste',
-      moaAddPreset: 'Añadir preajuste',
-      customModel: 'Modelo personalizado…',
-      customModelPlaceholder: 'ID del modelo',
-      chooseFromList: 'Elegir de la lista',
-      moaDefault: 'Predeterminado:',
-      moaReferenceToggle: (enabled, index) => `${enabled ? 'Desactivar' : 'Activar'} la referencia ${index}`,
-      moaReferenceTitle: index => `Referencia ${index}`,
-      moaAddReference: 'Añadir modelo de referencia',
-      loading: 'Cargando configuración de modelo...',
-      appliesDesc:
-        'Se aplica a sesiones nuevas. Usa el selector de modelo en el compositor para cambiar el chat activo.',
-      provider: 'Proveedor',
-      model: 'Modelo',
-      applying: 'Aplicando...',
-      mainAppliedTitle: 'Modelo principal actualizado',
-      mainAppliedMessage: model => `Las sesiones nuevas usarán ${model}.`,
-      defaultsLabel: 'Valores predeterminados',
-      reasoning: 'Razonamiento',
-      reasoningOff: 'Desactivado',
-      speed: 'Velocidad',
-      speedStandard: 'Estándar',
-      defaultsFailed: 'No se pudieron guardar los valores predeterminados del modelo',
-      loadFailed: 'No se pudieron cargar los modelos',
-      restartRequired:
-        'Este backend ejecuta código antiguo tras una actualización. Reinícialo para cargar el código nuevo.',
-      restartBackend: 'Reiniciar backend',
-      restartingBackend: 'Reiniciando backend...',
-      restartFailed: 'No se pudo reiniciar el backend',
-      auxiliaryTitle: 'Modelos auxiliares',
-      resetAllToMain: 'Restablecer todos al principal',
-      staleAuxDismiss: 'No volver a mostrar',
-      auxiliaryDesc:
-        'Las tareas auxiliares usan el modelo principal de forma predeterminada. Asigna un modelo dedicado a cualquier tarea para anularlo.',
-      setToMain: 'Usar principal',
-      change: 'Cambiar',
-      autoUseMain: 'auto · usar modelo principal',
-      inheritMainEffort: 'heredar · esfuerzo del modelo principal',
-      inheritsFrom: task => `hereda de ${task}`,
-      followTask: task => `Seguir ${task}`,
-      providerDefault: '(predeterminado del proveedor)',
-      fallbackAdd: 'Añadir respaldo',
-      fallbackEmpty: 'No hay modelos de respaldo; se usa el modelo predeterminado salvo que falle.',
-      notInCatalog: 'no está en la lista de modelos de este proveedor; las llamadas pueden recurrir a un respaldo.',
-      moaTitle: 'Mixture of Agents',
-      moaPreset: 'Preajuste',
-      moaDescription:
-        'Configura preajustes con nombre que aparecen como modelos del proveedor Mixture of Agents. El agregador es el modelo que actúa: ejecuta cada paso del bucle de herramientas, y casi todo el coste de la ejecución se factura a su proveedor. Por defecto, las referencias solo asesoran una vez por turno del usuario.',
-      moaAggregator: 'Agregador',
-      moaAggregatorBilled: 'modelo que actúa · se factura por la ejecución',
-      moaReferenceHint: 'asesora una vez por turno por defecto',
-      tasks: esAuxTasks
-    },
+    model: esModelSettings,
     localModels: esLocalModels,
     billing: {
       perMonth: (amount: string) => `${amount}/mes`,
@@ -2137,6 +1996,15 @@ export const esOverrides = {
         effectScheduled: (targetName: string, effectiveAt: string, creditsDelta?: string) =>
           `Cambio a ${targetName}: entra en vigor ${effectiveAt}. No se cobra nada ahora; conservas tu plan actual hasta entonces.${creditsDelta ? ` Cambio de créditos mensuales: ${creditsDelta}.` : ''}`
       },
+      keepGoingOnCredits: {
+        title: 'Seguir con créditos',
+        description: 'Usa tus créditos cuando se agote el uso incluido. Desactivado: Hermes espera al reinicio.',
+        approveInBrowser: 'Aprueba Remote Spending en tu navegador para cambiar esto. Se aplica en cuanto lo apruebes.',
+        openAgain: 'Abrir de nuevo',
+        cancel: 'Cancelar',
+        approvedRetry: 'Remote Spending está aprobado, pero el cambio no se guardó.',
+        tryAgain: 'Reintentar'
+      },
       autoReload: {
         threshold: 'Umbral',
         thresholdAria: 'Umbral de recarga automática',
@@ -2216,6 +2084,20 @@ export const esOverrides = {
             captionDefault: 'Límite predeterminado',
             captionSpending: 'Gasto remoto mensual',
             valueUsed: (spent: string, limit: string) => `${spent} de ${limit} usados`
+          },
+          window: {
+            today: 'Hoy',
+            week: 'Esta semana',
+            month: 'Este mes',
+            topTier: 'Modelos grandes (mensual)',
+            barLabel: (title: string) => `${title}: uso incluido consumido`,
+            captionPaused: 'En pausa: falló el pago de la suscripción',
+            captionPausedOther: 'En pausa: consulta Facturación en el Portal',
+            captionTopTierUsedUp: 'Cuota mensual agotada, los créditos cubren el resto',
+            captionTopTierUsedUpKeepGoingOff: 'Cuota mensual agotada, los demás modelos incluidos siguen funcionando',
+            captionResetsIn: (duration: string) => `Se restablece en ${duration}`,
+            captionIncluded: 'Uso incluido',
+            valueUsed: (percent: string) => `${percent} usado`
           }
         },
         planCard: {
@@ -2605,27 +2487,14 @@ export const esOverrides = {
         unsupported_gpu: 'GPU no compatible',
         unknown: 'estado desconocido'
       },
-      catalogTitle: 'Catálogo de plugins',
-      catalogBrowse: 'Explorar',
-      catalogHide: 'Ocultar el explorador del catálogo',
-      catalogHint:
-        'Pulsa "+ Añadir a este agente" en cualquier plugin: las entradas revisadas se instalan en su commit fijado en el perfil seleccionado. Los plugins agente+escritorio incluidos ofrecen ambas mitades.',
       alreadyInstalled: (name: string) => `${name} ya está instalado en este perfil.`,
       catalogProvenance: (sha: string) =>
         `Instalado desde el catálogo de Mira${sha ? ` en el commit fijado ${sha}` : ''}.`,
       pinnedProvenance: (sha: string) =>
         `Fijado al commit ${sha}. Las actualizaciones se rechazan hasta que se reinstale con un nuevo commit fijado.`,
       pinnedBadge: (sha: string) => `fijado @ ${sha}`,
-      tierOfficial: 'oficial',
-      tierCommunity: 'comunidad',
-      updateToPin: (sha: string) => `Actualizar a ${sha}`,
-      updateFailed: (name: string) => `No se pudo actualizar ${name}`,
-      updated: (name: string) =>
-        `${name} se actualizó al commit fijado actual del catálogo. Reinicia el gateway para aplicarlo.`,
-      updateConsentTitle: (name: string) => `${name} pide más`,
-      updateConsentBody: (name: string, sha: string) =>
-        `El nuevo commit fijado de ${name} en el catálogo (${sha}) añade superficies que la versión instalada no tiene. Aplícalo solo si confías en ellas:`,
-      updateConsentConfirm: 'Aplicar actualización',
+      ...esPluginUpdate,
+      ...esPluginPreviewAccess,
       uninstall: 'Desinstalar',
       uninstallTip: (name: string, profile: string) => `Desinstalar ${name} de ${profile}`,
       uninstallConfirmTitle: (name: string) => `¿Desinstalar ${name}?`,
@@ -2652,7 +2521,16 @@ export const esOverrides = {
         secretSet: '•••••••• (configurado)',
         secretStoredAs: (env: string) =>
           `Se guarda en el .env del perfil como ${env}, nunca en config.yaml; déjalo en blanco para conservar el valor actual.`
-      }
+      },
+updateToPin: (sha: string) => `Actualizar a ${sha}`,
+updateFailed: (name: string) => `No se pudo actualizar ${name}`,
+updated: (name: string) =>
+        `${name} se actualizó al commit fijado actual del catálogo. Reinicia el gateway para aplicarlo.`,
+updateConsentTitle: (name: string) => `${name} pide más`,
+updateConsentBody: (name: string, sha: string) =>
+        `El nuevo commit fijado de ${name} en el catálogo (${sha}) añade superficies que la versión instalada no tiene. Aplícalo solo si confías en ellas:`,
+updateConsentConfirm: 'Aplicar actualización',
+
     },
     officialCatalog: 'Disponibles para instalar',
     officialPill: 'Oficial',
@@ -3329,8 +3207,11 @@ export const esOverrides = {
     exported: 'Perfil exportado',
     failedImport: 'No se pudo importar el perfil',
     failedExport: 'No se pudo exportar el perfil',
+    exportNeedsHost: name =>
+      `El navegador no puede guardar un archivo de perfil. En el host de Hermes, ejecuta: hermes profile export ${name}`,
     allProfiles: 'Todos los perfiles',
     showAllProfiles: 'Mostrar todos los perfiles',
+    notServedHere: 'No se ofrece aquí',
     switchToProfile: name => `Cambiar a ${name}`,
     switchToConnection: name => `Cambiar a ${name}`,
     switchConnectionFailed: name => `No se pudo conectar a ${name}`,
@@ -3756,8 +3637,7 @@ export const esOverrides = {
       title: 'La base de datos de sesiones está dañada',
       body: (profiles: string) =>
         `Mira no puede leer todo el historial de sesiones de ${profiles}. Los chats que faltan en esta lista no se eliminaron; el archivo donde se guardan está dañado.`,
-      action:
-        'Sal de Mira en este perfil y luego inspecciona el archivo sin modificarlo, o restaura una instantánea:',
+      action: 'Sal de Mira en este perfil y luego inspecciona el archivo sin modificarlo, o restaura una instantánea:',
       guide: 'Guía de recuperación'
     },
     noFilterMatches: 'Ninguna sesión coincide con estos filtros',
@@ -3855,6 +3735,7 @@ export const esOverrides = {
     openDirective: 'Abrir',
     queueMessage: 'Poner mensaje en cola',
     steer: 'Guiar la ejecución actual',
+    redirect: 'Redirigir la ejecución actual',
     stop: 'Detener',
     send: 'Enviar',
     speaking: 'Hablando',
@@ -3959,7 +3840,7 @@ export const esOverrides = {
       '/init': 'Generar o actualizar las instrucciones de proyecto AGENTS.md a partir de un análisis del repositorio',
       '/suggestions': 'Revisar las automatizaciones sugeridas (aceptar/descartar)',
       '/blueprint': 'Configurar una automatización a partir de una plantilla',
-      '/browser': 'Gestionar el navegador del agente [connect|disconnect|status|use]',
+      '/browser': 'Gestionar el navegador del agente [connect|disconnect|status]',
       '/palette': 'Abrir la paleta de comandos aproximada (también Ctrl+P)',
       '/usage':
         'Mostrar el uso de tokens y los límites de frecuencia; `reset` canjea un restablecimiento de límite de Codex acumulado',
@@ -3995,11 +3876,6 @@ export const esOverrides = {
     editingQueuedInComposer: 'Editando turno en cola en el compositor',
     restoredDraftNotice: 'Se restauró tu mensaje sin enviar',
     restoredDraftUndo: 'Deshacer',
-    localSetup: {
-      title: 'Esto podría ejecutarse en este equipo',
-      text: (model: string) => `${model} cabe en este equipo. Gratis, y los chats se quedan en este equipo.`,
-      action: 'Muéstrame'
-    },
     queueEdit: 'Editar',
     queueExpand: 'Expandir',
     queueCollapse: 'Contraer',
@@ -4009,6 +3885,12 @@ export const esOverrides = {
     queueDelete: 'Borrar',
     queueResume: 'Reanudar',
     queueResumeTip: 'La cola se pausó al detener; reanuda el envío de los turnos en cola',
+    queueLostNote: 'Turno perdido durante el reinicio',
+    restoreImageDraft: 'Restaurar borrador con imagen',
+    queueCancelFailed: 'No se pudo quitar el turno en cola',
+    queueLostDiscard: 'Descartar',
+    queueLostDiscardTip:
+      'El gateway se reinició a mitad del turno y no puede terminarlo. Descártalo para que se ejecuten los turnos en cola que esperan detrás.',
     queueStuckTitle: 'Mensaje en cola no enviado',
     queueStuckBody: 'Un turno en cola no llegó a enviarse. Sigue en la cola; vuelve a intentarlo.',
     queueDroppedTitle: 'Entrada en cola descartada',
@@ -4040,44 +3922,23 @@ export const esOverrides = {
     snippetsDesc: 'Elige un prompt inicial para insertarlo en el compositor.',
     dropFiles: 'Suelta archivos para adjuntarlos',
     dropSession: 'Suelta para enlazar este chat',
-    mcpSuggestions: {
-      label: server => `Añadir ${server}`,
-      tip: keyword => `Sugerido porque mencionaste "${keyword}" — haz clic para conectar`,
-      connecting: server => `Conectando ${server}…`,
-      cancelTip: 'Haz clic para cancelar',
-      added: server => `${server} añadido`,
-      addedTip: 'Conectado — sus herramientas están listas en este chat',
-      connectFailed: server => `No se pudo conectar ${server}`
-    },
-    skillSuggestions: {
-      label: skill => `Usar habilidad: ${skill}`,
-      tip: skill => `Mencionaste "${skill}" — haz clic para empezar con esa habilidad`,
-      done: skill => `Añadido /${skill}`,
-      doneTip: 'La habilidad se carga cuando envíes'
-    },
-    githubSuggestions: {
-      label: 'Configurar GitHub',
-      tip: 'GitHub funciona aquí mediante las skills de la CLI gh: haz clic para conectar tu cuenta',
-      done: 'Se añadió /github-auth',
-      doneTip: 'Envía el mensaje y el agente te guiará para iniciar sesión en GitHub'
-    },
-    repairSuggestions: {
-      label: server => `Reconectar ${server}`,
-      tip: server => `Una llamada a ${server} acaba de fallar con un error de conexión`,
-      working: server => `Reconectando ${server}…`,
-      workingTip: 'Haz clic para cancelar',
-      done: server => `${server} reconectado`,
-      doneTip: 'Las credenciales nuevas están activas en este chat',
-      failed: server => `No se pudo reconectar ${server}`
-    },
-    cronSuggestions: {
-      label: 'Programar esto',
-      tip: phrase => `"${phrase}" suena recurrente — ejecútalo con un horario en su lugar`,
-      prefix: 'Configúralo como tarea programada:',
-      done: 'Marcado para programar',
-      doneTip: 'Envíalo y el agente creará la tarea'
-    },
-    snippets: esPromptSnippets
+    snippets: {
+      codeReview: {
+        label: 'Revisión de código',
+        description: 'Audita el cambio actual en busca de regresiones, casos límite omitidos y pruebas faltantes.',
+        text: 'Revisa esto para detectar bugs, regresiones y pruebas faltantes.'
+      },
+      implementationPlan: {
+        label: 'Plan de implementación',
+        description: 'Esboza un enfoque antes de tocar código para mantener el diff enfocado.',
+        text: 'Haz un plan de implementación conciso antes de cambiar código.'
+      },
+      explainThis: {
+        label: 'Explica esto',
+        description: 'Recorre cómo funciona el código seleccionado y enlaza los archivos clave.',
+        text: 'Explica cómo funciona esto y señala los archivos clave.'
+      }
+    }
   },
   statusStack: {
     hideStack: 'Ocultar la pila de estado',
@@ -4166,7 +4027,7 @@ export const esOverrides = {
       heartbeatEveryHours: (hours: number) => `cada ${hours} h`,
       heartbeatEverySeconds: (seconds: number) => `cada ${seconds} s`,
       heartbeatNext: (time: string) => `próximo ${time}`,
-      heartbeatDueWaitingForIdle: 'pendiente: esperando inactividad',
+      dueWaitingForIdle: 'pendiente: esperando inactividad',
       heartbeatActions: 'Acciones del heartbeat',
       pauseHeartbeat: 'Pausar heartbeat',
       resumeHeartbeat: 'Reanudar heartbeat',
@@ -4351,8 +4212,7 @@ export const esOverrides = {
     copy: 'Copiar',
     copied: 'Copiado',
     done: 'Listo',
-    applyingBody:
-      'El actualizador de Mira tomará el control en su propia ventana y volverá a abrir Mira al terminar.',
+    applyingBody: 'El actualizador de Mira tomará el control en su propia ventana y volverá a abrir Mira al terminar.',
     applyingBodyBackend:
       'El backend remoto está aplicando la actualización y se reiniciará. Mira se reconectará automáticamente cuando vuelva a estar disponible.',
     applyingClose: 'Mira se cerrará para aplicar la actualización.',
@@ -4397,19 +4257,6 @@ export const esOverrides = {
       noReturn:
         'El backend no volvió a estar disponible. Puede que la actualización no se haya completado; revisa el host del backend.'
     }
-  },
-  handoffTour: {
-    localTitle: 'Este equipo puede ejecutar modelos localmente',
-    localText: (model: string) =>
-      `${model} encaja con tu hardware. Funciona gratis y los chats nunca salen de este equipo. Elígelo aquí, en el menú de modelos, cuando quieras.`,
-    profileTitle: 'Tu primera tarea se ejecuta en el perfil predeterminado',
-    profileText:
-      'Esta barra cambia de perfil. El que está iluminado ahora es el predeterminado, donde está la sesión de la tarea. El otro es el perfil de configuración, donde está el chat de bienvenida.',
-    sessionsTitle: 'Cada perfil tiene sus propias sesiones',
-    sessionsText:
-      'Esta lista pertenece al perfil predeterminado. Nueva sesión crea una en el perfil que esté seleccionado. Cambia de perfil en la barra y la lista cambia con él.',
-    stayTitle: 'Mira está a un clic',
-    stayText: 'Cambia al perfil de configuración y abre Bienvenida a Mira siempre que necesites ayuda. Se queda ahí.'
   },
   install: {
     stageStates: {
@@ -4506,29 +4353,25 @@ export const esOverrides = {
     signIn: 'Iniciar sesión',
     signInHeading: 'Inicia sesión con una cuenta de Nous para desbloquear más modelos y herramientas.',
     settingUp: 'Configurando la inferencia gratuita…',
-    codeBody: 'Introduce este código en tu navegador para terminar de iniciar sesión.',
-    copyLink: 'Copiar enlace',
+    finishInBrowser: 'Termina en tu navegador',
     doNotShare: 'No compartas este código.',
+    openPageAgain: 'Abrir la página de nuevo',
     waiting: 'Esperando el inicio de sesión…',
     finishingHeading: 'Terminando el inicio de sesión…',
     finishingBody: 'Aprobado en el navegador. Obteniendo los tokens de tu cuenta.',
-    signedInAs: (email: string) => `Sesión iniciada como ${email}`,
+    signedInAsLabel: 'Sesión iniciada como',
     signedIn: 'Sesión iniciada.',
     completedBody: 'Tu cuenta ya incluye inferencia y herramientas.',
+    reconnect: 'Reconectar',
+    openConnectors: 'Abrir Conectores',
     defaultModel: 'Modelo predeterminado',
     change: 'Cambiar',
     done: 'Listo',
     notNow: 'Ahora no',
     tryAgain: 'Reintentar',
-    startAgain: 'Empezar de nuevo',
     didNotComplete: 'No se completó el inicio de sesión',
-    rejectedBody: 'No pasa nada, sigues en el servicio gratuito de Nous. Inicia sesión cuando quieras.',
-    supersededBody:
-      'Un código de inicio de sesión más reciente sustituyó a este. Usa el más reciente o empieza de nuevo.',
     timedOutHeading: 'Ese enlace de inicio de sesión caducó',
     timedOutBody: 'Empieza de nuevo cuando quieras. Sigues en el servicio gratuito de Nous.',
-    retiredBody:
-      'Tu sesión terminó antes de completar el inicio de sesión. Mira iniciará una nueva; luego vuelve a iniciar sesión cuando quieras.',
     errorBody: 'No se completó el inicio de sesión. Vuelve a intentarlo cuando quieras.',
     busyHeading: 'Ya casi está',
     busyBody: (wait: string) =>
@@ -4585,7 +4428,27 @@ export const esOverrides = {
     wasPrice: 'antes',
     customModel: 'Modelo personalizado',
     addCustomModelAction: 'Añadir modelo personalizado…',
-    customModelPlaceholder: 'Escribe un ID de modelo, p. ej., openai/gpt-5'
+    customModelPlaceholder: 'Escribe un ID de modelo, p. ej., openai/gpt-5',
+    today: 'Hoy',
+    week: 'Semana',
+    month: 'Mes',
+    topTier: 'Modelos grandes (mensual)',
+    included: 'Todos los modelos de abajo están incluidos',
+    pausedRenewal: 'en pausa: renovación impagada',
+    pausedOther: 'en pausa',
+    includedUsedUp: 'Uso incluido agotado',
+    limitReached: (name: string) => `Límite ${name} alcanzado`,
+    limitNames: { day: 'diario', month: 'mensual', top_tier: 'mensual de modelos grandes', week: 'semanal' },
+    limitThenCredits: 'los modelos de pago ahora usan tus créditos (pago por uso)',
+    limitThenCreditsLarge: 'los modelos grandes ahora usan tus créditos (pago por uso)',
+    limitThenWait: 'solo modelos gratuitos hasta entonces',
+    limitThenWaitLarge: 'modelos grandes en pausa hasta entonces',
+    percentUsed: (percent: string) => `${percent} usado`,
+    resetsIn: (duration: string) => `se restablece en ${duration}`,
+    usageLevels: { free: 'Gratis', top_tier: 'Grande' },
+    sectionRecommended: 'Recomendados',
+    sectionOther: 'Otros modelos',
+    largeFootnote: 'Los modelos grandes también cuentan para tu límite mensual de modelos grandes.'
   },
   modelVisibility: {
     title: 'Modelos',
@@ -4753,6 +4616,8 @@ export const esOverrides = {
     }
   },
   rightSidebar: {
+    terminalDropUnquotable: (shell, paths) =>
+      `Estos nombres no se pueden escribir de forma segura en ${shell}: ${paths}`,
     aria: 'Barra lateral derecha',
     panelsAria: 'Paneles de la barra lateral derecha',
     files: 'Sistema de archivos',
@@ -4854,62 +4719,7 @@ export const esOverrides = {
       sentMessage: count =>
         `${count} ${count === 1 ? 'entrada de registro añadida' : 'entradas de registro añadidas'} al compositor`
     },
-    web: {
-      appFailedToBoot: 'La app de vista previa no arrancó',
-      serverNotFound: 'Servidor no encontrado',
-      remoteLoopback:
-        'Esta dirección apunta al equipo que ejecuta tu agente, no a este. El panel del navegador carga las páginas localmente, así que un servidor de desarrollo remoto necesita un reenvío de puertos o un nombre de host accesible.',
-      failedToLoad: 'No se pudo cargar la vista previa',
-      tryAgain: 'Intentar de nuevo',
-      restarting: 'Mira se está reiniciando...',
-      askRestart: 'Pedir a Mira que reinicie el servidor',
-      lookingRestart: taskId => `Mira está buscando un servidor de vista previa para reiniciar (${taskId})`,
-      restartingTitle: 'Reiniciando servidor de vista previa',
-      restartingMessage:
-        'Mira está trabajando en segundo plano. Mira la consola de vista previa para ver el progreso.',
-      startRestartFailed: message => `No se pudo iniciar el reinicio del servidor: ${message}`,
-      restartFailed: 'Falló el reinicio del servidor',
-      hideConsole: 'Ocultar consola de vista previa',
-      showConsole: 'Mostrar consola de vista previa',
-      hideDevTools: 'Ocultar DevTools de vista previa',
-      openDevTools: 'Abrir DevTools de vista previa',
-      goBack: 'Atrás',
-      goForward: 'Adelante',
-      reload: 'Recargar página',
-      address: 'Dirección',
-      addressPlaceholder: 'Introduce una dirección',
-      blankPageBody: 'Escribe una dirección arriba para navegar o pide a Mira que abra una página.',
-      finishedRestarting: message =>
-        `Mira terminó de reiniciar el servidor de vista previa${message ? `: ${message}` : ''}`,
-      failedRestarting: message => `Falló el reinicio del servidor: ${message}`,
-      unknownError: 'error desconocido',
-      restartedTitle: 'Servidor de vista previa reiniciado',
-      reloadingNow: 'Recargando la vista previa ahora.',
-      restartFailedTitle: 'Falló el reinicio de la vista previa',
-      restartFailedMessage: 'Mira no pudo reiniciar el servidor.',
-      stillWorking:
-        'Mira sigue trabajando, pero aún no llegó ningún resultado de reinicio. Puede que el comando del servidor siga en primer plano.',
-      workspaceReloading: 'El espacio de trabajo cambió, recargando vista previa',
-      fileChanged: url => `Archivo cambiado, recargando vista previa: ${url}`,
-      filesChanged: (count, url) => `${count} cambios de archivo, recargando vista previa: ${url}`,
-      watchFailed: message => `No se pudo vigilar el archivo de vista previa: ${message}`,
-      moduleMimeDescription:
-        'Los scripts de módulo se están sirviendo con el tipo MIME incorrecto. Normalmente significa que un servidor de archivos estáticos sirve una app Vite/React en lugar del dev server del proyecto.',
-      loadFailedConsole: (code, message) => `Carga fallida${code ? ` (${code})` : ''}: ${message}`,
-      unreachableDescription: 'No se pudo acceder a la página de vista previa.',
-      openTarget: url => `Abrir ${url}`,
-      fallbackTitle: 'Vista previa',
-      annotate: 'Anotar',
-      annotateOn: 'Dejar de anotar',
-      annotateNeedPage: 'Primero abre una página en el navegador integrado.',
-      annotateFailed: 'No se pudo iniciar el modo de anotación',
-      commenting: 'Comentando',
-      addComments: (count: number) => (count === 1 ? 'Añadir 1 comentario' : `Añadir ${count} comentarios`),
-      commentPlaceholder: 'Añade un comentario...',
-      commentTitle: (n: number) => `Comentario ${n}`,
-      saveComment: 'Guardar',
-      cancelComment: 'Cancelar comentario'
-    }
+    web: esPreviewWeb
   },
   interfaceMode: {
     title: 'Modo de interfaz',
@@ -5025,33 +4835,9 @@ export const esOverrides = {
       react: 'Reaccionar',
       dismissError: 'Descartar error',
       responseStopped: 'Respuesta detenida',
-      errorLayers: {
-        auth: 'Problema de inicio de sesión',
-        billing: 'Créditos agotados',
-        disk: 'Disco lleno',
-        endpoint: 'No se puede conectar con tu servidor de modelos',
-        gateway: 'Mira tuvo un problema',
-        generic: 'Mira no pudo terminar esta respuesta',
-        provider: 'El servicio de IA devolvió un error',
-        runtime: 'Mira tuvo un problema',
-        streaming: 'La respuesta se cortó'
-      },
-      errorLayerBodies: {
-        auth: 'El servicio de IA rechazó tu inicio de sesión. Revisa las credenciales de este proveedor y vuelve a enviar el mensaje.',
-        billing: 'Tu cuenta no tiene créditos para este proveedor. Recarga o cambia de proveedor y vuelve a enviarlo.',
-        disk: 'Tu disco está lleno, así que Mira no pudo guardar esta conversación. Libera espacio y reinténtalo.',
-        endpoint:
-          'Mira no puede conectar con tu servidor de modelos personalizado. Comprueba que esté en ejecución y vuelve a enviar el mensaje.',
-        gateway:
-          'Mira tuvo un problema interno al iniciar esta respuesta. Vuelve a enviar el mensaje; si sigue ocurriendo, envía un diagnóstico.',
-        generic: 'Algo salió mal mientras Mira respondía. Reinténtalo o copia los detalles si sigue ocurriendo.',
-        provider:
-          'El servicio de IA no pudo completar esta solicitud. Reinténtalo en un momento o cambia de proveedor.',
-        runtime:
-          'Mira tuvo un problema interno al iniciar esta respuesta. Vuelve a enviar el mensaje; si sigue ocurriendo, envía un diagnóstico.',
-        streaming: 'La conexión se cortó antes de que terminara la respuesta. Reinténtalo para enviarla de nuevo.'
-      },
+      ...esErrorLayers,
       errorCodes: {
+        ...esErrorCodes,
         auth: {
           title: (provider: string) => `${provider} rechazó tu inicio de sesión`,
           body: (provider: string) =>
@@ -5188,6 +4974,10 @@ export const esOverrides = {
         free_tier_refused: {
           title: 'Mira no pudo enviarlo sin iniciar sesión',
           body: 'Iniciar sesión con una cuenta de Nous es gratis.'
+        },
+        usage_window: {
+          title: 'Uso incluido agotado',
+          body: 'El uso incluido de tu plan está agotado hasta el reinicio. Añade créditos en /topup para seguir.'
         }
       },
       errorAuthKinds: {
@@ -5204,6 +4994,12 @@ export const esOverrides = {
       errorGenericProvider: 'El servicio de IA',
       errorToastTitle: 'Mira no pudo terminar la respuesta',
       errorRetry: 'Reintentar',
+      errorSwitchToModel: (model, note) => (note ? `Cambiar a ${model} (${note})` : `Cambiar a ${model}`),
+      errorSwitchModelFailed: 'No se pudo cambiar de modelo',
+      errorUseCredits: 'Activar Seguir con créditos',
+      errorUseCreditsFailed: 'No se pudo activar Seguir con créditos',
+      errorAddCredits: 'Añadir créditos',
+      errorOpenBillingSettings: 'Abrir ajustes de facturación',
       errorLimitResets: (time: string) => `El límite se restablece a las ${time}`,
       errorRetryAtReset: (time: string) => `Reintentar cuando se restablezca el límite (${time})`,
       errorRetryScheduled: (time: string, wait: string) => `Reintentando a las ${time}, dentro de ${wait}`,
@@ -5247,7 +5043,30 @@ export const esOverrides = {
       restoreNext: 'Restaurar checkpoint siguiente',
       goForward: 'Avanzar',
       sendEdited: 'Enviar edición',
-      attachingFile: 'Adjuntando…'
+      attachingFile: 'Adjuntando…',
+errorLayers: {auth: 'Problema de inicio de sesión',
+billing: 'Créditos agotados',
+disk: 'Disco lleno',
+endpoint: 'No se puede conectar con tu servidor de modelos',
+gateway: 'Mira tuvo un problema',
+generic: 'Mira no pudo terminar esta respuesta',
+provider: 'El servicio de IA devolvió un error',
+runtime: 'Mira tuvo un problema',
+streaming: 'La respuesta se cortó'},
+errorLayerBodies: {auth: 'El servicio de IA rechazó tu inicio de sesión. Revisa las credenciales de este proveedor y vuelve a enviar el mensaje.',
+billing: 'Tu cuenta no tiene créditos para este proveedor. Recarga o cambia de proveedor y vuelve a enviarlo.',
+disk: 'Tu disco está lleno, así que Mira no pudo guardar esta conversación. Libera espacio y reinténtalo.',
+endpoint:
+          'Mira no puede conectar con tu servidor de modelos personalizado. Comprueba que esté en ejecución y vuelve a enviar el mensaje.',
+gateway:
+          'Mira tuvo un problema interno al iniciar esta respuesta. Vuelve a enviar el mensaje; si sigue ocurriendo, envía un diagnóstico.',
+generic: 'Algo salió mal mientras Mira respondía. Reinténtalo o copia los detalles si sigue ocurriendo.',
+provider:
+          'El servicio de IA no pudo completar esta solicitud. Reinténtalo en un momento o cambia de proveedor.',
+runtime:
+          'Mira tuvo un problema interno al iniciar esta respuesta. Vuelve a enviar el mensaje; si sigue ocurriendo, envía un diagnóstico.',
+streaming: 'La conexión se cortó antes de que terminara la respuesta. Reinténtalo para enviarla de nuevo.'},
+
     },
     approval: {
       gatewayDisconnected:
@@ -5269,49 +5088,8 @@ export const esOverrides = {
         `Esto añade el patrón “${pattern}” a tu allowlist permanente (~/.hermes/config.yaml). Mira no volverá a preguntar por comandos como este, ni en esta sesión ni en futuras.`,
       alwaysAllow: 'Permitir siempre'
     },
-    clarify: {
-      notReady: 'La solicitud de aclaración aún no está lista',
-      gatewayDisconnected: 'Mira está sin conexión ahora mismo. Reconéctate y vuelve a enviarlo.',
-      sendFailed: 'No se pudo enviar la respuesta de aclaración',
-      loadingQuestion: 'Cargando pregunta…',
-      other: 'Otro (escribe tu respuesta)',
-      placeholder: 'Escribe tu respuesta…',
-      skip: 'Omitir',
-      skipped: 'Omitido',
-      noAnswer: 'Sin respuesta',
-      confirmAndContinueLabel: 'Confirmar y continuar',
-      singleSelectHint: 'Elige una',
-      multiSelectHint: 'Elige todas las que correspondan',
-      oneQuestion: '1 pregunta',
-      questionProgress: (answered, total) => `${answered} de ${total} respondidas`,
-      notDelivered:
-        'Esta pregunta no llegó a la app, así que no se puede responder aquí. Pulsa Detener para terminar el turno y luego responde en el chat.'
-    },
-    setupChoose: {
-      kinds: {
-        accent: 'Color de acento',
-        connectors: 'Apps',
-        layout: 'Diseño',
-        plugins: 'Plugins',
-        theme: 'Apariencia'
-      },
-      loading: 'Cargando opciones…',
-      unavailable: 'Esta lista no está disponible ahora. Responde en el chat.',
-      findApp: 'Buscar una app',
-      customColor: 'Color personalizado',
-      plugin: 'Plugin',
-      startsLater: 'Los configuraremos cuando empieces.'
-    },
-    startChat: {
-      starting: title => `Iniciando «${title}»…`,
-      startingUntitled: 'Iniciando un chat…',
-      untitled: 'Chat nuevo',
-      notStarted: 'El chat no se inició',
-      retry: 'Reintentar',
-      inProfile: profile => `En ${profile}`,
-      open: 'Abrir',
-      openFailed: 'No se pudo abrir el chat'
-    },
+    clarify: esClarify,
+    themePicker: esThemePicker,
     catalogInstall: {
       preparing: 'Preparando la instalación…',
       install: 'Instalar',
@@ -5328,10 +5106,7 @@ export const esOverrides = {
         plugin: 'plugin',
         skill: 'skill'
       },
-      tier: {
-        official: 'oficial',
-        community: 'comunidad'
-      },
+      tier: { official: 'oficial', verified: 'verificado', community: 'comunidad' },
       targetProfile: (profile: string) => `Se instala en tu perfil ${profile}`,
       sendFailed: 'No se pudo enviar tu respuesta. Vuelve a intentarlo.',
       commitLabel: 'Commit',
@@ -5512,12 +5287,6 @@ export const esOverrides = {
           pending: 'Buscar en el historial de sesiones',
           pendingAction: 'Buscando'
         },
-        setup_choose: {
-          done: 'Hizo una pregunta de configuración',
-          pending: 'Haciendo una pregunta de configuración',
-          pendingAction: 'Preguntando'
-        },
-        start_chat: { done: 'Inició un chat', pending: 'Iniciando un chat', pendingAction: 'Iniciando' },
         terminal: {
           done: 'Comando ejecutado',
           pending: 'Ejecutar comando',
@@ -5669,6 +5438,7 @@ export const esOverrides = {
     imageAttach: 'Adjuntar imagen',
     imageWriteFailed: 'No se pudo escribir la imagen en disco.',
     imageAttachFailed: 'No se pudo adjuntar la imagen',
+    attachFailed: 'No se pudo adjuntar',
     pastedContent: 'Contenido pegado',
     pasteAttachFailed: 'No se pudo adjuntar el texto pegado',
     attachImages: 'Adjuntar imágenes',
@@ -5676,6 +5446,7 @@ export const esOverrides = {
     noClipboardImage: 'No se encontró ninguna imagen en el portapapeles',
     clipboardPasteFailed: 'No se pudo pegar desde el portapapeles',
     dropFiles: 'Soltar archivos',
+    dropFilesMore: (count: number) => `y ${count} más`,
     handoff: {
       pickPlatform: 'Elige un destino',
       success: platform => `Transferido a ${platform}. Puedes reanudar aquí cuando quieras.`,
@@ -5762,7 +5533,14 @@ export const esOverrides = {
       description: 'Muestra la barra lateral móvil.',
       toggle: open => `${open ? 'Mostrar' : 'Ocultar'} barra lateral`
     }
-  }
+  },
+billingBlock: {titleNous: 'Sin créditos de Nous',
+titleProvider: provider => `Sin créditos — ${provider}`,
+fallbackMessage: 'Tu cuenta se quedó sin créditos. Añade créditos para continuar.',
+openBilling: 'Abrir facturación',
+addCredits: 'Añadir créditos',
+dismiss: 'Descartar'},
+
 } satisfies TranslationOverrides
 
 export const es = defineLocale(esOverrides)

@@ -1,6 +1,6 @@
-import type { ComposerTranslations } from './types_composer'
+import type { Translations } from './types'
 
-export const enPromptSnippets: ComposerTranslations['snippets'] = {
+export const enPromptSnippets: Translations['composer']['snippets'] = {
   codeReview: {
     label: 'Code review',
     description: 'Audit the current change for regressions, dropped edge cases, and missing tests.',
@@ -18,7 +18,7 @@ export const enPromptSnippets: ComposerTranslations['snippets'] = {
   }
 }
 
-export const zhPromptSnippets: ComposerTranslations['snippets'] = {
+export const zhPromptSnippets: Translations['composer']['snippets'] = {
   codeReview: {
     label: '代码审查',
     description: '审查当前更改是否存在回归、遗漏的边界情况和缺失的测试。',
@@ -36,7 +36,7 @@ export const zhPromptSnippets: ComposerTranslations['snippets'] = {
   }
 }
 
-export const dePromptSnippets: ComposerTranslations['snippets'] = {
+export const dePromptSnippets: Translations['composer']['snippets'] = {
   codeReview: {
     label: 'Code-Review',
     description: 'Prüft die aktuelle Änderung auf Regressionen, übersehene Randfälle und fehlende Tests.',
@@ -54,7 +54,7 @@ export const dePromptSnippets: ComposerTranslations['snippets'] = {
   }
 }
 
-export const esPromptSnippets: ComposerTranslations['snippets'] = {
+export const esPromptSnippets: Translations['composer']['snippets'] = {
   codeReview: {
     label: 'Revisión de código',
     description: 'Audita el cambio actual en busca de regresiones, casos límite omitidos y pruebas faltantes.',
@@ -72,7 +72,7 @@ export const esPromptSnippets: ComposerTranslations['snippets'] = {
   }
 }
 
-export const frPromptSnippets: ComposerTranslations['snippets'] = {
+export const frPromptSnippets: Translations['composer']['snippets'] = {
   codeReview: {
     label: 'Revue de code',
     description:
@@ -91,7 +91,7 @@ export const frPromptSnippets: ComposerTranslations['snippets'] = {
   }
 }
 
-export const jaPromptSnippets: ComposerTranslations['snippets'] = {
+export const jaPromptSnippets: Translations['composer']['snippets'] = {
   codeReview: {
     label: 'コードレビュー',
     description: '回帰、エッジケースの欠落、テストの欠如を確認します。',
@@ -109,7 +109,7 @@ export const jaPromptSnippets: ComposerTranslations['snippets'] = {
   }
 }
 
-export const ruPromptSnippets: ComposerTranslations['snippets'] = {
+export const ruPromptSnippets: Translations['composer']['snippets'] = {
   codeReview: {
     label: 'Рецензия кода',
     description: 'Аудит текущих изменений на предмет регрессий, упущенных граничных случаев и недостающих тестов.',

@@ -1,5 +1,8 @@
 import './styles.css'
 import './styles/mesoInsights-scrollbar.less'
+// Install the loopback browser host before any store/App modules evaluate.
+// Electron preload remains authoritative when its bridge already exists.
+import './lib/browser-desktop-bridge-install'
 // Side-effect: reports in-flight turns to the main process for the quit guard.
 import './store/active-work'
 // Side-effect: mirrors the machine's AC/battery state for poll demotion.
@@ -10,6 +13,9 @@ import './store/translucency'
 import './store/user-bubble-transparency'
 // Side-effect: restores chat typography before the first conversation paints.
 import './store/chat-text-scale'
+// Side-effect: mirrors the keep-awake mode to main and listens for main's
+// one-time keep-awake offer. Settings loads lazily, too late for the offer.
+import './store/keep-awake'
 // Dev-only render/state churn counters. MUST precede the `react-dom` import
 // below: react-dom captures the devtools hook at module init, so bippy has to
 // install during THIS import's evaluation or every commit goes unseen
@@ -32,6 +38,7 @@ import { installClipboardShim } from './lib/clipboard'
 import { queryClient } from './lib/query-client'
 import { installRendererAnimationPauseState } from './lib/renderer-loop-pause'
 import { installSelectionCopyColorGuard } from './lib/selection-copy-colors'
+import { installBrowserTabTitle } from './store/browser-tab-title'
 import { ThemeProvider } from './themes/context'
 
 installClipboardShim()
@@ -39,6 +46,8 @@ installClipboardShim()
 // theme's computed colors inlined; without this guard a dark-theme selection
 // pastes as near-white text into light-background targets.
 installSelectionCopyColorGuard()
+// Browser host only: the tab carries session status while the user is away.
+installBrowserTabTitle()
 
 // The perf probe ships in dev, and in a production build ONLY when explicitly
 // opted in (VITE_PERF_PROBE=1) — this lets the perf harness measure a real,

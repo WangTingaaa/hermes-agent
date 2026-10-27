@@ -1,6 +1,8 @@
 import type { Translations } from './types'
+import { zhConnectorAccounts } from './zh_connector_accounts'
 
 export const zhConnectorsPage: Translations['connectorsPage'] = {
+  accounts: zhConnectorAccounts,
   title: '连接器',
   searchPlaceholder: (count: number) => `搜索 ${count} 个应用`,
   filterCategory: '类别',

@@ -18,7 +18,6 @@ import { $freeTierStatus, FREE_TIER_MODEL, freeTierSetupFailure } from '@/store/
 import { openFreeTierSignIn } from '@/store/free-tier-sign-in'
 import { $setupReadyTick } from '@/store/live-sync'
 import { $localModelsEnabled } from '@/store/local-models-flag'
-import { useTheme } from '@/themes/context'
 import {
   $desktopOnboarding,
   ackFreeTierIntro,
@@ -38,6 +37,7 @@ import {
   startProviderOAuth
 } from '@/store/onboarding'
 import { $onboardingSurfaces, onboardingSurfaceActive } from '@/store/onboarding-presence'
+import { useTheme } from '@/themes/context'
 import type { OAuthProvider } from '@/types/hermes'
 
 import { DocsLink, FlowPanel, Status } from './flow'
@@ -245,13 +245,13 @@ export function DesktopOnboardingOverlay({
     const reduce = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
 
     if (reduce) {
-      confirmOnboardingModel(ctx)
+      void confirmOnboardingModel(ctx)
 
       return
     }
 
     setLeaving(true)
-    window.setTimeout(() => confirmOnboardingModel(ctx), ONBOARDING_EXIT_MS)
+    window.setTimeout(() => void confirmOnboardingModel(ctx), ONBOARDING_EXIT_MS)
   }
 
   // The free-tier intro's three doors share one exit: consume the notice, play
@@ -542,6 +542,7 @@ function FreeTierReadyPanel({
 // upstream), so it never shows the generic "no provider configured" noise.
 function ReasonNotice({ reason }: { reason: string }) {
   const { locale } = useI18n()
+
   const displayReason = /not connected to any AI provider yet/i.test(reason)
     ? locale === 'zh'
       ? 'Mira 尚未连接任何 AI 提供方。请先选择 Nous Portal（免费层无需 API 密钥），或在聊天中输入 `/login` 登录；也可以添加 API 密钥。'

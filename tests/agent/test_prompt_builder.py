@@ -361,7 +361,9 @@ class TestBuildContextFilesPrompt:
         with patch("pathlib.Path.home", return_value=fake_home):
             result = build_context_files_prompt(cwd=str(tmp_path))
         assert "Project Context" in result
-        assert "Mira Agent" in result
+        from hermes_cli.default_soul import DEFAULT_SOUL_MD
+
+        assert DEFAULT_SOUL_MD in result
 
     def test_loads_agents_md(self, tmp_path):
         (tmp_path / "AGENTS.md").write_text("Use Ruff for linting.")
@@ -838,7 +840,7 @@ class TestEnvironmentHints:
         probe must use the bare call instead of dying on TypeError."""
         import agent.prompt_builder as _pb
 
-        monkeypatch.setenv("TERMINAL_ENV", "singularity")
+        monkeypatch.setenv("TERMINAL_ENV", "daytona")
         _pb._clear_backend_probe_cache()
 
         calls = []
@@ -859,7 +861,7 @@ class TestEnvironmentHints:
         import tools.terminal_tool_backends as _tt
         monkeypatch.setattr(_tt, "_create_environment", lambda **kw: _LegacyEnv())
 
-        assert _pb._probe_remote_backend("singularity") is not None
+        assert _pb._probe_remote_backend("daytona") is not None
         assert calls == ["bare"]
 
     def test_probe_remote_backend_ssh_is_probe_only_and_torn_down(self, monkeypatch):
