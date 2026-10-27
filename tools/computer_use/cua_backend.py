@@ -270,7 +270,7 @@ class CuaDriverBackend(_CaptureMixin, _InputMixin, ComputerUseBackend):
         self._clear_active_target()
         # Public session label (one per Hermes run) sent as `session` on every call: owns the cursor color and
         # gives config/recording state a stable owner across transport restarts. Part of the 0.20 runtime contract.
-        self._session_id: str = f"hermes-{uuid.uuid4().hex[:12]}"
+        self._session_id: str = f"Mira-{uuid.uuid4().hex[:12]}"
         self._session.set_transport_reset_callback(self._handle_transport_reset)
 
     def _handle_transport_reset(self) -> None:
@@ -323,6 +323,9 @@ class CuaDriverBackend(_CaptureMixin, _InputMixin, ComputerUseBackend):
             if max_dim:  # smaller screenshots cost less over the daemon socket and per turn
                 self._best_effort("set_config(max_image_dimension) failed",
                                   self.set_config, max_image_dimension=max_dim)
+            if not _cua_no_overlay() and (theme := _computer_use_cfg().get("cursor_theme")):
+                from tools.computer_use.cua_backend_cursor import configure_cursor_theme
+                self._best_effort("cursor theme configuration failed", configure_cursor_theme, self, str(theme))
             if _cua_no_overlay():  # belt-and-suspenders when --no-overlay is unsupported or ignored
                 self._best_effort("set_agent_cursor_enabled failed",
                                   self.set_agent_cursor_enabled, False, cursor_id=self._session_id)

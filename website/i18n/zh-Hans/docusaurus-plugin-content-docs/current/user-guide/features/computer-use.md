@@ -5,6 +5,9 @@ sidebar_position: 16
 
 # 电脑操控（macOS）
 
+虚拟指针可通过 `computer_use.no_overlay: false` 开启。
+`computer_use.cursor_theme: mira.default` 使用随程序附带的 Mira 青色主题（`#10b5c8`），无需联网下载。
+
 Hermes Agent 可以在**后台**驱动你的 Mac 桌面——点击、输入、滚动、拖拽。你的光标不会移动，键盘焦点不会改变，macOS 也不会切换 Spaces。你和 Agent 可以在同一台机器上协同工作。
 
 与大多数电脑操控集成不同，这适用于**任何支持工具调用的模型**——Claude、GPT、Gemini，或本地 vLLM 端点上的开源模型。无需关心 Anthropic 原生 schema。

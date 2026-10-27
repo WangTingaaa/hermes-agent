@@ -772,6 +772,29 @@ class TestSkillTextDescription:
 
 
 class TestBrowserExec:
+    def test_visible_cursor_follows_dispatched_browser_input(self, monkeypatch):
+        from browser_harness import helpers
+
+        calls = []
+
+        def dispatch(method, session_id=None, **params):
+            calls.append((method, params))
+            return {}
+
+        def run(cmd, code, env, timeout):
+            exec(code, {"cdp": helpers.cdp})
+            return subprocess.CompletedProcess(cmd, 0, stdout="", stderr="")
+
+        monkeypatch.setattr(helpers, "cdp", dispatch)
+        monkeypatch.setattr(bu_cli, "_find_cli", lambda: ["harness-test"])
+        monkeypatch.setattr(bu_cli, "_read_browser_cfg", lambda: {"show_cursor": True})
+        monkeypatch.setattr(bu_cli, "_run_cli_killing_process_group", run)
+        result = json.loads(bu_cli.browser_exec("cdp('Input.dispatchMouseEvent', type='mousePressed', x=40, y=60)"))
+
+        assert result.get("success"), result
+        assert [method for method, _ in calls] == ["Runtime.evaluate", "Input.dispatchMouseEvent"]
+        assert calls[-1][1] == {"type": "mousePressed", "x": 40, "y": 60}
+
     def test_missing_cli_returns_install_hint(self, monkeypatch):
         monkeypatch.setattr(bu_cli, "_find_cli", lambda: None)
         result = json.loads(bu_cli.browser_exec("print(page_info())"))

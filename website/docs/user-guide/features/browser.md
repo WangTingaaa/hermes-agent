@@ -7,6 +7,13 @@ sidebar_position: 5
 
 # Browser Automation
 
+To watch browser actions with a Mira virtual pointer and click rings, set
+`browser.show_cursor: true`. For a local browser, also set `browser.headed: true`
+so its window is visible. The pointer follows `browser_exec` CDP mouse and keyboard
+input, ignores pointer events, and disappears after 4.5 seconds of inactivity.
+`browser.cursor_color` sets its accent (default Mira teal, `#10b5c8`).
+Desktop-app control uses the separate `computer_use.no_overlay` setting.
+
 The `browser` toolset gives the agent a real web browser. One tool does the
 driving — **`browser_exec`**, which runs model-written Python against the
 browser over the Chrome DevTools Protocol (CDP) — with three companion tools

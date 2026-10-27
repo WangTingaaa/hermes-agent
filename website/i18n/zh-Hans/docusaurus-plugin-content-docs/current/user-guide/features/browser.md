@@ -7,6 +7,11 @@ sidebar_position: 5
 
 # 浏览器自动化
 
+设置 `browser.show_cursor: true` 后，`browser_exec` 的鼠标和键盘输入会显示带 Mira 操作提示的虚拟指针与点击波纹。
+本地浏览器还需设置 `browser.headed: true`，让操作窗口可见。指针不拦截页面点击，停止操作 4.5 秒后自动隐藏。
+桌面应用的虚拟指针由独立设置 `computer_use.no_overlay` 控制。
+`browser.cursor_color` 设置指针主题色，默认使用 Mira 青色 `#10b5c8`。
+
 `browser` 工具集为 Agent 提供一个真实的网页浏览器。真正负责驱动的只有一个工具——**`browser_exec`**，它通过 Chrome DevTools Protocol（CDP）在浏览器上运行模型编写的 Python；另有三个配套工具（`browser_cdp` 和 `browser_dialog` 仅在配置了 CDP 端点时提供，见[配套工具](#配套工具)）：
 
 | 工具 | 用途 |

@@ -253,6 +253,9 @@ wedging desktop input). Linux Wayland and Windows keep the overlay. Set
 `computer_use.no_overlay: false` in `config.yaml` to force the cursor on
 (or `true` to force it off) on any platform.
 
+`computer_use.cursor_theme: mira.default` selects the bundled Mira teal theme
+(`#10b5c8`), installed from local assets without a download.
+
 Tune the cursor with `cua-driver`'s CLI flags or the runtime
 `set_agent_cursor_style` MCP tool — see
 [cua.ai/docs/how-to-guides/driver/personalize-cursor](https://cua.ai/docs/how-to-guides/driver/personalize-cursor)

@@ -720,6 +720,9 @@ def browser_exec(code: str, session: str = "", timeout_s: int = _DEFAULT_TIMEOUT
     if session and not private_browser:
         code = _OWN_TAB_PREAMBLE + code
 
+    from tools.browser_cursor import with_cursor_feedback
+    code = with_cursor_feedback(code, _read_browser_cfg())
+
     workspace = _workspace_dir(task_id)
     if workspace:
         env["BH_AGENT_WORKSPACE"] = workspace

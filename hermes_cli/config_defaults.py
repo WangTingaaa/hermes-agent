@@ -421,17 +421,17 @@ DEFAULT_CONFIG = {
     },
 
     "browser": {
-        # REMOVAL NOTE: `backend` (built-in browser_* tools vs browser_exec), `snapshot_threshold`,
-        # `record_sessions`, `allow_unsafe_evaluate` and `restrict_evaluate` left with the built-in
-        # browser tools; browser_exec is the only core browser. Config v52 drops `backend` (an `off`
-        # gets a one-time notice) and copies AGENT_BROWSER_* from .env to the keys below; other
-        # user values stay untouched.
+        # Legacy browser_* options were removed; browser_exec is the only core browser. Config v52
+        # drops `backend` (notices `off`) and moves AGENT_BROWSER_* from .env; other values survive.
         "inactivity_timeout": 120,
         # Seconds a local Chromium launch may take to open its DevTools port; a launch always waits
         # at least 120 s (a cold first start unpacks the profile).
         "command_timeout": 30,
         # headed: visible Chromium window (local); skips per-turn cleanup, idle reaper still applies
         "headed": False,
+        # Mira cursor + click feedback for browser_exec's CDP input (also visible in previews).
+        "show_cursor": False,
+        "cursor_color": "#10b5c8",
         "allow_private_urls": False,  # allow private/internal IPs (localhost, 192.168.x.x, ...)
         # Local browser engine. "auto" = Chromium; "lightpanda" = `lightpanda serve` per session
         # (faster navigation, no screenshots); "chrome" is read as "auto". Ignored while a cloud
@@ -2567,10 +2567,8 @@ DEFAULT_CONFIG = {
         # Disable cua-driver's cursor overlay, which can peg a core when idle (macOS redraw loop;
         # Linux/WSL2 idle spin). None = auto (off on macOS + headless/ WSL2 Linux, on elsewhere);
         # True = always disable; False = always enable.
-        # The overlay shows where agent actions land but can peg a core when idle (macOS vImage redraw loop
-        # #47032; Linux/WSL2 idle spin #28152). cua-driver ≥ 0.6.x supports --no-overlay; Hermes also calls
-        # set_agent_cursor_enabled(false) after start_session when this is on.
         "no_overlay": None,
+        "cursor_theme": "mira.default",  # bundled, installed locally without a download
         # standard = cua-driver's own approval boundary; bounded = no runtime prompts, anything
         # outside capability_manifest fails closed. `unrestricted` is NOT accepted here: it stays on
         # the per-session YOLO toggle so config can't bypass approvals.
