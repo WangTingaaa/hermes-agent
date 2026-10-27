@@ -13,6 +13,7 @@ import { cn } from '@/lib/utils'
 
 import { catalogIcon, CatalogImage } from './catalog-card'
 import { type CatalogEntry, type CatalogKind, catalogLabel } from './catalog-data'
+import { catalogSkillCopy } from './catalog-localization'
 import { CatalogDates, CatalogHeaderMeta, CatalogMetadata } from './catalog-metadata'
 
 interface CatalogDetailProps {
@@ -30,8 +31,9 @@ interface CatalogDetailProps {
 }
 
 /** Title, author line and outbound links at the top of the inspector. */
-function CatalogDetailHeader({ entry, action, dialog }: { entry: CatalogEntry; action: ReactNode; dialog?: boolean }) {
-  const { t } = useI18n()
+function CatalogDetailHeader({ entry, kind, action, dialog }: { entry: CatalogEntry; kind: CatalogKind; action: ReactNode; dialog?: boolean }) {
+  const { t, locale } = useI18n()
+  const copy = catalogSkillCopy(entry, kind, locale)
   const c = t.catalog
   const Title = dialog ? DialogTitle : 'h3'
 
@@ -40,7 +42,7 @@ function CatalogDetailHeader({ entry, action, dialog }: { entry: CatalogEntry; a
           <div className="flex min-w-0 items-start gap-3">
             <div className="min-w-0 flex-1">
               <div className={cn('flex min-w-0 items-center gap-2', dialog && !entry.imageUrl && 'pr-7')}>
-                <Title className="min-w-0 flex-1 break-words text-lg font-semibold tracking-tight">{entry.name}</Title>
+                <Title className="min-w-0 flex-1 break-words text-lg font-semibold tracking-tight">{copy.name}</Title>
                 {action && <span className="shrink-0">{action}</span>}
               </div>
               <div className="mt-1 flex min-w-0 items-center gap-2 text-xs text-(--ui-text-tertiary)">
@@ -73,7 +75,8 @@ export function CatalogDetail({
   onRelated,
   dialog
 }: CatalogDetailProps) {
-  const { t } = useI18n()
+  const { t, locale } = useI18n()
+  const copy = catalogSkillCopy(entry, kind, locale)
   const c = t.catalog
   const root = useRef<HTMLDivElement>(null)
 
@@ -86,7 +89,7 @@ export function CatalogDetail({
 
   const metadata = [
     [c.platforms, entry.platforms.join(', ')],
-    [c.requires, entry.requiresHermes ? `Hermes ${entry.requiresHermes}` : ''],
+    [c.requires, entry.requiresHermes ? t.assistant.catalogInstall.requiresHermes(entry.requiresHermes) : ''],
     [c.pinned, entry.sha ? <code>{entry.sha.slice(0, 8)}</code> : '']
   ] as [string, ReactNode][]
 
@@ -102,10 +105,10 @@ export function CatalogDetail({
           src={entry.imageUrl}
         />
       )}
-      <CatalogDetailHeader action={action} dialog={dialog} entry={entry} />
+      <CatalogDetailHeader action={action} dialog={dialog} entry={entry} kind={kind} />
 
       <p className="whitespace-pre-wrap break-words text-[length:var(--conversation-caption-font-size)] leading-relaxed text-(--ui-text-secondary)">
-        {entry.description}
+        {copy.description}
       </p>
       {entry.overview && entry.overview !== entry.description && (
         <p className="whitespace-pre-wrap break-words text-[length:var(--conversation-caption-font-size)] leading-relaxed text-(--ui-text-tertiary)">

@@ -1,7 +1,4 @@
 export interface CanonicalGroupMessages {
-  checkingDriver: string
-  legacyRoom: string
-  startGatewayGroup: string
   members: string
   roomStopped: string
   roomDisbanded: string
@@ -33,16 +30,8 @@ export interface CanonicalGroupMessages {
   groupWorking: string
 }
 
-const groupStartFallback = {
-  checkingDriver: 'Checking group driver…',
-  legacyRoom:
-    'This is a legacy Desktop room. Start a gateway-owned group with these members; the old history stays here and is not replayed.',
-  startGatewayGroup: 'Start gateway group'
-}
-
 export const CANONICAL_GROUP_LOCALES = {
   en: {
-    ...groupStartFallback,
     roomStopped: 'Group stopped',
     roomDisbanded: 'Group disbanded',
     authorityLost: 'Group ownership changed',
@@ -74,7 +63,6 @@ export const CANONICAL_GROUP_LOCALES = {
     groupWorking: 'The group is working…'
   },
   ja: {
-    ...groupStartFallback,
     roomStopped: 'グループが停止しました',
     roomDisbanded: 'グループが解散しました',
     authorityLost: 'グループの管理元が変更されました',
@@ -106,10 +94,6 @@ export const CANONICAL_GROUP_LOCALES = {
     groupWorking: 'グループが作業中です…'
   },
   zh: {
-    ...groupStartFallback,
-    checkingDriver: '正在检查群组驱动…',
-    legacyRoom: '这是旧版桌面群聊。你可以用这些成员启动由网关管理的新群组；旧历史会保留在这里，不会重放。',
-    startGatewayGroup: '启动网关群组',
     roomStopped: '群组已停止',
     roomDisbanded: '群组已解散',
     authorityLost: '群组管理端已更改',
@@ -141,10 +125,6 @@ export const CANONICAL_GROUP_LOCALES = {
     groupWorking: '群组正在处理…'
   },
   'zh-hant': {
-    ...groupStartFallback,
-    checkingDriver: '正在檢查群組驅動…',
-    legacyRoom: '這是舊版桌面群聊。你可以用這些成員啟動由閘道管理的新群組；舊歷史會保留在這裡，不會重播。',
-    startGatewayGroup: '啟動閘道群組',
     roomStopped: '群組已停止',
     roomDisbanded: '群組已解散',
     authorityLost: '群組管理端已變更',
@@ -176,7 +156,6 @@ export const CANONICAL_GROUP_LOCALES = {
     groupWorking: '群組正在處理…'
   },
   ar: {
-    ...groupStartFallback,
     roomStopped: 'أُوقفت المجموعة',
     roomDisbanded: 'حُلّت المجموعة',
     authorityLost: 'تغيّر مالك المجموعة',
@@ -208,7 +187,6 @@ export const CANONICAL_GROUP_LOCALES = {
     groupWorking: 'المجموعة تعمل…'
   },
   ru: {
-    ...groupStartFallback,
     roomStopped: 'Группа остановлена',
     roomDisbanded: 'Группа распущена',
     authorityLost: 'Владелец группы изменился',
@@ -243,7 +221,6 @@ export const CANONICAL_GROUP_LOCALES = {
     groupWorking: 'Группа работает…'
   },
   fr: {
-    ...groupStartFallback,
     roomStopped: 'Groupe arrêté',
     roomDisbanded: 'Groupe dissous',
     authorityLost: 'Gestionnaire du groupe modifié',
@@ -257,7 +234,8 @@ export const CANONICAL_GROUP_LOCALES = {
     loadingGroup: 'Chargement du groupe…',
     loadingGroups: 'Chargement des groupes de la passerelle…',
     emptyGroups: 'Aucun groupe de passerelle trouvé.',
-    driverUnavailable: 'Pilote de groupe indisponible. Mettez à jour ou reconnectez la passerelle propriétaire.',
+    driverUnavailable:
+      'Pilote de groupe indisponible. Mettez à jour ou reconnectez la passerelle propriétaire.',
     invalidLogCursor: 'Curseur de journal de salon invalide',
     allowOnce: 'Autoriser une fois',
     deny: 'Refuser',
@@ -266,7 +244,7 @@ export const CANONICAL_GROUP_LOCALES = {
     confirmDiscard: "Confirmer l'abandon",
     unconfirmedSend:
       "L'envoi précédent n'est pas confirmé. Réessayez son texte d'origine avant d'envoyer un autre message.",
-    restoredPendingSend: "Un envoi non confirmé a été restauré. Réessayez-le avant d'envoyer un autre message.",
+    restoredPendingSend: 'Un envoi non confirmé a été restauré. Réessayez-le avant d\'envoyer un autre message.',
     groupMessage: 'Message de groupe',
     attachFiles: 'Joindre des fichiers',
     removeAttachment: 'Retirer la pièce jointe',
@@ -276,7 +254,6 @@ export const CANONICAL_GROUP_LOCALES = {
     groupWorking: 'Le groupe travaille…'
   },
   de: {
-    ...groupStartFallback,
     roomStopped: 'Gruppe angehalten',
     roomDisbanded: 'Gruppe aufgelöst',
     authorityLost: 'Gruppenverwaltung gewechselt',
@@ -311,7 +288,6 @@ export const CANONICAL_GROUP_LOCALES = {
     groupWorking: 'Die Gruppe arbeitet…'
   },
   es: {
-    ...groupStartFallback,
     roomStopped: 'Grupo detenido',
     roomDisbanded: 'Grupo disuelto',
     authorityLost: 'Propietario del grupo cambiado',
@@ -325,14 +301,16 @@ export const CANONICAL_GROUP_LOCALES = {
     loadingGroup: 'Cargando grupo…',
     loadingGroups: 'Cargando grupos de la pasarela…',
     emptyGroups: 'No se encontraron grupos de la pasarela.',
-    driverUnavailable: 'Controlador de grupo no disponible. Actualiza o vuelve a conectar la pasarela propietaria.',
+    driverUnavailable:
+      'Controlador de grupo no disponible. Actualiza o vuelve a conectar la pasarela propietaria.',
     invalidLogCursor: 'Cursor de registro de sala no válido',
     allowOnce: 'Permitir una vez',
     deny: 'Denegar',
     discardUnknown: 'Descartar trabajo con resultado desconocido',
     discardWarning: 'Puede que ya se hayan producido efectos secundarios. Descartar no los deshace.',
     confirmDiscard: 'Confirmar descarte',
-    unconfirmedSend: 'El envío anterior no está confirmado. Reintenta su texto original antes de enviar otro mensaje.',
+    unconfirmedSend:
+      'El envío anterior no está confirmado. Reintenta su texto original antes de enviar otro mensaje.',
     restoredPendingSend: 'Se restauró un envío sin confirmar. Reintántalo antes de enviar otro mensaje.',
     groupMessage: 'Mensaje de grupo',
     attachFiles: 'Adjuntar archivos',

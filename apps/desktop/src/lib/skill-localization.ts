@@ -23,7 +23,7 @@ const zhBuiltInSkills: Readonly<Record<string, LocalizedCopy>> = {
   imessage: ['iMessage 信息', '通过命令行发送和接收 iMessage 或短信'],
   'claude-code': ['Claude Code', '委派编码任务给 Claude Code CLI'],
   codex: ['Codex', '委派编码任务给 OpenAI Codex CLI'],
-  'hermes-agent': ['Hermes Agent', '配置、扩展或参与 Hermes Agent 开发'],
+  'hermes-agent': ['Mira Agent', '配置、扩展或参与 Mira Agent 开发'],
   opencode: ['OpenCode', '委派功能开发和 PR 审查给 OpenCode CLI'],
   'architecture-diagram': ['架构图', '创建软件、云基础设施和系统关系图'],
   'ascii-art': ['ASCII 艺术', '创建终端 ASCII 艺术和图像转换结果'],
@@ -67,7 +67,7 @@ const zhBuiltInSkills: Readonly<Record<string, LocalizedCopy>> = {
   'nano-pdf': ['轻量 PDF', '用自然语言修订 PDF 文本、错字和标题'],
   notion: ['Notion', '管理 Notion 页面、数据库、Markdown 和 Workers'],
   'ocr-and-documents': ['OCR 与文档', '从 PDF 和扫描件中提取文本'],
-  petdex: ['宠物图鉴', '安装并选择 Hermes 的动画宠物助手'],
+  petdex: ['宠物图鉴', '安装并选择 Mira 的动画宠物助手'],
   'teams-meeting-pipeline': ['Teams 会议流程', '汇总 Teams 会议、检查状态并重放任务'],
   arxiv: ['arXiv 论文', '按关键词、作者、分类或 ID 检索 arXiv 论文'],
   blogwatcher: ['博客监控', '通过 blogwatcher-cli 监控博客和 RSS/Atom 订阅'],
@@ -76,7 +76,7 @@ const zhBuiltInSkills: Readonly<Record<string, LocalizedCopy>> = {
   'research-paper-writing': ['研究论文写作', '规划、撰写和修改机器学习会议论文'],
   openhue: ['OpenHue 智能家居', '控制 Philips Hue 灯光、场景和房间'],
   xurl: ['社交链接解析', '通过 xurl CLI 发布、搜索和管理 X/Twitter 内容'],
-  'hermes-agent-skill-authoring': ['Hermes 技能编写', '编写符合前置元数据、校验和结构规范的 SKILL.md'],
+  'hermes-agent-skill-authoring': ['Mira 技能编写', '编写符合前置元数据、校验和结构规范的 SKILL.md'],
   'node-inspect-debugger': ['Node 调试器', '通过 --inspect 和 Chrome DevTools 调试 Node.js'],
   plan: ['任务规划', '将目标拆分为可执行的 Markdown 开发计划'],
   'python-debugpy': ['Python 调试', '使用 pdb 和 debugpy 诊断 Python 程序'],
@@ -163,8 +163,10 @@ export function localizeSkillDescription(skill: SkillInfo, locale: Locale): stri
 /** The backend extracts this Markdown preview from the actual SKILL.md. A
  * missing Chinese translation deliberately falls back to that original text. */
 export function localizeSkillDetail(skill: SkillInfo, locale: Locale): string {
-  if (!isOfficial(skill)) return skill.description
-  if (isChinese(locale)) return localizeSkillDescription(skill, locale)
+  if (!isOfficial(skill)) {return skill.description}
+
+  if (isChinese(locale)) {return localizeSkillDescription(skill, locale)}
+
   return skill.detail || skill.description
 }
 
@@ -183,10 +185,12 @@ export function localizeToolsetDescription(name: string, fallback: string, local
 /** Search must remain bilingual regardless of the selected UI language. */
 export function skillSearchTexts(skill: SkillInfo): readonly string[] {
   const localized = zhBuiltInSkills[skill.name]
+
   return [skill.name, skill.description, localized?.[0] ?? '', localized?.[1] ?? '']
 }
 
 export function toolsetSearchTexts(name: string, label: string, description: string): readonly string[] {
   const localized = zhToolsets[name]
+
   return [name, label, description, localized?.[0] ?? '', localized?.[1] ?? '']
 }

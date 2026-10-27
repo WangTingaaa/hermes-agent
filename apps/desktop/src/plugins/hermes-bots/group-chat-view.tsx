@@ -665,10 +665,10 @@ function GroupExecutionGate(props: GroupChatWorkspaceProps) {
   const canCreate = mode === 'canonical' && lookupStatus === 'missing' && canonicalGroupKeyRoute(props.group, props.origin ?? 'name') === null
 
   const message = mode !== 'canonical'
-    ? mode === 'unavailable' ? b.canonical.driverUnavailable : b.canonical.checkingDriver
+    ? mode === 'unavailable' ? b.canonical.driverUnavailable : b.group.checkingDriver
     : lookupStatus === 'pending' ? t.gatewayGroupOpen.opening
       : lookupStatus === 'failed' ? t.gatewayGroupOpen.lookupFailed
-        : canCreate ? b.canonical.legacyRoom
+        : canCreate ? b.group.legacyRoom
           : t.gatewayGroupOpen.missing
 
   return <div className="grid gap-3 p-3">
@@ -694,7 +694,7 @@ function GroupExecutionGate(props: GroupChatWorkspaceProps) {
           if (sourceCurrent()) {openGroupChat(registerCanonicalGroup(route, room), 'key')}
         })
         .catch(e => { if (sourceCurrent()) {setError(String(e))} }).finally(() => setBusy(false))
-    }}>{b.canonical.startGatewayGroup}</Button>
+    }}>{b.group.startGatewayGroup}</Button>
   </div>
 }
 

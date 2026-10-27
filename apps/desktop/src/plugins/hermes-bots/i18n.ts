@@ -247,6 +247,9 @@ const en: BotsMessages = {
     generating: 'Generating…'
   },
   group: {
+    checkingDriver: 'Checking group driver…',
+    legacyRoom: 'This is a legacy Desktop room. Start a gateway-owned group with these members; the old history stays here and is not replayed.',
+    startGatewayGroup: 'Start gateway group',
     newTitle: 'New group chat',
     manageDesc: 'A bot can join multiple group chats. Memberships sync to every machine.',
     manageTitle: 'Manage groups',
@@ -690,6 +693,9 @@ const ja: BotsMessages = {
     generating: '生成中…'
   },
   group: {
+    checkingDriver: en.group.checkingDriver,
+    legacyRoom: en.group.legacyRoom,
+    startGatewayGroup: en.group.startGatewayGroup,
     newTitle: '新しいグループチャット',
     manageDesc: 'ボットは複数のグループチャットに参加できます。メンバーシップはすべてのマシンに同期されます。',
     manageTitle: 'グループを管理',
@@ -1126,6 +1132,9 @@ const zh: BotsMessages = {
     generating: '生成中…'
   },
   group: {
+    checkingDriver: '正在检查群组驱动…',
+    legacyRoom: '这是旧版桌面群聊。你可以用这些成员启动由网关管理的新群组；旧历史会保留在这里，不会重放。',
+    startGatewayGroup: '启动网关群组',
     newTitle: '新建群聊',
     manageDesc: '一个机器人可以加入多个群聊。成员关系会同步到每台设备。',
     manageTitle: '管理群组',
@@ -1555,6 +1564,9 @@ const zhHant: BotsMessages = {
     generating: '生成中…'
   },
   group: {
+    checkingDriver: '正在檢查群組驅動…',
+    legacyRoom: '這是舊版桌面群聊。你可以用這些成員啟動由閘道管理的新群組；舊歷史會保留在這裡，不會重播。',
+    startGatewayGroup: '啟動閘道群組',
     newTitle: '新增群組聊天',
     manageDesc: '一個機器人可以加入多個群組聊天。成員關係會同步到每台裝置。',
     manageTitle: '管理群組',

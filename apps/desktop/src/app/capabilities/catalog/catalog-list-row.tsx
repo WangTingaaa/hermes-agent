@@ -1,8 +1,10 @@
 import { Codicon } from '@/components/ui/codicon'
 import { RowButton } from '@/components/ui/row-button'
+import { useI18n } from '@/i18n'
 import { cn } from '@/lib/utils'
 
 import { type CatalogEntry, type CatalogKind, catalogLabel } from './catalog-data'
+import { catalogSkillCopy } from './catalog-localization'
 import { CatalogHeaderMeta, CatalogMetadata } from './catalog-metadata'
 
 interface CatalogListRowProps {
@@ -26,6 +28,9 @@ export function CatalogListRow({
   onTag,
   onSearch
 }: CatalogListRowProps) {
+  const { locale } = useI18n()
+  const copy = catalogSkillCopy(entry, kind, locale)
+
   return (
     <div
       className={cn(
@@ -35,7 +40,7 @@ export function CatalogListRow({
       data-entry-id={entry.id}
     >
       <RowButton
-        aria-label={entry.name}
+        aria-label={copy.name}
         aria-pressed={selected}
         className="absolute inset-0 rounded-md focus-visible:outline-2 focus-visible:outline-primary focus-visible:-outline-offset-2"
         onClick={() => onOpen(entry)}
@@ -47,11 +52,11 @@ export function CatalogListRow({
       />
       <span className="pointer-events-none min-w-0 flex-1">
         <span className="flex items-center gap-2">
-          <span className="truncate text-[0.78rem] font-medium">{entry.name}</span>
+          <span className="truncate text-[0.78rem] font-medium">{copy.name}</span>
           {installed && <Codicon className="shrink-0 text-(--ui-text-tertiary)" name="check" />}
         </span>
         <span className="mt-1 line-clamp-2 text-[length:var(--conversation-caption-font-size)] leading-(--conversation-caption-line-height) text-(--ui-text-tertiary)">
-          {entry.description}
+          {copy.description}
         </span>
         <span className="pointer-events-auto relative mt-2 block">
           <CatalogMetadata entry={entry} limit={2} onCategory={onCategory} onSearch={onSearch} onTag={onTag} />

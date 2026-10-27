@@ -1,8 +1,9 @@
 import { QueryClientProvider } from '@tanstack/react-query'
-import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
-import { useState } from 'react'
+import { cleanup, fireEvent, render as renderUi, screen, waitFor, within } from '@testing-library/react'
+import { type ReactNode, useState } from 'react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { I18nProvider } from '@/i18n'
 import { queryClient } from '@/lib/query-client'
 
 import { PageSearchShell } from '../../page-search-shell'
@@ -10,6 +11,9 @@ import { PageSearchShell } from '../../page-search-shell'
 import { CatalogBrowser } from './catalog-browser'
 import { type CatalogKind, parseCatalog } from './catalog-data'
 import { $catalogCardView } from './store'
+
+const render = (ui: ReactNode) =>
+  renderUi(<I18nProvider configClient={null} initialLocale="en">{ui}</I18nProvider>)
 
 beforeEach(() => {
   $catalogCardView.set(true)

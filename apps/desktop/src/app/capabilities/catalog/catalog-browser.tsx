@@ -1,5 +1,5 @@
 import { useStore } from '@nanostores/react'
-import { memo, type ReactNode, useDeferredValue, useEffect, useRef, useState } from 'react'
+import { memo, type ReactNode, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react'
 
 import { PageLoader } from '@/components/page-loader'
 import { Button } from '@/components/ui/button'
@@ -24,6 +24,7 @@ import { CatalogDetailDialog } from './catalog-detail-dialog'
 import { CatalogDiscovery } from './catalog-discovery'
 import { CatalogFilterBar } from './catalog-filter-bar'
 import { CatalogListRow } from './catalog-list-row'
+import { catalogSkillSearchEntry } from './catalog-localization'
 import { CATALOG_POINTER_ENABLED, trackCatalogPointer } from './catalog-pointer'
 import {
   catalogCategories,
@@ -365,7 +366,11 @@ export const CatalogBrowser = memo(function CatalogBrowser({
   const root = useRef<HTMLDivElement>(null)
   useEffect(() => (CATALOG_POINTER_ENABLED && root.current ? trackCatalogPointer(root.current) : undefined), [])
 
-  const entries = mergeInstalled(data ?? [], installedEntries ?? [], matchInstalled)
+  const entries = useMemo(
+    () => mergeInstalled(data ?? [], installedEntries ?? [], matchInstalled).map(entry => catalogSkillSearchEntry(entry, kind)),
+    [data, installedEntries, matchInstalled, kind]
+  )
+
   const visible = isSuperseded ? entries.filter(entry => !isSuperseded(entry)) : entries
   const filtered = sortCatalog(filterCatalog(visible, facets, deferredQuery, isInstalled, kind), sort, kind)
 
@@ -417,6 +422,7 @@ export const CatalogBrowser = memo(function CatalogBrowser({
       action={entryAction(entry, variant === 'hero')}
       entry={entry}
       key={entry.id}
+      kind={kind}
       onCategory={filters.chooseCategory}
       onOpen={openEntry}
       onSearch={searchFor}

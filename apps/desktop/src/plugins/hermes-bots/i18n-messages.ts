@@ -221,6 +221,9 @@ export type BotsMessages = {
   }
   /** Group chats: the room, its composer, threads and activity feed. */
   group: {
+    checkingDriver: string
+    legacyRoom: string
+    startGatewayGroup: string
     newTitle: string
     manageDesc: string
     manageTitle: string

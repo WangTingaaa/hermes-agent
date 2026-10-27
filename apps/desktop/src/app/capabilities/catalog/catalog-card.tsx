@@ -3,9 +3,11 @@ import './catalog.css'
 import { type CSSProperties, type ReactNode, useState } from 'react'
 
 import { RowButton } from '@/components/ui/row-button'
+import { useI18n } from '@/i18n'
 import { cn } from '@/lib/utils'
 
-import { type CatalogEntry, catalogLabel } from './catalog-data'
+import { type CatalogEntry, type CatalogKind, catalogLabel } from './catalog-data'
+import { catalogSkillCopy } from './catalog-localization'
 import { CatalogDates, CatalogHeaderMeta, CatalogMetadata, CatalogRating } from './catalog-metadata'
 
 export function catalogIcon(category: string) {
@@ -63,6 +65,7 @@ const CARD_ACCENTS = [
 export type CatalogCardVariant = 'default' | 'hero' | 'showcase' | 'compact' | 'horizontal'
 
 interface CatalogCardProps {
+  kind: CatalogKind
   variant?: CatalogCardVariant
   entry: CatalogEntry
   action: ReactNode
@@ -91,7 +94,10 @@ function CatalogCardFooter({ entry, action, hero }: { entry: CatalogEntry; actio
   )
 }
 
-export function CatalogCard({ entry, action, accentIndex, onOpen, onCategory, onTag, onSearch, variant = 'default', style }: CatalogCardProps) {
+export function CatalogCard({ kind, entry, action, accentIndex, onOpen, onCategory, onTag, onSearch, variant = 'default', style }: CatalogCardProps) {
+  const { locale } = useI18n()
+  const copy = catalogSkillCopy(entry, kind, locale)
+
   return (
     <article
       className={cn(
@@ -117,11 +123,12 @@ export function CatalogCard({ entry, action, accentIndex, onOpen, onCategory, on
               detail; real controls sit above it (`relative`). One focus stop per card. */}
           <RowButton
             aria-haspopup="dialog"
-            aria-label={entry.name}
+            aria-label={copy.name}
             className="min-w-0 flex-1 text-left font-semibold leading-snug after:absolute after:inset-0 after:rounded-[inherit] focus-visible:outline-none focus-visible:after:outline-2 focus-visible:after:outline-primary focus-visible:after:-outline-offset-2"
             onClick={() => onOpen(entry)}
+            title={entry.name}
           >
-            <span className="catalog-card-title line-clamp-2 min-w-0 break-words text-lg">{variant === 'default' ? entry.name : catalogLabel(entry.name)}</span>
+            <span className="catalog-card-title line-clamp-2 min-w-0 break-words text-lg">{variant === 'default' ? copy.name : catalogLabel(copy.name)}</span>
           </RowButton>
           {variant === 'default' && action && (
             <span className="relative shrink-0 opacity-[.66] transition-opacity group-hover:opacity-100 group-hover:transition-none group-focus-within:opacity-100 group-focus-within:transition-none">
@@ -137,7 +144,7 @@ export function CatalogCard({ entry, action, accentIndex, onOpen, onCategory, on
             <CatalogRating entry={entry} />
           </span>}
           <span className="catalog-card-description line-clamp-4 min-h-0 text-[length:var(--conversation-caption-font-size)] leading-relaxed text-(--ui-text-secondary)">
-            {entry.description}
+            {copy.description}
           </span>
         </div>
       </div>

@@ -80,6 +80,7 @@ export function CatalogSurface({ sections, kind, actions }: { sections: CatalogS
                   action={item.action}
                   entry={entryFor(item, section.id)}
                   key={item.id}
+                  kind={kind}
                   onCategory={noop}
                   onOpen={item.onOpen}
                   onSearch={noop}
