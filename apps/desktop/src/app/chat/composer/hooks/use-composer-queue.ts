@@ -19,6 +19,7 @@ import {
   migrateQueuedPrompts,
   promoteQueuedPrompt,
   type QueuedPromptEntry,
+  queuedSubmissionId,
   removeQueuedPrompt,
   resolveQueuedPromptTransport,
   serverOwnsComposerQueue,
@@ -405,7 +406,9 @@ export function useComposerQueue({
     return true
   }
 
-  const queueCurrentDraft = useCallback(() => {
+  // `submissionId` names the restored send this draft retries: the admission (or the local entry that
+  // drains under its id) keeps it, so the owner never runs the interrupted original a second time.
+  const queueCurrentDraft = useCallback((submissionId?: string) => {
     const text = draftRef.current
 
     if (!activeQueueSessionKey || (!text.trim() && attachments.length === 0)) {
@@ -444,7 +447,8 @@ export function useComposerQueue({
           ...(frozen.displayText ? { displayText: frozen.displayText } : {}),
           fromQueue: true,
           sessionId: sessionId ?? null,
-          storedSessionId: activeQueueSessionKey
+          storedSessionId: activeQueueSessionKey,
+          ...(submissionId ? { submission_id: submissionId } : {})
         })
       )
         .then(accepted => {
@@ -464,6 +468,7 @@ export function useComposerQueue({
 
     if (
       !enqueueQueuedPrompt(activeQueueSessionKey, {
+        ...(submissionId ? { id: submissionId } : {}),
         text: frozen.text,
         attachments,
         ...(frozen.displayText ? { displayText: frozen.displayText } : {}),
@@ -525,7 +530,7 @@ export function useComposerQueue({
               ...(resolved.displayText ? { displayText: resolved.displayText } : {}),
               ...(entry.displayKind ? { displayKind: entry.displayKind } : {}),
               fromQueue: true,
-              submission_id: entry.id,
+              submission_id: queuedSubmissionId(entry),
               sessionId: drainRuntimeSessionId,
               storedSessionId: drainQueueSessionKey
             })

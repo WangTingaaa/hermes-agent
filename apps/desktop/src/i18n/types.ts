@@ -15,10 +15,12 @@ import type { CatalogTranslations } from './types_catalog'
 import type { CatalogInstallTranslations } from './types_catalog_install'
 import type { ClarifyCopy } from './types_clarify'
 import type { ConnectorAccountsTranslations, ConnectorCardTranslations } from './types_connectors'
+import type { CronControlCopy } from './types_cron_control'
 import type { GatewayGroupOpenCopy, SkillDeepLinkCopy } from './types_deep_links'
 import type { ExternalOpenFailedCopy } from './types_external_open'
 import type { FirstRunCopy } from './types_first_run'
 import type { GatewayHostTranslations } from './types_gateway_host'
+import type { MemoryLayersTranslations } from './types_memory_layers'
 import type { ModelMenuTranslations } from './types_model_menu'
 import type { ModelSettingsTranslations } from './types_model_settings'
 import type { NoticeTranslations } from './types_notices'
@@ -45,8 +47,11 @@ export type Locale = string
 /** One error-card entry: a short title and one plain sentence. Either may
  *  take the failing provider's display name (falls back to "the AI service"). */
 export interface ErrorCardCopy {
-  title: string | ((provider: string) => string)
-  body: string | ((provider: string) => string)
+  title: string | ((provider: string, model: string) => string)
+  body: string | ((provider: string, model: string) => string)
+  /** Body when the failure says a retry will not help (`retryable: false`), for a code whose body
+   *  otherwise tells the user to retry. */
+  bodyNoRetry?: string | ((provider: string, model: string) => string)
 }
 
 export type ToolTitleKey =
@@ -632,8 +637,6 @@ export interface Translations extends NoticeTranslations {
       openFolder: string
       rescan: string
       reveal: string
-      enable: string
-      disable: string
       failed: string
       kinds: { bundled: string; disk: string; runtime: string }
       installModal: {
@@ -652,6 +655,10 @@ export interface Translations extends NoticeTranslations {
         versionLabel: string
         reviewedPin: (sha: string) => string
         latestCommit: string
+        sourceMoved: (sha: string) => string
+        legacyBackendConfirm: string
+        installAnyway: string
+        partialInstall: (sha: string) => string
         nothingToInstall: string
         includesHeading: string
         agentLabel: string
@@ -919,6 +926,7 @@ export interface Translations extends NoticeTranslations {
     fieldLabels: Record<string, string>
     fieldDescriptions: Record<string, string>
     uninstallSection: UninstallSectionTranslations
+    memoryLayers: MemoryLayersTranslations
     customEndpoints: {
       active: string
       apiKeySet: string
@@ -1754,7 +1762,7 @@ export interface Translations extends NoticeTranslations {
       autoArchiveFailed: string
       defaultDirTitle: string
       defaultDirDesc: string
-      defaultDirUpdated: string
+      defaultDirUpdated: (shortcut: null | string) => string
       defaultsTo: (label: string) => string
       change: string
       choose: string
@@ -1927,6 +1935,10 @@ export interface Translations extends NoticeTranslations {
     edit: string
     archive: string
     skillArchivedTitle: string
+    lock: string
+    locked: string
+    lockHint: string
+    unlockedHint: string
     skillArchivedMessage: string
     tabPlugins: string
     plugins: PluginUpdateTranslations &
@@ -2282,9 +2294,6 @@ export interface Translations extends NoticeTranslations {
       resume: string
       runNow: string
       memoryData: string
-      memoryDataDesc: string
-      memoryProvider: (name: string) => string
-      builtinMemory: string
       memoryFile: string
       userFile: string
       bytes: (size: string) => string
@@ -2496,9 +2505,6 @@ export interface Translations extends NoticeTranslations {
       deleteOn: (gateway: string) => string
       /** At-rest local default pill: device, not Home, and the click's consequence. */
       localDevice: string
-      switchDeviceTitle: string
-      switchDeviceDesc: string
-      switchDeviceConfirm: string
       installDeviceTitle: string
       installDeviceDesc: string
       installDeviceConfirm: string
@@ -2623,6 +2629,7 @@ export interface Translations extends NoticeTranslations {
 
   cron: {
     close: string
+    control: CronControlCopy
     title: string
     count: (count: number) => string
     search: string
@@ -2888,7 +2895,6 @@ export interface Translations extends NoticeTranslations {
       backgroundRunning: string
       draftSession: string
       handoffOrigin: (platform: string) => string
-      continuationOrigin: string
       ownedByProfile: (profile: string) => string
       renamed: string
       renameFailed: string
@@ -3313,6 +3319,8 @@ export interface Translations extends NoticeTranslations {
     versionDetailsTitle: string
     versionDetailsBody: string
     versionDetailsVersion: string
+    versionDetailsClient: string
+    versionDetailsBackend: string
     versionDetailsCommit: string
     versionDetailsBuildOrigin: string
     versionDetailsDistribution: string
@@ -3870,6 +3878,8 @@ export interface Translations extends NoticeTranslations {
     notExpressible: string
     zoneCount: (count: number) => string
     tabCount: (count: number) => string
+    /** A phone tab picker row's actions button (names the tab). */
+    tabActions: (title: string) => string
   }
 
   contextMenu: {
@@ -3954,14 +3964,24 @@ export interface Translations extends NoticeTranslations {
       errorAuthKinds: { api_key: ErrorCardCopy; oauth: Pick<ErrorCardCopy, 'title'> }
       /** Collapsed "Details" line holding the raw provider/gateway text. */
       errorDetails: string
+      errorHideDetails: string
+      errorDetailsCopy: string
+      errorCopyRaw: string
+      errorContinue: string
+      errorOpenProviderSettings: (provider: string) => string
+      errorOpenSetupGuide: string
+      errorSetupGuideLink: string
+      errorOpenModelSettings: string
+      errorStartNewChatLink: string
+      errorChooseModelLink: string
+      errorRetryAtResetShort: (time: string) => string
+      errorRateLimitResetBody: (provider: string, time: string) => string
       /** Stands in for the provider name when the descriptor carries none. */
       errorGenericProvider: string
       /** Global toast title for a mid-turn gateway `error` event. */
       errorToastTitle: string
       errorRetry: string
-      errorLimitResets: (time: string) => string
       /** Arms ONE client-side retry of this turn at the 429's `resets_at` (#98852). */
-      errorRetryAtReset: (time: string) => string
       /** Countdown shown while that retry is armed; `wait` is "12m 03s". */
       errorRetryScheduled: (time: string, wait: string) => string
       errorRetryScheduledCancel: string
@@ -3996,7 +4016,6 @@ export interface Translations extends NoticeTranslations {
       errorOpenLogs: string
       errorOpenLogsFailed: string
       errorOpenDesktopLogs: string
-      errorCopyDiagnostics: string
       errorSendDiagnostics: string
       filesChanged: (count: number) => string
       reviewChanges: string

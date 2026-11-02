@@ -65,6 +65,7 @@ import { en } from "@/i18n/en";
 import { usePageHeader } from "@/contexts/usePageHeader";
 import { PluginSlot } from "@/plugins";
 import { errorMessage } from "@/lib/api-error";
+import { installedHubEntry } from "@/lib/skill-hub-installed";
 
 /* ------------------------------------------------------------------ */
 /*  Types & helpers                                                    */
@@ -1025,7 +1026,7 @@ function HubBrowser({
   }, [showToast, profile]);
 
   const isInstalled = useCallback(
-    (identifier: string) => Boolean(installed[identifier]),
+    (hit: SkillHubResult) => Boolean(installedHubEntry(installed, hit)),
     [installed],
   );
 
@@ -1126,7 +1127,7 @@ function HubBrowser({
                   key={r.identifier}
                   result={r}
                   locale={locale}
-                  installed={isInstalled(r.identifier)}
+                  installed={isInstalled(r)}
                   onOpen={() => setDetail(r)}
                   onInstall={() => void install(r.identifier)}
                 />
@@ -1170,8 +1171,8 @@ function HubBrowser({
               <HubResultCard
                 key={r.identifier}
                 result={r}
-                locale={locale}
-                installed={isInstalled(r.identifier)}
+                  locale={locale}
+                installed={isInstalled(r)}
                 onOpen={() => setDetail(r)}
                 onInstall={() => void install(r.identifier)}
               />
@@ -1185,7 +1186,7 @@ function HubBrowser({
         <SkillDetailDialog
           result={detail}
           locale={locale}
-          installed={isInstalled(detail.identifier)}
+          installed={isInstalled(detail)}
           onClose={() => setDetail(null)}
           onInstall={() => void install(detail.identifier)}
           showToast={showToast}

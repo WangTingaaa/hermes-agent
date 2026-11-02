@@ -1,3 +1,4 @@
+import { arCronControl } from './ar_cron_control'
 import type { TranslationOverrides } from './define-locale'
 
 export const arCommandCenter = {
@@ -521,6 +522,7 @@ export const arCommandCenter = {
     failedRename: 'فشل إعادة التسمية'
   },
   cron: {
+    control: arCronControl,
     close: 'إغلاق',
     search: 'بحث',
     loading: 'جار التحميل...',

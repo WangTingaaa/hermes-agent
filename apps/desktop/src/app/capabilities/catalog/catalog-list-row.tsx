@@ -1,6 +1,7 @@
 import { Codicon } from '@/components/ui/codicon'
 import { RowButton } from '@/components/ui/row-button'
 import { useI18n } from '@/i18n'
+import { Lock } from '@/lib/icons'
 import { cn } from '@/lib/utils'
 
 import { type CatalogEntry, type CatalogKind, catalogLabel } from './catalog-data'
@@ -28,7 +29,7 @@ export function CatalogListRow({
   onTag,
   onSearch
 }: CatalogListRowProps) {
-  const { locale } = useI18n()
+  const { locale, t } = useI18n()
   const copy = catalogSkillCopy(entry, kind, locale)
 
   return (
@@ -54,6 +55,17 @@ export function CatalogListRow({
         <span className="flex items-center gap-2">
           <span className="truncate text-[0.78rem] font-medium">{copy.name}</span>
           {installed && <Codicon className="shrink-0 text-(--ui-text-tertiary)" name="check" />}
+          {entry.locked && (
+            <span
+              aria-label={t.skills.locked}
+              className="inline-flex shrink-0 text-(--ui-text-tertiary)"
+              data-slot="skill-locked-indicator"
+              role="img"
+              title={t.skills.lockHint}
+            >
+              <Lock className="size-3.5" />
+            </span>
+          )}
         </span>
         <span className="mt-1 line-clamp-2 text-[length:var(--conversation-caption-font-size)] leading-(--conversation-caption-line-height) text-(--ui-text-tertiary)">
           {copy.description}

@@ -27,10 +27,9 @@ export const frGatewayHost: GatewayHostTranslations = {
     pendingOn: "Enregistré. La passerelle servira l'application web après son redémarrage.",
     pendingOff: "Désactivé, mais la passerelle continue de servir l'application web jusqu'à son redémarrage.",
     unavailableDetail: reason => `La passerelle n'a pas pu servir l'application web : ${reason}`,
-    restartBusy:
-      "Enregistré. Une conversation est en cours, la passerelle n'a donc pas redémarré. Choisissez « Redémarrer la passerelle » une fois qu'elle est terminée.",
-    restartFailed:
-      "Enregistré, mais la passerelle n'a pas pu redémarrer. Choisissez « Redémarrer la passerelle » pour réessayer.",
+    restartBusy: "Enregistré. Une conversation est en cours, la passerelle n'a donc pas redémarré. Choisissez « Redémarrer la passerelle » une fois qu'elle est terminée.",
+    restartFailed: "Enregistré, mais la passerelle n'a pas pu redémarrer. Choisissez « Redémarrer la passerelle » pour réessayer.",
+    restartFailedBecause: reason => `La passerelle n'a pas pu redémarrer : ${reason}`,
     startTimedOut: "La passerelle n'a pas servi l'application web en 90 secondes.",
     stopTimedOut: "La passerelle n'a pas cessé de servir l'application web en 90 secondes.",
     start: 'Démarrer',

@@ -31,6 +31,7 @@ export const esGatewayHost: GatewayHostTranslations = {
     restartBusy:
       'Guardado. Hay un chat en curso, así que el gateway no se reinició. Elige «Reiniciar gateway» cuando termine.',
     restartFailed: 'Guardado, pero el gateway no pudo reiniciarse. Elige «Reiniciar gateway» para volver a intentarlo.',
+    restartFailedBecause: reason => `El gateway no pudo reiniciarse: ${reason}`,
     startTimedOut: 'El gateway no sirvió la aplicación web en 90 segundos.',
     stopTimedOut: 'El gateway no dejó de servir la aplicación web en 90 segundos.',
     start: 'Iniciar',
