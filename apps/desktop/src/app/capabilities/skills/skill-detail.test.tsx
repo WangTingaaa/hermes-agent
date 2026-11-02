@@ -4,6 +4,7 @@ import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/re
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type * as HermesApi from '@/hermes'
+import { I18nProvider } from '@/i18n/context'
 import { queryClient } from '@/lib/query-client'
 import type { SkillInfo } from '@/types/hermes'
 
@@ -39,7 +40,9 @@ function Harness({ name }: { name: string }) {
 function renderDetail(name: string) {
   render(
     <QueryClientProvider client={queryClient}>
-      <Harness name={name} />
+      <I18nProvider configClient={null} initialLocale="en">
+        <Harness name={name} />
+      </I18nProvider>
     </QueryClientProvider>
   )
 }

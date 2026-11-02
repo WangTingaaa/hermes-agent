@@ -3255,11 +3255,7 @@ export const frOverrides = {
       switchTo: (name, gateway) => `Ouvrir ${name} sur ${gateway}`,
       deleteOn: gateway => ` sur ${gateway}`,
       localDevice: 'Cet appareil (backend local — installe Mira s’il manque, sinon ouvre une nouvelle session)',
-      switchDeviceTitle: 'Basculer vers cet appareil ?',
-      switchDeviceDesc:
-        'Cela ouvre une nouvelle session sur cet ordinateur. La conversation en cours reste sur l’autre gateway.',
-      switchDeviceConfirm: 'Basculer',
-      installDeviceTitle: 'Basculer vers cet appareil ?',
+      installDeviceTitle: 'Installer Mira sur cet appareil ?',
       installDeviceDesc:
         'Mira sera installé localement, puis une nouvelle session s’ouvrira sur cet ordinateur. Rien n’est installé tant que vous ne confirmez pas.',
       installDeviceConfirm: 'Installer localement',
@@ -4921,7 +4917,7 @@ export const frOverrides = {
         },
         timeout: {
           title: provider => `Impossible de joindre ${provider}`,
-          body: provider => `Hermes n'a pas pu joindre ${provider}. Vérifiez votre connexion, puis réessayez.`
+          body: provider => `Mira n'a pas pu joindre ${provider}. Vérifiez votre connexion, puis réessayez.`
         },
         no_reply: {
           title: "La réponse n'est pas arrivée",

@@ -49,7 +49,6 @@ export const zhUpstreamUpdates = {
       webappDescription: '在这台电脑上运行 hermes webapp，让此浏览器完成登录。'
     }
   },
-  settings: { plugins: { enable: '启用', disable: '停用' } },
   skills: {
     plugins: {
       updateScanTitle: name => `安全扫描发现 ${name} 存在风险`,

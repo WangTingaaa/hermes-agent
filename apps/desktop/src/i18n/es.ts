@@ -3238,11 +3238,7 @@ export const esOverrides = {
       switchTo: (name: string, gateway: string) => `Abrir ${name} en ${gateway}`,
       deleteOn: (gateway: string) => ` en ${gateway}`,
       localDevice: 'Este dispositivo (backend local: instala Mira si falta; si no, abre una sesión nueva)',
-      switchDeviceTitle: '¿Cambiar a este dispositivo?',
-      switchDeviceDesc:
-        'Esto abre una sesión nueva en este equipo. La conversación actual permanece en el otro gateway.',
-      switchDeviceConfirm: 'Cambiar',
-      installDeviceTitle: '¿Cambiar a este dispositivo?',
+      installDeviceTitle: '¿Instalar Mira en este dispositivo?',
       installDeviceDesc:
         'Esto instalará Mira localmente y luego abrirá una sesión nueva en este equipo. No se instala nada hasta que confirmes.',
       installDeviceConfirm: 'Instalar localmente',
@@ -4896,7 +4892,7 @@ export const esOverrides = {
         timeout: {
           title: (provider: string) => `Sin conexión con ${provider}`,
           body: (provider: string) =>
-            `Hermes no pudo conectar con ${provider}. Revisa tu conexión y vuelve a intentarlo.`
+            `Mira no pudo conectar con ${provider}. Revisa tu conexión y vuelve a intentarlo.`
         },
         no_reply: {
           title: 'La respuesta no llegó',

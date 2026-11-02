@@ -1206,6 +1206,14 @@ export const en: Translations = {
       runtimeUpdating: (target, progress) => `Updating to Mira Agent ${target || 'latest'} (${progress || 0}%)`,
       runtimeReleaseNotes: {
         '0.0.0': [
+          'All gateways stay connected, with instant switching and a shared view of each profile’s chats and background work.',
+          'Terminal tabs keep their own gateway and profile, restore their layout after app restart, and support Enter to reconnect after a remote disconnect.',
+          'Skill content can be locked against automatic agent edits while remaining editable by you.',
+          'Stop running scheduled jobs and choose how runs missed during downtime are caught up.',
+          'Multiple clarification questions appear in one form; press Enter to submit once every question is answered.',
+          'Error cards offer clearer recovery actions, reply continuation and diagnostic copying, with better guidance when a local model server is offline.',
+          'Fixes restore reply tails after reconnects, clear stale background activity and preserve delegated results for more reliable long-running work.',
+          'Memory settings distinguish built-in memory from external providers; plugin installs verify the reviewed version to avoid unexpected code changes.',
           'Connectors now bring managed apps and local MCP servers into one page, with tool permissions, filters and connection recovery.',
           'Guided setup improves local-model selection, browser sign-in and free access, with clearer recovery when setup cannot finish.',
           'Chat recovery, branches, profile switching, queued runs and clarification cards better preserve conversation state.',
@@ -2951,11 +2959,7 @@ export const en: Translations = {
       switchTo: (name, gateway) => `Open ${name} on ${gateway}`,
       deleteOn: gateway => ` on ${gateway}`,
       localDevice: 'This device (local backend — installs Mira if missing, otherwise opens a fresh session)',
-      switchDeviceTitle: 'Switch to This device?',
-      switchDeviceDesc:
-        'This opens a fresh session on this computer. The conversation you are in stays on the other gateway.',
-      switchDeviceConfirm: 'Switch',
-      installDeviceTitle: 'Switch to This device?',
+      installDeviceTitle: 'Install Mira on This device?',
       installDeviceDesc:
         'This will install Mira locally, then open a fresh session on this computer. Nothing is installed until you confirm.',
       installDeviceConfirm: 'Install locally',
@@ -4387,12 +4391,9 @@ export const en: Translations = {
     terminalCloseAll: 'Close all',
     terminalNewOn: 'New terminal on…',
     terminalGatewayRemoved: 'Removed gateway',
-    terminalGatewayRemovedBody:
-      'The gateway this terminal ran on was removed, so it can\'t reopen. Close this tab.',
-    terminalGatewayNoShellBody:
-      'This gateway has no shell access, so this terminal can\'t reopen. Close this tab.',
-    terminalDisconnectedBody:
-      'Terminal disconnected. Press Enter to start a new shell; scrollback is preserved.',
+    terminalGatewayRemovedBody: "The gateway this terminal ran on was removed, so it can't reopen. Close this tab.",
+    terminalGatewayNoShellBody: "This gateway has no shell access, so this terminal can't reopen. Close this tab.",
+    terminalDisconnectedBody: 'Terminal disconnected. Press Enter to start a new shell; scrollback is preserved.',
     terminalDropUploadFailed: name => `Could not upload ${name}`,
     terminalDropTooLargeTitle: 'Too large to upload',
     terminalDropTooLarge: (names, limit) => `Each file can be up to ${limit}. Not uploaded: ${names}`,

@@ -12,7 +12,7 @@ export const deErrorLayers: Pick<ThreadCopy, 'errorLayerBodies' | 'errorLayers'>
     gateway: 'Nachricht konnte nicht gesendet werden',
     generic: 'Antwort konnte nicht fertiggestellt werden',
     provider: 'KI-Dienst meldet einen Fehler',
-    runtime: 'Problem in Hermes aufgetreten',
+    runtime: 'Problem in Mira aufgetreten',
     streaming: 'Die Antwort wurde abgebrochen'
   },
   errorLayerBodies: {

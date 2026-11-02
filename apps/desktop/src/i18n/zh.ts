@@ -1041,6 +1041,14 @@ const zhBaseOverrides = {
       runtimeUpdating: (target, progress) => `正在更新至 Mira Agent ${target || '最新版本'}（${progress || 0}%）`,
       runtimeReleaseNotes: {
         '0.0.0': [
+          '所有网关保持连接，可即时切换并同时查看各配置档的会话与后台任务。',
+          '终端标签页绑定各自的网关和配置档，重启应用后保留布局；远程断开时可按 Enter 重连。',
+          '技能支持内容锁定，防止智能体自动改写；你仍可手动编辑。',
+          '定时任务支持停止正在执行的任务，并可选择停机期间错过任务的补跑策略。',
+          '多个澄清问题整合为一份表单，全部作答后可按 Enter 一次提交。',
+          '错误卡片提供更明确的恢复操作、继续生成和诊断复制，并改进本地模型服务离线提示。',
+          '修复重连后回复尾部丢失、后台任务状态滞留及委派结果遗漏，提高长任务恢复的可靠性。',
+          '记忆设置区分内置记忆和外部提供商；插件安装会核对已审阅版本，避免安装到意外更新的代码。',
           '连接器将托管应用和本地 MCP 服务器整合到同一页面，支持工具权限、筛选和连接恢复。',
           '引导设置改进本地模型选择、浏览器登录和免费访问；设置未完成时提供更清晰的恢复指引。',
           '改进对话恢复、分支、配置档切换、排队运行和澄清卡片，减少会话状态丢失。',
@@ -2675,10 +2683,7 @@ const zhBaseOverrides = {
       switchTo: (name, gateway) => `打开 ${gateway} 上的 ${name}`,
       deleteOn: gateway => `（位于 ${gateway}）`,
       localDevice: '此设备（本地后端——若未安装 Mira 则会安装，否则打开一个新会话）',
-      switchDeviceTitle: '切换到此设备？',
-      switchDeviceDesc: '这会在这台电脑上打开一个新会话。当前对话仍留在另一个网关上。',
-      switchDeviceConfirm: '切换',
-      installDeviceTitle: '切换到此设备？',
+      installDeviceTitle: '在此设备上安装 Mira？',
       installDeviceDesc: '这将在本地安装 Mira，然后在这台电脑上打开一个新会话。确认之前不会开始安装。',
       installDeviceConfirm: '本地安装',
       connectExistingInstead: '改为连接现有环境'
@@ -4034,12 +4039,9 @@ const zhBaseOverrides = {
     terminalCloseAll: '关闭全部',
     terminalNewOn: '新建终端于…',
     terminalGatewayRemoved: '已移除的网关',
-    terminalGatewayRemovedBody:
-      '此终端所在的网关已被移除，无法重新打开。请关闭此标签页。',
-    terminalGatewayNoShellBody:
-      '此网关不提供 Shell 访问，此终端无法重新打开。请关闭此标签页。',
-    terminalDisconnectedBody:
-      '终端已断开。按 Enter 启动新的 shell；滚动记录会保留。',
+    terminalGatewayRemovedBody: '此终端所在的网关已被移除，无法重新打开。请关闭此标签页。',
+    terminalGatewayNoShellBody: '此网关不提供 Shell 访问，此终端无法重新打开。请关闭此标签页。',
+    terminalDisconnectedBody: '终端已断开。按 Enter 启动新的 shell；滚动记录会保留。',
     addToChat: '添加到对话'
   },
   preview: {
@@ -4254,7 +4256,7 @@ const zhBaseOverrides = {
         },
         timeout: {
           title: provider => `无法连接 ${provider}`,
-          body: provider => `Hermes 无法连接到 ${provider}。请检查网络连接后重试。`
+          body: provider => `Mira 无法连接到 ${provider}。请检查网络连接后重试。`
         },
         ssl_cert_verification: {
           title: provider => `无法验证 ${provider} 的连接`,

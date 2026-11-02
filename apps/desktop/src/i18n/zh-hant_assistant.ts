@@ -106,7 +106,7 @@ export const zhHantAssistant = {
         },
         timeout: {
           title: provider => `無法連線到 ${provider}`,
-          body: provider => `Hermes 無法連線到 ${provider}。請檢查網路連線後重試。`
+          body: provider => `Mira 無法連線到 ${provider}。請檢查網路連線後重試。`
         },
         stream_drop: {
           title: '回覆被中斷',
@@ -114,7 +114,7 @@ export const zhHantAssistant = {
         },
         no_reply: {
           title: '未收到回覆',
-          body: 'Hermes 已完成本輪，但回覆沒有送達此視窗。請重試以重新傳送。'
+          body: 'Mira 已完成本輪，但回覆沒有送達此視窗。請重試以重新傳送。'
         },
         upstream_blocked: {
           title: provider => `${provider} 封鎖了此請求`,
@@ -231,7 +231,7 @@ export const zhHantAssistant = {
           title: '無法連線到本機模型伺服器',
           body: '本機模型伺服器尚未執行：它可能仍在啟動中。請稍後重試，或切換到其他模型。',
           bodyNoRetry:
-            '本機模型伺服器已關閉。請在 Hermes 桌面應用程式或終端機中的 `hermes model` 啟動它，或切換到其他模型。'
+            '本機模型伺服器已關閉。請在 Mira 桌面應用程式或終端機中的 `hermes model` 啟動它，或切換到其他模型。'
         }
       },
       errorLayers: {

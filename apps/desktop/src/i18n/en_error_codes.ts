@@ -35,7 +35,7 @@ export const enErrorCodes: ThreadCopy['errorCodes'] = {
   },
   timeout: {
     title: provider => `Can't reach ${provider}`,
-    body: provider => `Hermes couldn't reach ${provider}. Check your connection, then retry.`
+    body: provider => `Mira couldn't reach ${provider}. Check your connection, then retry.`
   },
   stream_drop: {
     title: 'The reply was cut off',
@@ -125,7 +125,7 @@ export const enErrorCodes: ThreadCopy['errorCodes'] = {
     title: "Can't reach the local model server",
     body: "The local model server isn't serving yet: it may still be starting. Retry in a moment, or switch to another model.",
     bodyNoRetry:
-      'The local model server is turned off. Start it from the Hermes desktop app or `hermes model` in a terminal, or switch to another model.'
+      'The local model server is turned off. Start it from the Mira desktop app or `hermes model` in a terminal, or switch to another model.'
   },
   SESSION_OWNER_UNCONFIRMED: {
     title: 'Your message may already be queued',
@@ -134,7 +134,7 @@ export const enErrorCodes: ThreadCopy['errorCodes'] = {
   agent_init_failed: {
     title: "Couldn't start this chat",
     body: provider =>
-      `Hermes couldn't connect to ${provider} for this chat. Retry; if it keeps failing, check the provider in Settings.`
+      `Mira couldn't connect to ${provider} for this chat. Retry; if it keeps failing, check the provider in Settings.`
   },
   SESSION_NOT_OWNED: {
     title: 'Chat open somewhere else',
