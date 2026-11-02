@@ -1205,7 +1205,7 @@ export const en: Translations = {
         `A Mira Agent update is available: ${current || 'current'} → ${target || 'latest'}`,
       runtimeUpdating: (target, progress) => `Updating to Mira Agent ${target || 'latest'} (${progress || 0}%)`,
       runtimeReleaseNotes: {
-        '0.0.0': [
+        '0.21.5': [
           'All gateways stay connected, with instant switching and a shared view of each profile’s chats and background work.',
           'Terminal tabs keep their own gateway and profile, restore their layout after app restart, and support Enter to reconnect after a remote disconnect.',
           'Skill content can be locked against automatic agent edits while remaining editable by you.',

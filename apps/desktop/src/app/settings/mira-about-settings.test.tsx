@@ -89,23 +89,23 @@ describe('MiraAboutSettings host runtime update', () => {
   })
 
   it('offers the update after a manual check and opens release notes only when requested', async () => {
-    const nextState = { ...currentState, updateAvailable: true, checkedAt: Date.now() }
+    const nextState = { ...currentState, bundledVersion: '0.21.5', updateAvailable: true, checkedAt: Date.now() }
     const { check, update } = setRuntimeBridge({ check: vi.fn().mockResolvedValue(nextState) })
     await renderAbout()
 
-    expect(screen.queryByText('提升长对话压缩与图片 Token 计算的准确性')).toBeNull()
+    expect(screen.queryByText('所有网关保持连接，可即时切换并同时查看各配置档的会话与后台任务。')).toBeNull()
     fireEvent.click(screen.getByRole('button', { name: '立即检查' }))
 
     await waitFor(() => expect(check).toHaveBeenCalledOnce())
     expect(screen.queryByRole('dialog')).toBeNull()
     fireEvent.click(await screen.findByRole('button', { name: '立即更新' }))
 
-    expect(await screen.findByText('提升长对话压缩与图片 Token 计算的准确性')).toBeTruthy()
+    expect(await screen.findByText('所有网关保持连接，可即时切换并同时查看各配置档的会话与后台任务。')).toBeTruthy()
     expect(update).not.toHaveBeenCalled()
 
     fireEvent.click(screen.getByRole('button', { name: '稍后再说' }))
     await waitFor(() => {
-      expect(screen.queryByText('提升长对话压缩与图片 Token 计算的准确性')).toBeNull()
+      expect(screen.queryByText('所有网关保持连接，可即时切换并同时查看各配置档的会话与后台任务。')).toBeNull()
     })
     expect(update).not.toHaveBeenCalled()
   })

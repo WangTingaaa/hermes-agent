@@ -1040,7 +1040,7 @@ const zhBaseOverrides = {
         `Mira Agent 有可用更新：${current || '当前版本'} → ${target || '最新版本'}`,
       runtimeUpdating: (target, progress) => `正在更新至 Mira Agent ${target || '最新版本'}（${progress || 0}%）`,
       runtimeReleaseNotes: {
-        '0.0.0': [
+        '0.21.5': [
           '所有网关保持连接，可即时切换并同时查看各配置档的会话与后台任务。',
           '终端标签页绑定各自的网关和配置档，重启应用后保留布局；远程断开时可按 Enter 重连。',
           '技能支持内容锁定，防止智能体自动改写；你仍可手动编辑。',

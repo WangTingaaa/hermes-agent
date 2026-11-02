@@ -163,7 +163,7 @@ export const zhHantOverrides = {
         `Mira Agent 有可用更新：${current || '目前版本'} → ${target || '最新版本'}`,
       runtimeUpdating: (target, progress) => `正在更新至 Mira Agent ${target || '最新版本'}（${progress || 0}%）`,
       runtimeReleaseNotes: {
-        '0.0.0': [
+        '0.21.5': [
           '所有閘道保持連線，可即時切換並同時檢視各設定檔的聊天與背景工作。',
           '終端機分頁綁定各自的閘道和設定檔，重新啟動應用程式後保留配置；遠端斷線時可按 Enter 重新連線。',
           '技能支援內容鎖定，防止智慧體自動改寫；你仍可手動編輯。',
