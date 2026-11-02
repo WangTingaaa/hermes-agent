@@ -1,56 +1,66 @@
 ---
 name: meso-insights
-description: "管理 mesoInsights 中的文档及其 AI结果、智能生成结果和历史结果。当用户要求将本地文件导入 mesoInsights、搜索已上传或云端文件、查看文件解析或同步状态、读取解析内容、为文件生成 AI 结果，或在 mesoInsights 中保存/创建 Markdown 文档和结果时使用。用户所说的产物、结果、生成内容等也属于此场景。"
+description: "导入和检索文档，生成、保存、查询及管理文件或研究笔记的知识卡片."
 ---
 
-# mesoInsights 文档管理
+# mesoInsights 文档与知识卡片 Skill
 
-## 概述
+对于已由 mesoInsights 管理的文档和知识卡片，以 mesoInsights MCP 工具返回的信息为准。查询云端文档库时不要用本地文件搜索替代。
 
-对于已由 mesoInsights 管理的文档，必须以 mesoInsights MCP 工具返回的
-信息为准。用户询问 mesoInsights 文档库时，不要用本地文件搜索替代。
+## When to Use
 
-## 选择操作
+用户要求导入、搜索、读取 mesoInsights 文档，或保存、生成、查询、修改、删除知识卡片时使用。
 
-根据用户意图选择对应工具：
+## Prerequisites
 
-- 需要导入本地路径中的文件：`mcp__mesoInsights__import_file`。
-- 需要查找已有云端文件：`mcp__mesoInsights__search_user_files`。
-- 需要查看解析状态、分类或同步信息：
-  `mcp__mesoInsights__get_file_detail`.
-- 需要读取已经解析完成的文件正文：
-  `mcp__mesoInsights__get_file_parse_content`.
-- 用户已给出确定的内容，且指定了承载结果的目标文件：将内容作为该文件的
-  **AI结果**保存，使用 `mcp__mesoInsights__save_ai_result_to_file`。
-- 用户已给出确定的内容，但未指定承载结果的目标文件：新建一个 Markdown 文件，
-  并将内容作为新文件的**AI结果**保存，使用
-  `mcp__mesoInsights__create_file_and_save_ai_result`。
-- 用户指定了目标文件，但要求 mesoInsights 生成内容：为该文件生成并保存
-  **智能生成结果**，使用 `mcp__mesoInsights__generate_ai_result_for_file`。
-- 用户既未指定目标文件，也要求 mesoInsights 生成内容：新建一个 Markdown 文件，
-  再为它生成并保存**智能生成结果**，使用
-  `mcp__mesoInsights__create_file_and_generate_ai_result`。
+需要已连接并配置有效 API Token 的 `mesoInsights` MCP 服务。使用下方工具前确认服务可用；AI 接口还要求 AI 阅读模块开放及 `intelligence.read` 权限。
 
-## 工作流程规则
+## How to Run
 
-1. 目标文件不明确时，先搜索；绝不猜测文件 ID。
-2. 解析状态未知时，读取正文前先查询文件详情；若解析未完成，向用户明确说明。
-3. 这四个工具读写的是文件级的**AI结果**或**智能生成结果**，不是对源文件正文
-   的改写。用户所说的“产物”“结果”“历史结果”“生成内容”等，都应按此功能域
-   理解。用户已指定承载结果的目标文件时使用该文件；未指定时，创建 Markdown
-   文件承载结果。
-4. 写入、创建或生成内容前，若目标文件或内容要求不明确，先确认。除非用户明确
-   要求，否则不要批量导入、覆盖或创建文件。
-5. 在最终回复中保留文件 ID、状态和工具返回的链接，方便用户继续后续流程。
-6. 请求的操作不被 MCP 支持时，如实说明，不能声称已经完成。
+按内容是否已有、归属是文件还是研究笔记选择下方工具，并遵循归属与结果规则。
+
+## Quick Reference
+
+- 导入本地文件：`mcp__mesoInsights__import_file`。
+- 搜索云端文件：`mcp__mesoInsights__search_user_files`。
+- 查看文件解析、分类或同步状态：`mcp__mesoInsights__get_file_detail`。
+- 读取已解析文件正文：`mcp__mesoInsights__get_file_parse_content`。
+- 保存用户已给出的结果或当前助手已生成的内容：`mcp__mesoInsights__save_knowledge_card`。
+- 用户要求调用 mesoInsights 模型生成并保存结果：`mcp__mesoInsights__generate_knowledge_card`。
+- 查询某文件或研究笔记的知识卡片、历史结果：`mcp__mesoInsights__list_knowledge_cards`。
+- 修改已有卡片正文：`mcp__mesoInsights__update_knowledge_card`。
+- 删除知识卡片（进入 AI 阅读回收站）：`mcp__mesoInsights__delete_knowledge_card`。
+
+## Procedure
+
+1. 保存、生成、查询卡片时，`file_id` 与 `folder_id` 必须且只能提供一个非 null 正整数。`folder_id` 是本人有效研究笔记 ID，允许归档笔记，不是文件系统目录 ID。
+2. 用户已指定来源文件时，确认文件 ID 后传 `file_id`。文件不明确时先搜索，不猜测 ID。
+3. 用户指定保存到研究笔记时，确认该笔记 ID 后传 `folder_id`，直接保存知识卡片，无需额外上传文件。当前 MCP 没有研究笔记列表或创建工具；ID 无法从可信上下文确认时，向用户询问，不能把文件搜索结果的 ID 当作笔记 ID。
+4. 用户未指定归属时，先使用已确认的当前文件或研究笔记；上下文无法确定目标时，向用户询问。不要自动创建 Markdown 文件承载卡片。
+5. 卡片与源文件正文独立。新建卡片不会修改文件正文；用户明确修改已有卡片时才使用更新工具，更新只支持正文，不支持改变归属。
+
+## Pitfalls
+
+- 读取文件正文前，解析状态未知时先查询详情；解析未完成时明确告知用户。
+- `target_type` 为自由文本，如 `text`、`report`，最多 50 字符；保存、更新的 `result_content` 为非空白文本，最多 1000000 字符；生成的 `raw_content` 和 `instruction` 分别最多 16000 字符。
+- 生成默认使用系统模型：`system_model=true`，省略 `model` 由服务端选择可用默认模型。指定模型时使用可用模型标识；使用用户自定义模型时显式传 `system_model=false`，不要硬编码历史默认模型。
+- 保存和生成每次成功都新建卡片。超时后先按相同归属查询列表，核对是否已创建，再决定重试，避免重复保存。
+- 列表位于工具返回的 `result.data.records`，不是数组形式的 `data`；按 `hasNext` 和页码继续查询。`page_num` 默认 1、最大 100000；`page_size` 默认 20、最大 100。
+- 按 `folder_id` 查询只返回该笔记直属有效卡片，不包含子笔记或收藏文件的卡片；文件卡片需按 `file_id` 查询。
+- 笔记直属卡片的 `fileId=null`，不能据此认定来源文件丢失；历史无归属卡片可能 `fileId`、`folderId` 均为空，但不允许新建此类卡片。
+- 更新和删除使用卡片自身 `id`，不是文件 ID、笔记 ID 或回收站条目 ID。
+- 检查工具的 `success` 与业务响应 `code`，不能只凭 HTTP 状态或展示消息判断成功。错误中的 `business_code=3061` 表示笔记失效，需重选；5001 表示卡片不存在或非本人；1001 表示参数无效。
+
+## Verification
+
+确认工具返回 `success=true`、业务 `code=0` 且 `data` 非 null；列表须检查分页信息。最终回复保留卡片 ID、归属文件或笔记 ID，以及工具实际返回的状态和链接。当前 MCP 不支持的操作（如回收站恢复、永久删除），如实说明。
 
 ## 示例
 
 - “把 `/Users/me/report.pdf` 导入文镜” → 导入本地文件。
-- “找一下我上传过的年度规划” → 先搜索云端文件。
-- “总结刚才那份文档” → 定位文件，确认已解析，读取解析正文后生成摘要。
-- “把这份总结保存到项目复盘里” → 将总结作为“项目复盘”文件的 AI结果保存，
-  不改写该文件正文。
-- “把这份总结保存下来” → 未指定目标文件，创建 Markdown 文件并保存 AI结果。
-- “为这份材料/文件自动生成一份摘要” → 对指定文件生成并保存智能生成结果。
-- “为这个内容自动生成摘要” → 创建 Markdown 文件，并保存智能生成结果。
+- “总结刚才那份文档” → 定位文件、确认已解析并读取正文，再生成摘要；用户要求保存时存为该文件知识卡片。
+- “把这份总结保存到项目复盘笔记里” → 确认研究笔记 ID，以 `folder_id` 直接保存知识卡片。
+- “把这份总结保存到这个文件里” → 以 `file_id` 保存知识卡片。
+- “把这份总结保存下来” → 使用已确认的当前文件或研究笔记归属；无法确定时先询问目标。
+- “让 mesoInsights 为这份文件自动生成摘要” → 以 `file_id` 生成并保存知识卡片。
+- “看看这本研究笔记已有的知识卡片” → 以 `folder_id` 分页查询直属卡片。
