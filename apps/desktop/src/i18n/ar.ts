@@ -11,6 +11,7 @@ import { arDiagnostics } from './ar_diagnostics'
 import { arFirstRun } from './ar_first_run'
 import { arSettings } from './ar_settings'
 import { defineLocale, type TranslationOverrides } from './define-locale'
+import { miraWorkspaceCopy } from './mira-workspace'
 
 export const arOverrides = {
   catalog: {
@@ -144,6 +145,10 @@ export const arOverrides = {
   artifactPreview: arArtifacts.artifactPreview,
   sidebar: arChrome.sidebar,
   composer: {
+    workspace: miraWorkspaceCopy['ar'],
+    introHeadline: 'مساحة عملك تبدأ بطلب واحد.',
+    introBody:
+      'ابحث في المستودع، وعدّل الملفات، وشغّل الاختبارات، وأنشئ طلبات دمج. أخبرني بالهدف وسأتولى الخطوات العملية.',
     ...arChat.composer,
     redirect: 'إعادة توجيه التشغيل الحالي',
     queueLostNote: 'فُقد الدور أثناء إعادة التشغيل',

@@ -8,6 +8,7 @@ import {
   $composerPopoutGesturesEnabled,
   clampPopoutPosition,
   type PopoutPosition,
+  setComposerPopoutGesturesEnabled,
   setComposerPoppedOut
 } from '@/store/composer-popout'
 import { isSecondaryWindow } from '@/store/windows'
@@ -93,6 +94,7 @@ export function useComposerPopout({ composerRef }: UseComposerPopoutOptions) {
   const poppedOut = state.poppedOut && popoutAllowed
 
   const handleComposerPopOut = useCallback(() => {
+    setComposerPopoutGesturesEnabled(true)
     triggerHaptic('open')
 
     if (surfaceId) {

@@ -1,14 +1,6 @@
 import { ComposerPrimitive } from '@assistant-ui/react'
 import { useStore } from '@nanostores/react'
-import {
-  type ClipboardEvent,
-  type FormEvent,
-  type KeyboardEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef
-} from 'react'
+import { type ClipboardEvent, type FormEvent, type KeyboardEvent, useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { useTourMarker } from '@/app/chat/tour-marker'
 import type { GatewayRequester } from '@/app/contrib/types'
@@ -88,6 +80,7 @@ import { useSlashCompletions } from './hooks/use-slash-completions'
 import { useStatusDrawer } from './hooks/use-status-drawer'
 import { useSessionStatusPresence } from './hooks/use-status-presence'
 import { shouldConvertPasteToAttachment } from './large-paste'
+import { ComposerLayout } from './layout'
 import { ActionBadges } from './micro-actions'
 import { chipTypedPathOnSpace, pathifyRefs } from './path-refs'
 import { PreparedImageRecovery } from './prepared-image-recovery'
@@ -1513,22 +1506,14 @@ export function ChatBar({
                   <VoicePlaybackActivity />
                   {queueEdit && editingQueuedPrompt && <QueuedEditBanner onExit={exitQueuedEdit} />}
                   {attachments.length > 0 && <AttachmentList attachments={attachments} onRemove={onRemoveAttachment} />}
-                  <div className={cn('grid w-full', controlRowGridClass(singleColumn, stacked))}>
-                    <div className="flex translate-y-[3px] items-start gap-(--composer-control-gap) self-start [grid-area:menu]">
-                      {contextMenu}
-                      <ContribSlot area={COMPOSER_AREAS.leading} />
-                    </div>
-                    <div className="min-w-0 [grid-area:input]">{input}</div>
-                    {/* `justify-end` packs contributed actions and the send cluster
-                      together on the right. The cluster must not carry its own
-                      `ml-auto`: in the stacked layout the auto margin absorbs the
-                      row's free space and pins a contributed action to the row
-                      start, detached from the cluster (#116332). */}
-                    <div className="flex min-w-0 items-center justify-end gap-(--composer-control-gap) [grid-area:controls]">
-                      <ContribSlot area={COMPOSER_AREAS.actions} />
-                      {controls}
-                    </div>
-                  </div>
+                  <ComposerLayout
+                    className={controlRowGridClass(singleColumn, stacked)}
+                    controls={controls}
+                    input={input}
+                    menu={contextMenu}
+                    onFloatToggle={handleComposerToggle}
+                    poppedOut={poppedOut}
+                  />
                   <ContribSlot area={COMPOSER_AREAS.bottom} />
                 </div>
               </div>

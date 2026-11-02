@@ -3,8 +3,10 @@ import { mergeTranslations } from '@hermes/shared/i18n'
 
 import { defineFieldCopy } from '@/app/settings/field-copy'
 
+import { artifactFileActionCopy } from './artifact-files'
 import { defineLocale, type TranslationOverrides } from './define-locale'
 import { introZh } from './intro-zh'
+import { miraWorkspaceCopy } from './mira-workspace'
 import { zhCatalog, zhSkillDeepLink } from './zh_catalog'
 import { zhClarify } from './zh_clarify'
 import { zhConnectorCard } from './zh_connector_card'
@@ -2939,6 +2941,7 @@ const zhBaseOverrides = {
     }
   },
   artifacts: {
+    fileActions: artifactFileActionCopy.zh,
     search: '搜索产物…',
     refresh: '刷新产物',
     refreshing: '正在刷新产物',
@@ -3137,6 +3140,9 @@ const zhBaseOverrides = {
   },
 
   composer: {
+    workspace: miraWorkspaceCopy['zh'],
+    introHeadline: '你的工作空间，一句话开启。',
+    introBody: '搜索项目、编辑文件、运行测试、创建 PR。告诉我目标，具体操作交给我。',
     message: '消息',
     wakingProfile: profile => `正在唤醒 ${profile}…`,
     placeholderStarting: '正在启动 Mira…',

@@ -43,6 +43,8 @@ def coerce_tool_args(tool_name: str, args: dict[str, Any]) -> dict[str, Any]:
             continue
         prop_schema = resolve_local_schema_ref(prop_schema, parameters)
         expected = prop_schema.get("type")
+        if expected == "array":
+            value = args[key] = _coerce_numeric_array(value, prop_schema)
         is_container = isinstance(value, (list, tuple))
 
         # Bare non-list value for an array schema. Strings go through
@@ -85,6 +87,27 @@ def coerce_tool_args(tool_name: str, args: dict[str, Any]) -> dict[str, Any]:
                 )
 
     return args
+
+
+def _coerce_numeric_array(value: Any, schema: dict) -> Any:
+    """Repair numeric array items and an unambiguous XML-style ``item`` wrapper.
+
+    Some tool-calling models emit coordinate={"item": ["152", "82"]}.
+    Array-of-object arguments must keep their objects; extra keys, malformed
+    numbers and wrong lengths still reach the ordinary schema validator.
+    """
+    item_schema = schema.get("items")
+    expected = item_schema.get("type") if isinstance(item_schema, dict) else None
+    if expected not in ("integer", "number"):
+        return value
+    if isinstance(value, dict) and set(value) == {"item"} and isinstance(value["item"], list):
+        value = value["item"]
+    elif isinstance(value, str) and value.strip().startswith("["):
+        value = _coerce_json(value, list)
+    if not isinstance(value, list):
+        return value
+    coerced = [_coerce_value(item, expected, item_schema) if isinstance(item, str) else item for item in value]
+    return coerced if any(new is not old for new, old in zip(coerced, value)) else value
 
 
 def _schema_accepts_kind(

@@ -1,7 +1,8 @@
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router'
 import { afterEach, expect, it, vi } from 'vitest'
 
+import { I18nProvider } from '@/i18n'
 import { $connection } from '@/store/session'
 
 import { ArtifactsView } from './index'
@@ -62,7 +63,9 @@ it('keeps discovered file paths and originating session scope intact through rem
   })
   render(
     <MemoryRouter>
-      <ArtifactsView />
+      <I18nProvider configClient={null} initialLocale="en">
+        <ArtifactsView />
+      </I18nProvider>
     </MemoryRouter>
   )
 
@@ -77,7 +80,14 @@ it('keeps discovered file paths and originating session scope intact through rem
     'unc.txt',
     'absolute.txt'
   ]) {
-    fireEvent.click(await screen.findByRole('button', { name }))
+    const file = await screen.findByRole('button', { name })
+    const row = file.closest('.artifact-file-interaction')! as HTMLElement
+    fireEvent.pointerDown(within(row).getByRole('button', { name: 'Actions' }), {
+      button: 0,
+      ctrlKey: false,
+      pointerType: 'mouse'
+    })
+    fireEvent.click(await screen.findByRole('menuitem', { name: 'Download' }))
   }
 
   await waitFor(() => expect(saveGatewayFile).toHaveBeenCalledTimes(paths.length))

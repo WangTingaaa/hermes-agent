@@ -1,25 +1,12 @@
 import { useState } from 'react'
 
 import { useI18n } from '@/i18n'
-import { BRAND_AGENT_NAME, BRAND_AGENT_WORDMARK } from '@/lib/branding'
+import { BRAND_AGENT_NAME } from '@/lib/branding'
 import { capitalize, normalize } from '@/lib/text'
 
 import introCopyJsonl from './intro-copy.jsonl?raw'
-import { Wordmark } from './wordmark'
-
-type IntroCopy = {
-  headline: string
-  body: string
-}
-
-type IntroCopyRecord = IntroCopy & {
-  personality: string
-}
-
-export type IntroProps = {
-  personality?: string
-  seed?: number
-}
+import { MiraWorkspace } from './mira-workspace'
+import type { IntroCopy, IntroCopyRecord, IntroProps } from './type'
 
 const NEUTRAL_PERSONALITIES = new Set(['', 'default', 'none', 'neutral'])
 
@@ -147,8 +134,6 @@ function pickCopy(copies: IntroCopy[], seed = 0): IntroCopy {
   return copies[Math.abs(seed) % copies.length] || FALLBACK_COPY[0]
 }
 
-const WORDMARK = BRAND_AGENT_WORDMARK
-
 function resolveCopy(personality?: string, seed?: number): IntroCopy {
   const personalityKey = normalizeKey(personality)
 
@@ -163,35 +148,14 @@ export function Intro({ personality, seed }: IntroProps) {
   const [mountSeed] = useState(() => Math.floor(Math.random() * 100000))
   const { t } = useI18n()
   const personalityKey = normalizeKey(personality)
-  const copy = resolveCopy(personality, mountSeed + (seed ?? 0))
+  const rotationSeed = mountSeed + (seed ?? 0)
+  const copy = resolveCopy(personality, rotationSeed)
 
-  const localizedCopy =
-    NEUTRAL_PERSONALITIES.has(personalityKey) && t.composer.introHeadline && t.composer.introBody
-      ? { headline: t.composer.introHeadline, body: t.composer.introBody }
-      : copy
+  const bodies =
+    t.intro.stock[personalityKey] ??
+    (NEUTRAL_PERSONALITIES.has(personalityKey) ? t.intro.stock.none : t.intro.custom(personality || ''))
 
-  return (
-    <div
-      className="pointer-events-none flex w-full min-w-0 flex-col items-center justify-center px-4 py-8 text-center text-muted-foreground sm:px-6 lg:px-8"
-      data-slot="aui_intro"
-    >
-      <div className="w-full min-w-0 max-w-3xl">
-        <Wordmark
-          className="mb-2 opacity-95 drop-shadow-[0_10px_24px_color-mix(in_srgb,var(--ui-accent)_18%,transparent)]"
-          fitMin="2rem"
-          text={WORDMARK}
-          width="min(100%, 48rem)"
-        />
+  const body = bodies?.[Math.abs(rotationSeed) % bodies.length] ?? copy.body
 
-        <div className="mx-auto max-w-xl rounded-2xl border border-(--ui-stroke-tertiary) bg-(--ui-control-active-background)/55 px-5 py-4 shadow-[0_12px_40px_color-mix(in_srgb,var(--ui-base)_5%,transparent)] backdrop-blur-sm sm:px-7 sm:py-5">
-          <h1 className="m-0 text-base font-semibold tracking-[-0.01em] text-foreground sm:text-lg">
-            {localizedCopy.headline}
-          </h1>
-          <p className="mx-auto mt-2 mb-0 max-w-[54ch] text-sm leading-6 tracking-normal text-(--ui-text-secondary) sm:text-[0.9375rem]">
-            {localizedCopy.body}
-          </p>
-        </div>
-      </div>
-    </div>
-  )
+  return <MiraWorkspace body={NEUTRAL_PERSONALITIES.has(personalityKey) ? undefined : body} />
 }

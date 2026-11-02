@@ -955,6 +955,8 @@ def _route_capture_through_aux_vision(cap: CaptureResult, summary: str, *, visib
     analysis_text = result_json.strip() if isinstance(result_json, str) else ""
     with contextlib.suppress(TypeError, json.JSONDecodeError):
         parsed = json.loads(analysis_text)
+        if isinstance(parsed, dict) and parsed.get("success") is False:
+            return None
         analysis_text = str(parsed.get("analysis") or "").strip() if isinstance(parsed, dict) else ""
     if not analysis_text:
         return None

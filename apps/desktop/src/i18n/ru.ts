@@ -1,7 +1,9 @@
 // health: allow FILE_LINES -- locale data: translated copy for the usage-window plan UI (allowance gauges, Large/Free tags, the limit card), one key per string
 import { defineFieldCopy } from '@/app/settings/field-copy'
 
+import { artifactFileActionCopy } from './artifact-files'
 import { defineLocale, type TranslationOverrides } from './define-locale'
+import { miraWorkspaceCopy } from './mira-workspace'
 import { ruBoot } from './ru_boot'
 import { ruCatalog, ruSkillDeepLink } from './ru_catalog'
 import { ruClarify } from './ru_clarify'
@@ -2209,6 +2211,7 @@ export const ruOverrides = {
     }
   },
   artifacts: {
+    fileActions: artifactFileActionCopy.ru,
     search: 'Поиск артефактов...',
     refresh: 'Обновить артефакты',
     refreshing: 'Обновление артефактов',
@@ -2407,6 +2410,10 @@ export const ruOverrides = {
     markAllRead: 'Отметить все как прочитанные'
   },
   composer: {
+    workspace: miraWorkspaceCopy['ru'],
+    introHeadline: 'Ваше рабочее пространство. Достаточно одного запроса.',
+    introBody:
+      'Поиск в репозитории, редактирование файлов, запуск тестов и создание PR. Назовите цель, а конкретные шаги я возьму на себя.',
     message: 'Сообщение',
     wakingProfile: profile => `Пробуждаем ${profile}…`,
     placeholderStarting: 'Запуск Mira...',

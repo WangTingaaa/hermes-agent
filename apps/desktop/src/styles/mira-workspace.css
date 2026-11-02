@@ -1,0 +1,570 @@
+/* Mira workspace presentation. Keep brand/layout overrides here to minimize
+   changes when updating Hermes. Existing editor and navigation actions remain authoritative. */
+html[data-hermes-theme='mesoInsights']:not(:has([data-hud-shell])) {
+  --mira-accent: var(--dt-primary);
+  --mira-ink: color-mix(in srgb, var(--dt-foreground) 82%, var(--dt-primary));
+  --mira-muted: var(--ui-text-secondary);
+  --mira-line: color-mix(in srgb, var(--dt-border) 94%, var(--dt-primary) 6%);
+  --mira-paper: var(--dt-background);
+  --mira-surface: var(--dt-card);
+  --mira-sidebar: color-mix(in srgb, var(--dt-muted) 78%, var(--dt-background));
+  --mira-detail: color-mix(in srgb, var(--dt-muted) 55%, var(--dt-card));
+  --mira-width: 73.75rem;
+}
+html[data-hermes-theme='mesoInsights']:not(:has([data-hud-shell])) [data-chat-surface] {
+  --composer-width: var(--mira-width);
+}
+html[data-hermes-theme='mesoInsights']:not(:has([data-hud-shell])) [data-chat-surface] > div[aria-hidden]:has(> img) {
+  display: none;
+}
+
+[data-slot='aui_intro'].mira-workspace {
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  pointer-events: auto;
+  text-align: start;
+  color: var(--mira-ink, var(--ui-text-primary));
+  container-type: inline-size;
+}
+.mira-workspace__welcome {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin: 0.5rem 0 1.75rem;
+}
+.mira-workspace__copy {
+  min-width: 0;
+}
+.mira-workspace__eyebrow {
+  margin-bottom: 0.875rem;
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: var(--mira-muted, var(--ui-text-secondary));
+}
+.mira-workspace h1 {
+  margin: 0;
+  font-size: clamp(1.75rem, 3.2cqi, 2.5rem);
+  line-height: 1.3;
+  letter-spacing: -0.035em;
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+.mira-workspace h1 em {
+  color: var(--dt-primary);
+  font-style: normal;
+}
+[data-slot='aui_intro'].mira-workspace .mira-workspace__copy > p {
+  max-width: 65ch;
+  margin: 0.75rem 0 0;
+  color: var(--mira-muted, var(--ui-text-secondary));
+  font-size: 0.8125rem;
+  line-height: 1.8;
+  white-space: pre-line;
+}
+.mira-workspace__workspace-label {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 0.5rem;
+  padding-bottom: 0.25rem;
+  color: var(--mira-muted, var(--ui-text-secondary));
+  font-size: 0.6875rem;
+}
+.mira-workspace__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.65fr) minmax(16rem, 0.8fr);
+  align-items: start;
+  gap: 2rem;
+  margin-top: 2.25rem;
+}
+.mira-workspace__composer-card {
+  position: relative;
+  padding: 1.25rem 1.25rem 0.875rem;
+  border: 1px solid var(--mira-line, var(--ui-stroke-secondary));
+  border-radius: 1rem;
+  background: var(--dt-card);
+  box-shadow: 0 1rem 2.8125rem color-mix(in srgb, var(--dt-primary) 7%, transparent);
+}
+.mira-workspace__composer-card:focus-within {
+  border-color: color-mix(in srgb, var(--dt-primary) 55%, var(--dt-border));
+}
+.mira-workspace__section-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.375rem 0.75rem;
+  margin-bottom: 0.875rem;
+}
+.mira-workspace__section-heading h2 {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  font-weight: 600;
+}
+.mira-workspace__section-heading > span {
+  color: var(--mira-muted, var(--ui-text-secondary));
+  font-size: 0.625rem;
+  line-height: 1.6;
+}
+.mira-workspace__composer-host {
+  min-height: 7.75rem;
+  min-width: 0;
+}
+.mira-workspace__composer-host [data-slot='composer-dock']:not([data-popped-out]),
+.mira-workspace__composer-host [data-composer-fallback] {
+  position: relative;
+  inset: auto;
+  width: calc(100% + 10px);
+  max-width: none;
+  margin: 0 -5px;
+  padding-bottom: 0;
+  transform: none;
+  translate: none;
+}
+html .mira-workspace__composer-host [data-slot='composer-surface'] {
+  border: 0 !important;
+  box-shadow: none !important;
+}
+html .mira-workspace__composer-host [data-slot='composer-fade'] {
+  padding: 0;
+}
+.mira-workspace__composer-host [data-slot='composer-entry'] {
+  border-bottom: 1px solid var(--mira-line, var(--ui-stroke-secondary));
+  padding-bottom: 0.625rem;
+}
+.mira-workspace__composer-host [data-slot='composer-rich-input'] {
+  min-height: 4.75rem;
+  font-size: 0.875rem;
+}
+.mira-workspace__artifact:focus-visible,
+.mira-workspace__text-link:focus-visible {
+  outline: 2px solid var(--dt-primary);
+  outline-offset: 3px;
+}
+.mira-workspace__task-icon {
+  display: grid;
+  width: 1.875rem;
+  height: 1.875rem;
+  flex: none;
+  place-items: center;
+  border-radius: 0.5rem;
+  color: var(--dt-primary);
+  background: color-mix(in srgb, var(--dt-primary) 8%, var(--dt-card));
+}
+.mira-workspace__capability strong {
+  display: block;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  font-weight: 600;
+}
+.mira-workspace__capability small {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1.8;
+  color: var(--mira-muted, var(--ui-text-secondary));
+}
+.mira-workspace__details {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  min-width: 0;
+}
+.mira-workspace__text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  min-height: 1.5rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--dt-accent-foreground);
+  font-size: 0.625rem;
+  cursor: pointer;
+}
+.mira-workspace__text-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.mira-workspace__capability-strip {
+  margin-top: 2rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--mira-line, var(--ui-stroke-secondary));
+}
+.mira-workspace__capabilities {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+.mira-workspace__recent {
+  min-width: 0;
+}
+.mira-workspace__recent > .mira-workspace__section-heading {
+  min-height: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+.mira-workspace__recent-body {
+  padding: 0.875rem;
+  border: 1px solid var(--mira-line, var(--ui-stroke-secondary));
+  border-radius: 1rem;
+  background: var(--mira-detail, var(--dt-muted));
+}
+.mira-workspace__capability {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.mira-workspace__artifacts {
+  display: grid;
+  gap: 0.75rem;
+  max-height: 20rem;
+  overflow-y: auto;
+}
+.mira-workspace__artifact {
+  display: flex;
+  align-items: start;
+  gap: 0.625rem;
+  width: 100%;
+  min-width: 0;
+  padding: 0.375rem 0.5rem;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  text-align: start;
+  cursor: pointer;
+}
+.mira-workspace__artifacts > .artifact-file-interaction {
+  border-radius: var(--radius-overlay);
+}
+.mira-workspace__artifacts
+  > .artifact-file-interaction:is(:hover, :focus-within, [data-state='open'], :has([data-state='open'])) {
+  background: color-mix(in srgb, var(--dt-primary) 9%, var(--mira-detail, var(--ui-bg-elevated)));
+}
+.mira-workspace__artifact > .codicon {
+  flex: none;
+  padding-top: 0.125rem;
+  color: var(--dt-primary);
+}
+.mira-workspace__artifact > span {
+  min-width: 0;
+  flex: 1;
+}
+.mira-workspace__artifact strong {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+.mira-workspace__artifact small {
+  display: block;
+  margin-top: 0.25rem;
+  color: var(--mira-muted, var(--ui-text-secondary));
+  font-size: 0.625rem;
+  line-height: 1.7;
+}
+[data-slot='aui_intro'].mira-workspace .mira-workspace__empty {
+  margin: 0;
+  max-width: none;
+  color: var(--mira-muted, var(--ui-text-secondary));
+  font-size: 0.75rem;
+  line-height: 1.85;
+}
+.mira-workspace__tip {
+  padding: 0.25rem 0.875rem;
+}
+.mira-workspace__tip > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.5625rem;
+  letter-spacing: 0.1em;
+  color: var(--dt-accent-foreground);
+}
+.mira-workspace__tip h2 {
+  margin: 0.625rem 0 0.375rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.6;
+}
+[data-slot='aui_intro'].mira-workspace .mira-workspace__tip p {
+  margin: 0;
+  max-width: none;
+  color: var(--mira-muted, var(--ui-text-secondary));
+  font-size: 0.75rem;
+  line-height: 1.85;
+}
+[data-slot='aui_intro'].mira-workspace > .mira-workspace__footer {
+  margin: 1.25rem 0 0;
+  max-width: none;
+  font-size: 0.625rem;
+  color: var(--mira-muted, var(--ui-text-secondary));
+  text-align: center;
+  line-height: 1.7;
+}
+
+/* Home owns an in-flow editor. Transcript views retain the measured bottom dock. */
+html[data-hermes-theme='mesoInsights']:not(:has([data-hud-shell])) [data-chat-surface]:has(.mira-workspace) {
+  overflow-y: auto;
+  overflow-x: hidden;
+  background:
+    radial-gradient(ellipse at 70% 35%, color-mix(in srgb, var(--dt-primary) 5%, transparent), transparent 60%),
+    var(--mira-paper);
+}
+html[data-hermes-theme='mesoInsights']:not(:has([data-hud-shell]))
+  [data-chat-surface]:has(.mira-workspace)
+  > [data-slot='composer-bounds'] {
+  flex: 1 0 auto;
+  min-height: 100%;
+  overflow: visible;
+  contain: none;
+  background: transparent;
+}
+html[data-hermes-theme='mesoInsights']:not(:has([data-hud-shell]))
+  [data-chat-surface]:has(.mira-workspace)
+  :is([data-slot='thread'], [data-slot='thread'] > div, [data-slot='aui_thread-viewport']) {
+  height: 100% !important;
+  overflow: visible;
+  contain: none;
+}
+html[data-hermes-theme='mesoInsights']:not(:has([data-hud-shell]))
+  [data-chat-surface]:has(.mira-workspace)
+  [data-slot='aui_thread-content'] {
+  min-height: 100%;
+  justify-content: center;
+  max-width: calc(var(--mira-width) + 5rem);
+  padding: 2.5rem 2.5rem 2rem;
+}
+html[data-hermes-theme='mesoInsights']:not(:has([data-hud-shell]))
+  [data-chat-surface]:has(.mira-workspace)
+  [data-slot='aui_thread-content']
+  > div:has(.mira-workspace),
+html[data-hermes-theme='mesoInsights']:not(:has([data-hud-shell]))
+  [data-chat-surface]:has(.mira-workspace)
+  [data-slot='aui_thread-content']
+  > div
+  > div:has(> .mira-workspace) {
+  display: flex;
+  flex: 0 0 auto;
+  padding: 0;
+}
+
+@container (max-width: 960px) {
+  .mira-workspace__grid {
+    grid-template-columns: minmax(0, 1fr) 16rem;
+    gap: 1.25rem;
+  }
+  .mira-workspace__capabilities {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@container (max-width: 700px) {
+  .mira-workspace__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .mira-workspace__details {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .mira-workspace__tip {
+    align-self: center;
+  }
+  .mira-workspace__welcome {
+    align-items: start;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+}
+@container (max-width: 450px) {
+  .mira-workspace__details {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .mira-workspace__tip {
+    align-self: auto;
+  }
+  .mira-workspace__capabilities {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .mira-workspace__composer-card {
+    padding: 1rem;
+  }
+  .mira-workspace__eyebrow {
+    letter-spacing: 0.1em;
+  }
+}
+@media (max-width: 700px) {
+  html[data-hermes-theme='mesoInsights']:not(:has([data-hud-shell]))
+    [data-chat-surface]:has(.mira-workspace)
+    [data-slot='aui_thread-content'] {
+    padding: 1.5rem 1.25rem;
+  }
+}
+
+/* One composer, with the host InputBox's multiline surface and bottom toolbar.
+   Floating/HUD and edit composers keep their existing compact layouts. */
+html[data-hermes-theme='mesoInsights']:not(:has([data-hud-shell]))
+  [data-chat-surface]:not([data-hud-shell])
+  [data-slot='composer-root']:not([data-popped-out]) {
+  --composer-compact-model-width: 320;
+  --composer-control-size: 1.875rem;
+  --composer-control-primary-size: 2rem;
+  --composer-surface-pad-x: 1rem;
+  --composer-surface-pad-y: 0.875rem;
+  --composer-row-gap: 0.625rem;
+  --composer-input-min-height: 4.25rem;
+  --composer-fill: var(--mira-surface);
+  border-radius: 1rem;
+}
+
+html[data-hermes-theme='mesoInsights']:not(:has([data-hud-shell]))
+  [data-chat-surface]:not([data-hud-shell])
+  [data-slot='composer-root']:not([data-popped-out])
+  [data-slot='composer-surface'] {
+  border-color: var(--mira-line) !important;
+  box-shadow:
+    0 0.875rem 2.25rem color-mix(in srgb, var(--mira-ink) 7%, transparent),
+    0 2px 6px color-mix(in srgb, var(--mira-ink) 4%, transparent);
+}
+
+html[data-hermes-theme='mesoInsights']:not(:has([data-hud-shell]))
+  [data-chat-surface]:not([data-hud-shell])
+  [data-slot='composer-root']:not([data-popped-out]):focus-within
+  [data-slot='composer-surface'] {
+  border-color: color-mix(in srgb, var(--mira-accent) 55%, var(--mira-line)) !important;
+}
+
+html[data-hermes-theme='mesoInsights']:not(:has([data-hud-shell]))
+  [data-chat-surface]:not([data-hud-shell])
+  [data-slot='composer-root']:not([data-popped-out])
+  [data-slot='composer-layout'] {
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas: 'input input' 'menu controls';
+  align-items: center;
+  gap: 0.75rem;
+}
+
+html[data-hermes-theme='mesoInsights']:not(:has([data-hud-shell]))
+  [data-chat-surface]
+  [data-slot='composer-root']:not([data-popped-out])
+  [data-slot='composer-menu'] {
+  align-self: center;
+  transform: none;
+}
+html[data-hermes-theme='mesoInsights']:not(:has([data-hud-shell]))
+  [data-chat-surface]
+  [data-slot='composer-root']:not([data-popped-out])
+  [data-slot='composer-menu']
+  button {
+  border: 1px solid var(--mira-line);
+  border-radius: 50%;
+  color: var(--dt-primary);
+  background: color-mix(in srgb, var(--dt-primary) 5%, var(--dt-card));
+}
+html[data-hermes-theme='mesoInsights']:not(:has([data-hud-shell]))
+  [data-chat-surface]
+  [data-slot='composer-root']:not([data-popped-out])
+  [data-slot='composer-controls']
+  [data-slot='composer-primary-action'] {
+  border-radius: 0.5rem;
+  color: var(--dt-primary-foreground);
+  background: var(--dt-primary);
+  box-shadow: 0 3px 10px color-mix(in srgb, var(--dt-primary) 18%, transparent);
+}
+html[data-hermes-theme='mesoInsights']:not(:has([data-hud-shell]))
+  [data-chat-surface]
+  [data-slot='composer-root']:not([data-popped-out])
+  [data-slot='composer-controls']
+  [data-slot='composer-primary-action']:disabled {
+  opacity: 0.4;
+  box-shadow: none;
+}
+
+html[data-hermes-theme='mesoInsights']:not(:has([data-hud-shell])) [data-slot='sidebar-inner'] {
+  background: var(--mira-sidebar);
+  border-color: var(--mira-line);
+}
+html[data-hermes-theme='mesoInsights']:not(:has([data-hud-shell])) [data-slot='sidebar-menu-button'] {
+  min-height: 2.125rem;
+  border-radius: 0.5rem;
+}
+html[data-hermes-theme='mesoInsights']:not(:has([data-hud-shell]))
+  [data-slot='sidebar-menu-button'][data-active='true'] {
+  color: var(--dt-accent-foreground);
+  background: color-mix(in srgb, var(--dt-primary) 9%, var(--dt-card));
+}
+html[data-hermes-theme='mesoInsights']:not(:has([data-hud-shell])) [data-slot='sidebar-input'] {
+  min-height: 2rem;
+  border-radius: 0.5rem;
+  border-color: var(--mira-line);
+}
+
+/* Shell chrome uses existing tab/drop targets, so drag and split controls
+   retain their original hit boxes. */
+html[data-hermes-theme='mesoInsights']:not(:has([data-hud-shell])) [data-tour='sessions-sidebar'] {
+  background: var(--mira-sidebar);
+  border-color: var(--mira-line);
+}
+html[data-hermes-theme='mesoInsights']:not(:has([data-hud-shell]))
+  [data-slot='sidebar-menu-button']:has([data-tour='sidebar-nav-new-session']) {
+  background: color-mix(in srgb, var(--mira-accent) 9%, var(--mira-surface));
+  color: var(--dt-accent-foreground);
+  margin-block-end: 0.25rem;
+}
+html[data-hermes-theme='mesoInsights']:not(:has([data-hud-shell])) [data-panel-header]:has([data-tree-tab='sessions']) {
+  background: var(--mira-sidebar);
+}
+html[data-hermes-theme='mesoInsights']:not(:has([data-hud-shell]))
+  [data-zone-tabstrip]:has([data-tree-tab='sessions']) {
+  padding: 0.125rem 0.5rem;
+  background: var(--mira-sidebar);
+}
+html[data-hermes-theme='mesoInsights']:not(:has([data-hud-shell]))
+  [data-zone-tabstrip]:has([data-tree-tab='sessions'])
+  [role='tablist'] {
+  padding: 0.1875rem;
+  gap: 0.125rem;
+  border-radius: 0.625rem;
+  background: var(--dt-muted);
+}
+html[data-hermes-theme='mesoInsights']:not(:has([data-hud-shell]))
+  [data-zone-tabstrip]:has([data-tree-tab='sessions'])
+  [role='tab'] {
+  flex: 1;
+  min-width: 0;
+  justify-content: center;
+  border: 0;
+  border-radius: 0.4375rem;
+  background: transparent;
+}
+html[data-hermes-theme='mesoInsights']:not(:has([data-hud-shell]))
+  [data-zone-tabstrip]:has([data-tree-tab='sessions'])
+  [role='tab'][aria-selected='true'] {
+  background: var(--mira-surface);
+  box-shadow: 0 1px 4px color-mix(in srgb, var(--mira-ink) 7%, transparent);
+}
+
+/* A split pane can be narrower than the native window. Fit the toolbar to
+   its own container rather than the window's media breakpoint. */
+html[data-hermes-theme='mesoInsights']:not(:has([data-hud-shell])) [data-slot='composer-fade'] {
+  container-type: inline-size;
+}
+@container (max-width: 240px) {
+  html[data-hermes-theme='mesoInsights']
+    [data-slot='composer-root']:not([data-popped-out])
+    [data-slot='composer-layout'] {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: 'input' 'menu' 'controls';
+  }
+}
+
+.mira-workspace__composer-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}

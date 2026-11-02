@@ -38,6 +38,7 @@ export function StartVoiceButton({
         <Button
           aria-label={label}
           className={cn(PRIMARY_ICON_BTN, engine && 'rounded-r-none')}
+          data-slot="composer-primary-action"
           disabled={disabled}
           onClick={() => {
             triggerHaptic('open')

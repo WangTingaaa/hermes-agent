@@ -189,6 +189,7 @@ export function ComposerControls({
           <Button
             aria-label={showStop ? c.stop : sendLabel}
             className={PRIMARY_ICON_BTN}
+            data-slot="composer-primary-action"
             disabled={disabled || !canSubmit}
             onClick={() => recordAction(showStop ? 'composer.cancel' : 'composer.send', 'click')}
             onMouseDown={keepEditorFocus}

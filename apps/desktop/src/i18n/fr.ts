@@ -1,6 +1,7 @@
 // health: allow FILE_LINES -- locale data: translated copy for the usage-window plan UI (allowance gauges, Large/Free tags, the limit card), one key per string
 import { defineFieldCopy } from '@/app/settings/field-copy'
 
+import { artifactFileActionCopy } from './artifact-files'
 import { defineLocale, type TranslationOverrides } from './define-locale'
 import { frBoot } from './fr_boot'
 import { frClarify } from './fr_clarify'
@@ -26,6 +27,7 @@ import { frSharedMetrics } from './fr_shared_metrics'
 import { frThemePicker } from './fr_theme_picker'
 import { frUpdateChannel } from './fr_update_channel'
 import { introFr } from './intro-fr'
+import { miraWorkspaceCopy } from './mira-workspace'
 
 export const frOverrides = {
   sharedMetrics: frSharedMetrics,
@@ -3531,6 +3533,7 @@ export const frOverrides = {
     }
   },
   artifacts: {
+    fileActions: artifactFileActionCopy.fr,
     search: 'Rechercher des artefacts...',
     refresh: 'Actualiser les artefacts',
     refreshing: 'Actualisation des artefacts',
@@ -3736,6 +3739,10 @@ export const frOverrides = {
     markAllRead: 'Tout marquer comme lu'
   },
   composer: {
+    workspace: miraWorkspaceCopy['fr'],
+    introHeadline: 'Votre espace de travail, en une demande.',
+    introBody:
+      'Rechercher dans le dépôt, modifier des fichiers, lancer des tests, créer des PR. Indiquez votre objectif, je m’occupe des étapes pratiques.',
     message: 'Message',
     wakingProfile: profile => `Réveil de ${profile}…`,
     placeholderStarting: 'Démarrage de Mira…',

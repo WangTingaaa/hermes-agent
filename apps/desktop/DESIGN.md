@@ -79,6 +79,10 @@ replace the foreground transcript or steal focus.
 
 ## Surfaces & elevation
 
+Floating panels use a fixed **12px** corner radius (`--radius-overlay`), independent of the
+control-radius scale. Content dialogs and route overlays use **70% of the window width**;
+content-sized dialogs are capped at the same width. Their shared `--shadow-nous` casts a light shadow below the panel.
+
 Floating panels (base `Dialog`, route overlays, boot/install/update surfaces,
 model-picker, onboarding, prompt overlays, notifications) use:
 
@@ -91,12 +95,11 @@ Both are CSS vars in `src/styles.css` — tune in one place, everything inherits
 Don't add per-overlay `shadow-[…]` or `border-(--ui-stroke-secondary)`
 one-offs; if elevation needs to change, change the token.
 
-Menus and popovers use their own shared `shadow-md` +
-`--ui-stroke-secondary` primitive treatment. Every floating list —
-`DropdownMenu`, `Select`, and Popover + cmdk pickers
-(`<PopoverContent variant="menu">` + `<Command variant="menu">`) — paints
-through `src/components/ui/menu.ts`, so a list reads the same wherever it
-opens. Typed fields with suggestions use `ComboboxInput`, never
+Menus use an **opaque** `--ui-bg-elevated` surface, a `--ui-stroke-secondary`
+hairline, the shared 12px corners and light downward shadow. DropdownMenu, Select
+and Popover + cmdk menu pickers paint through `src/components/ui/menu.ts`;
+ContextMenu and its submenus use the same solid fill. Menu surfaces do not blur
+the content beneath them. Typed fields with suggestions use `ComboboxInput`, never
 `<input list>` + `<datalist>` (Chromium paints that as its own OS popup).
 
 Drag affordances may use tokenized

@@ -38,11 +38,11 @@ export interface ComposerFit {
 
 const ROOMY: ComposerFit = { compactPill: false, foldVoice: false, minimal: false, tight: false, singleColumn: false }
 
-const fitForWidth = (width: number, controlSize: number): ComposerFit => {
+const fitForWidth = (width: number, controlSize: number, compactPillWidth = COMPOSER_COMPACT_PILL_PX): ComposerFit => {
   const growth = Math.max(0, controlSize - 24)
 
   return {
-    compactPill: width < COMPOSER_COMPACT_PILL_PX + growth * 5,
+    compactPill: width < compactPillWidth + growth * 5,
     foldVoice: width < COMPOSER_FOLD_VOICE_PX + growth * 5,
     minimal: width < COMPOSER_MINIMAL_PX + growth * 3,
     tight: width < COMPOSER_STACK_BREAKPOINT_PX + growth * 5,
@@ -67,16 +67,22 @@ const DESKTOP_CONTROL_PX = 24
  *  `--composer-control-size` token and splits into one column below two
  *  targets. Native Desktop keeps the compact stages and the row, as on main. */
 function composerFit(composer: HTMLElement, width: number): ComposerFit {
+  const style = getComputedStyle(composer)
+
+  // A dedicated toolbar row has more label space than the inline layout.
+  const compactPillWidth =
+    parseFloat(style.getPropertyValue('--composer-compact-model-width')) || COMPOSER_COMPACT_PILL_PX
+
   if (!hostHas('touchSizedControls')) {
-    return { ...fitForWidth(width, DESKTOP_CONTROL_PX), singleColumn: false }
+    return { ...fitForWidth(width, DESKTOP_CONTROL_PX, compactPillWidth), singleColumn: false }
   }
 
-  const token = getComputedStyle(composer).getPropertyValue('--composer-control-size').trim()
+  const token = style.getPropertyValue('--composer-control-size').trim()
 
   const size =
     parseFloat(token) * (token.endsWith('rem') ? parseFloat(getComputedStyle(document.documentElement).fontSize) : 1)
 
-  return fitForWidth(width, Number.isFinite(size) ? size : DESKTOP_CONTROL_PX)
+  return fitForWidth(width, Number.isFinite(size) ? size : DESKTOP_CONTROL_PX, compactPillWidth)
 }
 
 interface UseComposerMetricsResult extends ComposerFit {

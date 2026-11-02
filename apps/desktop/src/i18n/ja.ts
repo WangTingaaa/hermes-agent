@@ -1,6 +1,7 @@
 // health: allow FILE_LINES -- locale data: translated copy for the usage-window plan UI (allowance gauges, Large/Free tags, the limit card), one key per string
 import { defineFieldCopy } from '@/app/settings/field-copy'
 
+import { artifactFileActionCopy } from './artifact-files'
 import { defineLocale, type TranslationOverrides } from './define-locale'
 import { introJa } from './intro-ja'
 import { jaBoot } from './ja_boot'
@@ -26,6 +27,7 @@ import { jaProjects } from './ja_projects'
 import { jaSharedMetrics } from './ja_shared_metrics'
 import { jaThemePicker } from './ja_theme_picker'
 import { jaUpdateChannel } from './ja_update_channel'
+import { miraWorkspaceCopy } from './mira-workspace'
 import { jaPromptSnippets } from './prompt-snippets'
 
 export const jaOverrides = {
@@ -2035,6 +2037,7 @@ export const jaOverrides = {
     }
   },
   artifacts: {
+    fileActions: artifactFileActionCopy.ja,
     search: 'アーティファクトを検索...',
     refresh: 'アーティファクトを更新',
     refreshing: 'アーティファクトを更新中',
@@ -2228,6 +2231,10 @@ export const jaOverrides = {
   },
 
   composer: {
+    workspace: miraWorkspaceCopy['ja'],
+    introHeadline: 'ひとことから、作業を始めましょう。',
+    introBody:
+      'リポジトリの検索、ファイル編集、テスト実行、PR 作成まで。目標を教えてください。具体的な作業はお任せください。',
     message: 'メッセージ',
     wakingProfile: profile => `${profile} を起動中…`,
     placeholderStarting: 'Mira Agent を起動中...',

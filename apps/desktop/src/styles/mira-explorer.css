@@ -1,0 +1,211 @@
+/* Explore one capability at a time, keeping the workbench easy to scan. */
+.mira-explorer {
+  min-width: 0;
+  margin-top: 0;
+}
+.mira-explorer__header {
+  margin-bottom: 1.25rem;
+}
+.mira-explorer__header h2 {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+[data-slot='aui_intro'].mira-workspace .mira-explorer__header p {
+  margin: 0.5rem 0 0;
+  max-width: none;
+  color: var(--mira-muted, var(--ui-text-secondary));
+  font-size: 0.75rem;
+  line-height: 1.8;
+}
+.mira-explorer__body {
+  gap: 1rem;
+}
+.mira-explorer__navigation[data-slot='tabs-list'] {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem 0.75rem;
+  height: auto;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.mira-explorer__tab[data-slot='tabs-trigger'] {
+  position: relative;
+  justify-content: start;
+  gap: 0.625rem;
+  height: auto;
+  min-height: 2.75rem;
+  padding: 0.625rem 0.75rem;
+  border-radius: 0.625rem;
+  font-size: 0.75rem;
+  color: var(--mira-muted, var(--ui-text-secondary));
+  background: transparent;
+  box-shadow: none;
+  transition:
+    background 100ms,
+    color 100ms;
+}
+.mira-explorer__tab > span {
+  min-width: 0;
+  white-space: normal;
+  text-align: start;
+  line-height: 1.5;
+}
+.mira-explorer__tab .codicon {
+  font-size: 1rem;
+  color: var(--dt-primary);
+}
+.mira-explorer__tab[data-state='active'] {
+  background: color-mix(in srgb, var(--dt-primary) 10%, var(--dt-card));
+  color: var(--mira-ink, var(--ui-text-primary));
+}
+.mira-explorer__tab:hover {
+  background: color-mix(in srgb, var(--dt-primary) 7%, var(--dt-card));
+  transition: none;
+}
+.mira-explorer__tab:focus-visible {
+  outline: 2px solid var(--dt-primary);
+  outline-offset: 2px;
+}
+.mira-explorer__feature {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(10rem, 42%);
+  align-items: center;
+  min-height: 18.5rem;
+  padding: 1.75rem;
+  gap: 0.75rem;
+  border-radius: 1rem;
+  border: 1px solid var(--mira-line, var(--dt-border));
+  background: linear-gradient(120deg, var(--dt-card) 30%, color-mix(in srgb, var(--dt-primary) 6%, var(--dt-card)));
+}
+.mira-explorer__copy {
+  min-width: 0;
+  position: relative;
+  z-index: 1;
+}
+.mira-explorer__number {
+  display: block;
+  margin-bottom: 0.875rem;
+  color: var(--dt-accent-foreground);
+  font-size: 0.625rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.1em;
+}
+.mira-explorer__number > span {
+  color: var(--ui-text-tertiary);
+}
+.mira-explorer__copy h3 {
+  margin: 0;
+  font-size: 1.375rem;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.025em;
+}
+[data-slot='aui_intro'].mira-workspace .mira-explorer__copy p {
+  max-width: 32ch;
+  margin: 0.75rem 0 1.25rem;
+  color: var(--mira-muted, var(--ui-text-secondary));
+  font-size: 0.8125rem;
+  line-height: 1.9;
+}
+.mira-scene {
+  min-width: 0;
+  pointer-events: none;
+}
+.mira-scene svg {
+  display: block;
+  width: 100%;
+  overflow: visible;
+}
+.mira-scene__halo {
+  fill: color-mix(in srgb, var(--dt-primary) 6%, transparent);
+}
+.mira-scene__orbit {
+  stroke: color-mix(in srgb, var(--dt-primary) 16%, var(--dt-border));
+  stroke-width: 1;
+  stroke-dasharray: 2 6;
+}
+.mira-scene__paper {
+  fill: var(--dt-card);
+  stroke: color-mix(in srgb, var(--dt-primary) 28%, var(--dt-border));
+  stroke-width: 1.25;
+}
+.mira-scene__back,
+.mira-scene__soft-fill {
+  fill: color-mix(in srgb, var(--dt-primary) 10%, var(--dt-card));
+}
+.mira-scene__back {
+  stroke: color-mix(in srgb, var(--dt-primary) 18%, var(--dt-border));
+}
+.mira-scene__line {
+  stroke: color-mix(in srgb, var(--dt-primary) 22%, var(--dt-border));
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+.mira-scene__accent {
+  stroke: var(--dt-primary);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.mira-scene__badge {
+  fill: color-mix(in srgb, var(--dt-primary) 9%, var(--dt-card));
+  stroke: color-mix(in srgb, var(--dt-primary) 40%, var(--dt-border));
+  stroke-width: 1.25;
+}
+.mira-scene__fill {
+  fill: var(--dt-primary);
+}
+.mira-scene__muted-fill {
+  fill: var(--dt-border);
+}
+.mira-scene__spark {
+  stroke: var(--dt-primary);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  opacity: 0.5;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .mira-explorer__feature {
+    animation: mira-explorer-reveal 180ms ease-out;
+  }
+}
+@keyframes mira-explorer-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@container (max-width: 960px) {
+  .mira-explorer__feature {
+    padding: 1.25rem;
+    grid-template-columns: minmax(0, 1fr) 36%;
+  }
+}
+@container (max-width: 450px) {
+  .mira-explorer__navigation[data-slot='tabs-list'] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.25rem;
+  }
+  .mira-explorer__feature {
+    min-height: 16rem;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .mira-explorer__copy {
+    padding-inline-end: 2.5rem;
+  }
+  .mira-scene {
+    position: absolute;
+    width: 6rem;
+    top: 0.5rem;
+    inset-inline-end: 0.25rem;
+    opacity: 0.4;
+  }
+}

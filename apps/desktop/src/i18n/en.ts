@@ -1,6 +1,7 @@
 // health: allow FILE_LINES -- locale data: translated copy for the usage-window plan UI (allowance gauges, Large/Free tags, the limit card), one key per string
 import { FIELD_DESCRIPTIONS, FIELD_LABELS } from '@/app/settings/constants'
 
+import { artifactFileActionCopy } from './artifact-files'
 import { enAppTour } from './en_app_tour'
 import { enBilling } from './en_billing'
 import { enBoot } from './en_boot'
@@ -31,6 +32,7 @@ import { enSharedMetrics } from './en_shared_metrics'
 import { enThemePicker } from './en_theme_picker'
 import { enUninstallSection } from './en_uninstall_section'
 import { enUpdateChannel } from './en_update_channel'
+import { miraWorkspaceCopy } from './mira-workspace'
 import type { Translations } from './types'
 
 export const en: Translations = {
@@ -3231,6 +3233,7 @@ export const en: Translations = {
     }
   },
   artifacts: {
+    fileActions: artifactFileActionCopy.en,
     search: 'Search artifacts...',
     refresh: 'Refresh artifacts',
     refreshing: 'Refreshing artifacts',
@@ -3435,6 +3438,10 @@ export const en: Translations = {
     markAllRead: 'Mark all as read'
   },
   composer: {
+    workspace: miraWorkspaceCopy['en'],
+    introHeadline: 'Your workspace, one prompt away.',
+    introBody:
+      "Search the repo, edit files, run tests, open PRs. Tell me the goal and I'll handle the mechanical parts.",
     message: 'Message',
     wakingProfile: profile => `Waking up ${profile}…`,
     placeholderStarting: 'Starting Mira...',

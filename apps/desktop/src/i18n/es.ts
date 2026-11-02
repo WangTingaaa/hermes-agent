@@ -1,6 +1,7 @@
 // health: allow FILE_LINES -- locale data: translated copy for the usage-window plan UI (allowance gauges, Large/Free tags, the limit card), one key per string
 import { defineFieldCopy } from '@/app/settings/field-copy'
 
+import { artifactFileActionCopy } from './artifact-files'
 import { defineLocale, type TranslationOverrides } from './define-locale'
 import { esBoot } from './es_boot'
 import { esClarify } from './es_clarify'
@@ -26,6 +27,7 @@ import { esSharedMetrics } from './es_shared_metrics'
 import { esThemePicker } from './es_theme_picker'
 import { esUpdateChannel } from './es_update_channel'
 import { introEs } from './intro-es'
+import { miraWorkspaceCopy } from './mira-workspace'
 
 export const esOverrides = {
   sharedMetrics: esSharedMetrics,
@@ -3512,6 +3514,7 @@ export const esOverrides = {
     }
   },
   artifacts: {
+    fileActions: artifactFileActionCopy.es,
     search: 'Buscar artefactos...',
     refresh: 'Actualizar artefactos',
     refreshing: 'Actualizando artefactos',
@@ -3717,6 +3720,10 @@ export const esOverrides = {
     markAllRead: 'Marcar todo como leído'
   },
   composer: {
+    workspace: miraWorkspaceCopy['es'],
+    introHeadline: 'Tu espacio de trabajo, con una sola petición.',
+    introBody:
+      'Buscar en el repositorio, editar archivos, ejecutar pruebas y crear PR. Dime el objetivo y me encargo de los pasos necesarios.',
     message: 'Mensaje',
     wakingProfile: profile => `Despertando ${profile}…`,
     placeholderStarting: 'Iniciando Mira...',
@@ -4891,8 +4898,7 @@ export const esOverrides = {
         },
         timeout: {
           title: (provider: string) => `Sin conexión con ${provider}`,
-          body: (provider: string) =>
-            `Mira no pudo conectar con ${provider}. Revisa tu conexión y vuelve a intentarlo.`
+          body: (provider: string) => `Mira no pudo conectar con ${provider}. Revisa tu conexión y vuelve a intentarlo.`
         },
         no_reply: {
           title: 'La respuesta no llegó',

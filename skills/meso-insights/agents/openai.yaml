@@ -1,4 +1,4 @@
 interface:
-  display_name: "mesoInsights 文档与知识卡片"
-  short_description: "管理 mesoInsights 文档，生成、保存和查询文件或研究笔记的知识卡片。"
-  default_prompt: "使用 $meso-insights 帮我查找文档，并将生成结果保存为知识卡片。"
+  display_name: "mesoInsights 文件夹、文档与知识卡片"
+  short_description: "搜索和管理云端文件夹、查看本地连接，并管理文档及知识卡片。"
+  default_prompt: "使用 $meso-insights 帮我搜索云端文件夹，并查看链接过的本地目录。"

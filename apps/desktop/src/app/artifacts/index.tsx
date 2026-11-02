@@ -3,7 +3,6 @@ import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router'
 
 import { TitlebarIcon } from '@/app/shell/titlebar-icon'
-import { ZoomableImage } from '@/components/chat/zoomable-image'
 import { PageLoader } from '@/components/page-loader'
 import { Button } from '@/components/ui/button'
 import { CopyButton } from '@/components/ui/copy-button'
@@ -30,7 +29,6 @@ import {
   useLinkTitle
 } from '@/lib/external-link'
 import { FileImage, FileText, FolderOpen, Link2 } from '@/lib/icons'
-import { downloadGatewayMediaFile, isArtifactFilePath, isRemoteGateway } from '@/lib/media'
 import { normalize } from '@/lib/text'
 import { fmtDayTime } from '@/lib/time'
 import { cn } from '@/lib/utils'
@@ -49,6 +47,7 @@ import {
   type ArtifactRecord,
   loadArtifactsForSessions
 } from './artifact-utils'
+import { ArtifactFileInteraction } from './file-interaction'
 
 function formatArtifactTime(timestamp: number): string {
   return fmtDayTime.format(new Date(timestamp))
@@ -92,7 +91,6 @@ function paginationItems(page: number, pageCount: number): Array<number | 'ellip
 }
 
 type CellCtx = {
-  onOpen: (artifact: ArtifactRecord) => void | Promise<void>
   onOpenChat: (sessionId: string) => void
 }
 
@@ -272,35 +270,6 @@ export function ArtifactsView({ setStatusbarItemGroup: _setStatusbarItemGroup, .
     }
   }, [artifacts])
 
-  const openArtifact = useCallback(
-    async (artifact: ArtifactRecord) => {
-      const { href } = artifact
-
-      try {
-        // A gateway-local file resolves to file:// in remote mode (the file
-        // lives on the gateway, not this disk). Opening that locally fails —
-        // and an OAuth remote connection has no query token to build a download
-        // URL. Fetch the bytes over the authenticated fs bridge instead.
-        // Tilde/relative hrefs have no file URL form. Keep them gateway-owned:
-        // expanding them on the client would target the wrong home or cwd.
-        if (isRemoteGateway() && isArtifactFilePath(artifact.value)) {
-          await downloadGatewayMediaFile(artifact.value, { sessionId: artifact.sessionId, profile: artifact.profile })
-
-          return
-        }
-
-        if (window.hermesDesktop?.openExternal) {
-          await window.hermesDesktop.openExternal(href)
-        } else {
-          window.open(href, '_blank', 'noopener,noreferrer')
-        }
-      } catch (err) {
-        notifyError(err, a.openFailed)
-      }
-    },
-    [a]
-  )
-
   const markImageFailed = useCallback((id: string) => {
     setFailedImageIds(current => {
       if (current.has(id)) {
@@ -313,10 +282,9 @@ export function ArtifactsView({ setStatusbarItemGroup: _setStatusbarItemGroup, .
 
   // Stable ctx: recreating it (or its onOpenChat closure) every render made
   // every artifact cell re-render whenever the page did — and a link cell's
-  // async title fetch re-rendered the page repeatedly. openArtifact is already
-  // a useCallback; navigate is stable, so onOpenChat can be too.
+  // async title fetch re-rendered the page repeatedly.
   const openChat = useCallback((sessionId: string) => openSessionFromPicker(sessionId, navigate), [navigate])
-  const cellCtx: CellCtx = useMemo(() => ({ onOpen: openArtifact, onOpenChat: openChat }), [openArtifact, openChat])
+  const cellCtx: CellCtx = useMemo(() => ({ onOpenChat: openChat }), [openChat])
 
   return (
     <PageSearchShell
@@ -498,40 +466,46 @@ function ArtifactImageCard({ artifact, failedImage, onImageError, onOpenChat }: 
     }
   }, [artifact.href, artifact.id, artifact.value, onImageError])
 
-  return (
-    <article
-      className="group/artifact overflow-hidden rounded-lg border border-(--ui-stroke-tertiary) bg-(--ui-chat-bubble-background)"
-      data-tour="artifact-card"
-    >
-      <div
+  function renderThumbnail(preview: () => void) {
+    return (
+      <RowButton
+        aria-label={artifact.label}
         className={cn(
           'relative flex h-40 w-full items-center justify-center overflow-hidden border-b border-(--ui-stroke-tertiary) bg-(--ui-bg-quinary) p-1.5',
           failedImage && 'cursor-default'
         )}
+        onClick={preview}
       >
         {!failedImage && src && (
-          <ZoomableImage
-            alt={artifact.label}
-            className="max-h-40 max-w-full cursor-zoom-in rounded-md object-contain"
-            containerClassName="max-h-full"
+          <img
+            alt=""
+            className="max-h-40 max-w-full rounded-md object-contain"
             decoding="async"
             loading="lazy"
             onError={() => onImageError(artifact.id)}
-            slot="artifact-media"
             src={src}
           />
         )}
-      </div>
+      </RowButton>
+    )
+  }
 
+  function renderDetails(preview: () => void) {
+    return (
       <div className="space-y-1.5 p-2">
         <div className="min-w-0">
           <div className="mb-0.5 flex items-center gap-1 text-[0.625rem] uppercase tracking-[0.08em] text-(--ui-text-tertiary)">
             <FileImage className="size-3" />
             {kindLabel}
           </div>
-          <div className="truncate text-[length:var(--conversation-caption-font-size)] font-medium">
-            {artifact.label}
-          </div>
+          <Tip label={artifact.label}>
+            <RowButton
+              className="block max-w-full truncate text-left text-[length:var(--conversation-caption-font-size)] font-medium"
+              onClick={preview}
+            >
+              {artifact.label}
+            </RowButton>
+          </Tip>
           <div className="mt-0.5 truncate text-[0.625rem] text-(--ui-text-tertiary)">{artifact.value}</div>
         </div>
 
@@ -546,7 +520,21 @@ function ArtifactImageCard({ artifact, failedImage, onImageError, onOpenChat }: 
           </Button>
         </div>
       </div>
-    </article>
+    )
+  }
+
+  return (
+    <ArtifactFileInteraction artifact={artifact} variant="card">
+      {preview => (
+        <article
+          className="group/artifact overflow-hidden rounded-lg border border-(--ui-stroke-tertiary) bg-(--ui-chat-bubble-background)"
+          data-tour="artifact-card"
+        >
+          {renderThumbnail(preview)}
+          {renderDetails(preview)}
+        </article>
+      )}
+    </ArtifactFileInteraction>
   )
 }
 
@@ -587,27 +575,31 @@ function ArtifactCellAction({
   )
 }
 
-const PrimaryCell = memo(function PrimaryCell({ artifact, ctx }: { artifact: ArtifactRecord; ctx: CellCtx }) {
+const PrimaryCell = memo(function PrimaryCell({ artifact }: { artifact: ArtifactRecord; ctx: CellCtx }) {
   const isLink = artifact.kind === 'link'
   const brand = isLink ? resolveBrandIcon(shortHostLabel(artifact.href)) : null
   const Icon = brand ?? (isLink ? Link2 : FileText)
   const fetchedTitle = useLinkTitle(isLink ? artifact.href : null)
   const label = isLink ? fetchedTitle || urlSlugTitleLabel(artifact.href) : artifact.label
 
-  return (
-    <ArtifactCellAction
-      href={isLink ? artifact.href : undefined}
-      onClick={isLink ? undefined : () => void ctx.onOpen(artifact)}
-      title={label}
-    >
-      <span className="mt-0.5 grid size-6 shrink-0 place-items-center self-start rounded-md bg-(--ui-bg-tertiary) text-(--ui-text-tertiary)">
-        <Icon className="size-3.5" />
-      </span>
-      <span className={cn('min-w-0 flex-1', isLink ? 'wrap-anywhere' : 'truncate')}>
-        {label}
-        {isLink && <ExternalLinkIcon />}
-      </span>
-    </ArtifactCellAction>
+  function renderAction(onClick?: () => void) {
+    return (
+      <ArtifactCellAction href={isLink ? artifact.href : undefined} onClick={onClick} title={label}>
+        <span className="mt-0.5 grid size-6 shrink-0 place-items-center self-start rounded-md bg-(--ui-bg-tertiary) text-(--ui-text-tertiary)">
+          <Icon className="size-3.5" />
+        </span>
+        <span className={cn('min-w-0 flex-1', isLink ? 'wrap-anywhere' : 'truncate')}>
+          {label}
+          {isLink && <ExternalLinkIcon />}
+        </span>
+      </ArtifactCellAction>
+    )
+  }
+
+  return isLink ? (
+    renderAction()
+  ) : (
+    <ArtifactFileInteraction artifact={artifact}>{preview => renderAction(preview)}</ArtifactFileInteraction>
   )
 })
 

@@ -485,6 +485,17 @@ declare global {
       fileGeneration?: {
         open: (options: { initialMarkdown: string }) => Promise<string | null>
       }
+      artifactFiles?: {
+        download: (options: {
+          connectionId: string
+          profile: string
+          sessionId: string
+          path: string
+          suggestedName: string
+          url?: string
+        }) => Promise<{ saved: boolean; canceled?: boolean; path?: string }>
+        pickCloudFolder: () => Promise<{ folderId: number } | null>
+      }
       cloudFiles?: {
         pickFavorite: () => Promise<WenjingCloudFile | null>
         pickForUpload: () => Promise<WenjingDownloadedCloudFile | null>

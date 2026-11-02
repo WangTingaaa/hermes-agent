@@ -545,7 +545,7 @@ _REASONING_PARAM_REJECTION = re.compile(
 
 _REASONING_REQUIRED_MARKERS = (
     "mandatory", "cannot be disabled", "can't be disabled", "must be enabled", "is required",
-    "always enabled", "cannot be turned off",
+    "always enabled", "cannot be turned off", "requires adaptive thinking",
 )
 
 # Same rejection, wording by *value*: an endpoint that publishes a closed level set refuses the
@@ -555,7 +555,7 @@ _REASONING_REQUIRED_MARKERS = (
 # only the disabled level is invalid, so the floor step-up (the weakest accepted level) is the
 # right recovery. Neither the strip rung nor its "unsupported" wording matches this message, so
 # without these markers the title lane fails outright instead of retrying at the floor.
-_REASONING_LEVEL_REJECTION_MARKERS = ("must be one of", "invalid value for")
+_REASONING_LEVEL_REJECTION_MARKERS = ("must be one of", "invalid value for", "none is not allowed")
 
 
 def is_reasoning_level_rejection(error_msg: str) -> bool:

@@ -2,6 +2,7 @@ import { useStore } from '@nanostores/react'
 import { type ReactNode, useLayoutEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 
+import { useWorkspaceComposerTarget } from '@/components/chat/mira-workspace/composer-host'
 import { hiddenPaneProps, usePaneGroup, usePaneVisible } from '@/components/pane-shell/pane-visibility'
 import { useStoreSelector } from '@/lib/use-session-slice'
 import { $composerPopout, $composerPopoutGesturesEnabled } from '@/store/composer-popout'
@@ -38,6 +39,7 @@ export function FloatingComposerSurface({ children }: ComposerSurfaceProps) {
   const floating = useStoreSelector($composerPopout, state => state.poppedOut) && enabled && !isSecondaryWindow()
   const selected = useStoreSelector($floatingComposerOwner, owner => owner?.id === id)
   const visible = paneVisible && (!floating || selected)
+  const workspaceHost = useWorkspaceComposerTarget(id)
 
   useLayoutEffect(() => {
     const surface = anchorRef.current?.closest<HTMLElement>('[data-chat-surface]')
@@ -65,12 +67,12 @@ export function FloatingComposerSurface({ children }: ComposerSurfaceProps) {
     host.toggleAttribute('data-pane-hidden', !visible)
     host.inert = !visible
 
-    const parent = floating ? document.body : anchorRef.current
+    const parent = floating ? document.body : (workspaceHost ?? anchorRef.current)
 
     if (parent && host.parentElement !== parent) {
       parent.appendChild(host)
     }
-  }, [floating, groupId, host, id, target, visible])
+  }, [floating, groupId, host, id, target, visible, workspaceHost])
 
   useLayoutEffect(() => () => host.remove(), [host])
 

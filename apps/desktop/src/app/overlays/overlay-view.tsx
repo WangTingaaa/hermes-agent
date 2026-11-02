@@ -75,10 +75,7 @@ export function OverlayView({
     <div
       className={cn(
         'fixed inset-0 z-50 bg-black/22 backdrop-blur-[0.125rem]',
-        // Equidistant inset on every side. The top value is driven by the
-        // titlebar height so the card clears the OS traffic-lights vertically;
-        // since the card top already sits below them, the left needs no extra
-        // inset — keeping all sides equal so the card is ~full-width at any size.
+        // Clear the native titlebar vertically; the centered card owns its width.
         'p-[calc(var(--titlebar-height)+0.625rem)]',
         'sm:p-[calc(var(--titlebar-height)+0.875rem)]'
       )}
@@ -102,10 +99,10 @@ export function OverlayView({
       // the edges. Re-pin the real height at the overlay root.
       style={{ '--titlebar-height': `${TITLEBAR_HEIGHT}px` } as CSSProperties}
     >
-      <div className="relative h-full min-h-0">
+      <div className="relative mx-auto h-full min-h-0 w-[70vw] max-w-full">
         <div
           className={cn(
-            'relative flex h-full min-h-0 flex-col overflow-hidden rounded-xl border border-(--ui-stroke-secondary) bg-(--ui-chat-surface-background) shadow-md',
+            'relative flex h-full min-h-0 flex-col overflow-hidden rounded-(--radius-overlay) border border-(--ui-stroke-secondary) bg-(--ui-chat-surface-background) shadow-nous',
             rootClassName
           )}
           // Marks the card as a RAISED surface for window glass: while the field

@@ -1,5 +1,6 @@
 import { defineLocale, type TranslationOverrides } from './define-locale'
 import { introZhHant } from './intro-zh-hant'
+import { miraWorkspaceCopy } from './mira-workspace'
 import { zhHantArtifacts } from './zh-hant_artifacts'
 import { zhHantAssistant } from './zh-hant_assistant'
 import { zhHantBoot } from './zh-hant_boot'
@@ -233,6 +234,9 @@ export const zhHantOverrides = {
   artifactPreview: zhHantArtifacts.artifactPreview,
   sidebar: zhHantChrome.sidebar,
   composer: {
+    workspace: miraWorkspaceCopy['zh-hant'],
+    introHeadline: '你的工作空間，一句話開啟。',
+    introBody: '搜尋專案、編輯檔案、執行測試、建立 PR。告訴我目標，具體操作交給我。',
     ...zhHantChat.composer,
     redirect: '重新導向目前的執行',
     queueLostNote: '重新啟動期間該回合已遺失',

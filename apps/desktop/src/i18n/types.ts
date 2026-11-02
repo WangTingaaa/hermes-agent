@@ -8,6 +8,8 @@ import type { ErrorCodeKey } from '@/lib/error-surface'
 // fall back to English while new keys remain type-checked.
 import type { TipId } from '@/lib/tips/catalog'
 
+import type { ArtifactFileActionCopy } from './artifact-files/type'
+import type { MiraWorkspaceCopy } from './mira-workspace/type'
 import type { AppTourTranslations } from './types_app_tour'
 import type { BillingTranslations } from './types_billing'
 import type { BootTranslations } from './types_boot'
@@ -2731,6 +2733,7 @@ export interface Translations extends NoticeTranslations {
   }
 
   artifacts: {
+    fileActions: ArtifactFileActionCopy
     search: string
     refresh: string
     refreshing: string
@@ -2928,9 +2931,10 @@ export interface Translations extends NoticeTranslations {
   }
 
   composer: {
+    workspace: MiraWorkspaceCopy
     generateFile: string
-    introHeadline?: string
-    introBody?: string
+    introHeadline: string
+    introBody: string
     message: string
     wakingProfile: (profile: string) => string
     placeholderStarting: string

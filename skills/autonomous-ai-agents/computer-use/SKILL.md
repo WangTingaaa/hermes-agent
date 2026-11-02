@@ -1,7 +1,7 @@
 ---
 name: computer-use
 description: "Drive the desktop background-first; escalate on signal."
-version: 2.1.0
+version: 2.1.1
 author: Francesco Bonacci (f-trycua), Hermes Agent
 license: MIT
 platforms: [macos, windows, linux]
@@ -39,10 +39,16 @@ vocabulary — go back to the actions below.
 **Step 1 — Capture first.** Almost every task starts with:
 
 ```
-computer_use(action="capture", mode="som", app="<the app you're driving>")
+computer_use(action="capture", mode="ax", app="<the app you're driving>")
 ```
 
-Returns a screenshot plus an indexed element list like:
+Start with the fast accessibility tree, without a vision-model round trip.
+Use `mode="som"` or `mode="vision"` when the needed control is absent from
+the tree or the task requires visual judgment (canvas, images, charts).
+With a text-only main route, each image capture can trigger a separate
+auxiliary model request, so do not request pixels just to confirm a label.
+
+Returns an indexed element list like:
 
 ```
 #1  AXButton 'Back' @ (12, 80, 28, 28) [Chrome]
@@ -79,6 +85,18 @@ computer_use(action="click", element=7, capture_after=True)
 ```
 
 ## Capture modes
+
+For routine navigation and form filling, prefer `ax`. Verify each page
+transition with fresh state; use screenshots at visual decision points.
+If a control is absent from AX, inspect the scoped screenshot once, use a
+verified coordinate or the app's documented keyboard shortcut, then check
+fresh AX state. Do not loop the same failed action or install ad hoc input
+libraries. Schema errors mean no input was delivered: fix the arguments
+before retrying (`coordinate=[152,82]`, not an `item` object).
+
+For tables, paste a TSV block or fill a deterministic sequence without
+an image analysis after every cell. Verify the resulting rows and columns
+at the end. Keep the existing approval and foreground-escalation rules.
 
 | `mode` | Returns | Best for |
 |---|---|---|
