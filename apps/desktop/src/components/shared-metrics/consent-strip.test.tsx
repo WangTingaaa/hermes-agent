@@ -1,6 +1,7 @@
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { I18nProvider } from '@/i18n/context'
 import { en } from '@/i18n/en'
 import { $activeGatewayProfile } from '@/store/profile'
 import { $sharedMetricsConsent, type SharedMetricsConsent } from '@/store/shared-metrics'
@@ -45,7 +46,11 @@ describe('SharedMetricsConsentStrip', () => {
   it('offers two answers, and sharing sets both opt-ins on the focused profile', async () => {
     installGatewayMock({ enabled: false, send: false, decided: false })
 
-    render(<SharedMetricsConsentStrip />)
+    render(
+      <I18nProvider configClient={null} initialLocale="en">
+        <SharedMetricsConsentStrip />
+      </I18nProvider>
+    )
 
     expect(screen.getAllByRole('button').map(button => button.textContent)).toEqual([
       copy.stripChoices.share,

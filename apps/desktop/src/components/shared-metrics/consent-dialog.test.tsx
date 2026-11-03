@@ -1,6 +1,7 @@
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { I18nProvider } from '@/i18n/context'
 import { en } from '@/i18n/en'
 import { $desktopOnboarding } from '@/store/onboarding'
 import { markOnboardingDecided } from '@/store/onboarding-presence'
@@ -8,7 +9,8 @@ import {
   $sharedMetricsConsent,
   $sharedMetricsDetailsOpen,
   type SharedMetricsConsent,
-  sharedMetricsOfferPending
+  sharedMetricsOfferPending,
+  type SharedMetricsRequester
 } from '@/store/shared-metrics'
 
 import { SharedMetricsConsentDialog } from './consent-dialog'
@@ -38,6 +40,14 @@ function backend(initial: SharedMetricsConsent) {
 
 const initialOnboarding = $desktopOnboarding.get()
 
+function renderConsentDialog(profile: string, requestGateway: SharedMetricsRequester) {
+  return render(
+    <I18nProvider configClient={null} initialLocale="en">
+      <SharedMetricsConsentDialog enabled profile={profile} requestGateway={requestGateway} />
+    </I18nProvider>
+  )
+}
+
 beforeEach(() => {
   $desktopOnboarding.set({ ...initialOnboarding, configured: true })
 })
@@ -47,15 +57,32 @@ afterEach(() => {
   $desktopOnboarding.set(initialOnboarding)
   $sharedMetricsConsent.set(null)
   $sharedMetricsDetailsOpen.set(false)
+  vi.unstubAllGlobals()
 })
 
 describe('SharedMetricsConsentDialog', () => {
+  it('does not offer consent or details in Wenjing and leaves the backend answer untouched', async () => {
+    vi.stubGlobal('hermesDesktop', {
+      hostAppearance: {
+        get: async () => null,
+        requestChange: () => {},
+        onChanged: () => () => {}
+      }
+    })
+    const { calls, requestGateway } = backend({ enabled: false, send: false, decided: false })
+
+    renderConsentDialog('default', requestGateway)
+    await waitFor(() => expect($sharedMetricsConsent.get()?.decided).toBe(false))
+    expect(sharedMetricsOfferPending($sharedMetricsConsent.get())).toBe(false)
+    act(() => $sharedMetricsDetailsOpen.set(true))
+    expect(screen.queryByRole('dialog')).toBeNull()
+    expect(calls.some(call => call.method === 'shared_metrics.set')).toBe(false)
+  })
+
   it('never blocks launch: an undecided profile becomes a composer offer, not a modal', async () => {
     const undecided = backend({ enabled: false, send: false, decided: false })
 
-    const { unmount } = render(
-      <SharedMetricsConsentDialog enabled profile="default" requestGateway={undecided.requestGateway} />
-    )
+    const { unmount } = renderConsentDialog('default', undecided.requestGateway)
 
     await waitFor(() => expect(sharedMetricsOfferPending($sharedMetricsConsent.get())).toBe(true))
     expect(screen.queryByRole('dialog')).toBeNull()
@@ -63,7 +90,7 @@ describe('SharedMetricsConsentDialog', () => {
 
     // An answer given in `hermes setup` is the same config keys: no offer at all.
     const answered = backend({ enabled: false, send: false, decided: true })
-    render(<SharedMetricsConsentDialog enabled profile="work" requestGateway={answered.requestGateway} />)
+    renderConsentDialog('work', answered.requestGateway)
     await waitFor(() => expect($sharedMetricsConsent.get()?.decided).toBe(true))
     expect(sharedMetricsOfferPending($sharedMetricsConsent.get())).toBe(false)
   })
@@ -71,7 +98,7 @@ describe('SharedMetricsConsentDialog', () => {
   it('details decide nothing when closed and record a chosen answer as both opt-ins', async () => {
     const { calls, requestGateway } = backend({ enabled: false, send: false, decided: false })
 
-    render(<SharedMetricsConsentDialog enabled profile="havoc" requestGateway={requestGateway} />)
+    renderConsentDialog('havoc', requestGateway)
     await waitFor(() => expect(sharedMetricsOfferPending($sharedMetricsConsent.get())).toBe(true))
     expect(calls.find(c => c.method === 'shared_metrics.status')?.params).toEqual({ profile: 'havoc' })
 

@@ -78,9 +78,9 @@ export const $sharedMetricsConsent = atom<SharedMetricsConsent | null>(null)
 /** The "What is collected" details dialog, opened only by the user from the strip. */
 export const $sharedMetricsDetailsOpen = atom(false)
 
-/** The first-run offer is still unanswered for the focused profile. */
+/** Wenjing owns its first-run UI; suppress the offer without recording an answer. */
 export function sharedMetricsOfferPending(consent: SharedMetricsConsent | null): boolean {
-  return consent?.decided === false
+  return !window.hermesDesktop?.hostAppearance && consent?.decided === false
 }
 
 /** Record a first-run answer; the strip and the dialog retire as soon as the backend reports it decided. */
