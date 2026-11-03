@@ -9,6 +9,7 @@ import { PRIMARY_SESSION_VIEW } from '@/app/chat/session-view'
 import { NO_PROJECT_ID } from '@/app/chat/sidebar/projects/workspace-groups'
 import { resolveSessionRpcOwner } from '@/app/contrib/wiring-routing'
 import { $terminalTakeover, setTerminalTakeover } from '@/app/right-sidebar/store'
+import { $showWorkspaceOverview } from '@/components/chat/mira-workspace/presentation'
 import { group } from '@/components/pane-shell/tree/model'
 import { $activeTreeGroup, $layoutTree, noteActiveTreeGroup, revealTreePane } from '@/components/pane-shell/tree/store'
 import {
@@ -1188,17 +1189,16 @@ async function createWith(
 
 describe('startFreshSessionDraft', () => {
   afterEach(() => cleanup())
-
   it('can reset machine-bound session state without closing the current overlay route', async () => {
     const navigate = vi.fn()
     const requestGateway = vi.fn(async () => ({}) as never)
     let handle: HarnessHandle | null = null
-
+    $showWorkspaceOverview.set(true)
     render(<Harness navigate={navigate} onReady={value => (handle = value)} requestGateway={requestGateway} />)
     await waitFor(() => expect(handle).not.toBeNull())
 
     act(() => handle!.startFreshSessionDraft({ preserveRoute: true, workspaceTarget: null }))
-
+    expect($showWorkspaceOverview.get()).toBe(false)
     expect(navigate).not.toHaveBeenCalled()
     expect($currentCwd.get()).toBe('')
     expect($newChatWorkspaceTarget.get()).toBeNull()

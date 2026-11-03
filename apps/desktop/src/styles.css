@@ -1069,10 +1069,15 @@ html[data-host-surface='wenjing'] [data-composer-fallback]:not(.mira-workspace__
 
 [data-slot='composer-rich-input']:is(:empty, [data-empty])::before {
   content: attr(data-placeholder);
-  position: absolute;
-  inset: 0;
-  padding: inherit;
-  overflow: hidden;
+  /* Share the editor's content origin and font metrics with its native caret. */
+  float: inline-start;
+  max-width: 100%;
+  height: 0;
+  overflow-x: clip;
+  overflow-y: visible;
+  font: inherit;
+  line-height: inherit;
+  text-indent: 0.125em;
   color: color-mix(in srgb, var(--muted-foreground) 60%, transparent);
   /* One line, clipped — the hint states the field's purpose; it never reflows
      the box it sits in. A narrow composer or a long locale string would

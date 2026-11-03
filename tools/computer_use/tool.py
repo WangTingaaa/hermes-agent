@@ -447,6 +447,14 @@ def _do_capture(backend, action, args, fence=lambda: None, session_id=None, **_)
 def _do_listing(backend, action, args, key, **_):
     return json.dumps({key: (items := getattr(backend, action)()), "count": len(items)})
 
+def _do_launch(backend, action, args, **_):
+    if not args.get("app"):
+        return {"error": "launch_app requires app=the installed application name"}
+    launch = getattr(backend, "launch_app", None)
+    if launch is None:
+        return {"error": "This computer-use provider does not support launching applications"}
+    return launch(name=args["app"])
+
 def _summarize_click(action: str, args: dict[str, Any], fg: str) -> str:
     where = (f" element #{args['element']}" if args.get("element") is not None
              else f" at {tuple(args['coordinate'])}" if args.get("coordinate") else "")
@@ -460,6 +468,7 @@ _ActionSpec = namedtuple("_ActionSpec", "handler input destructive summarize",
 _input = partial(_ActionSpec, input=True, destructive=True)
 
 _ACTIONS: dict[str, _ActionSpec] = {
+    "launch_app": _ActionSpec(_do_launch, destructive=True, summarize=lambda a, args, fg: f"launch {args.get('app', '')!r}"),
     "click": _input(_do_click, summarize=_summarize_click),
     "double_click": _input(partial(_do_click, count=2), summarize=_summarize_click),
     "right_click": _input(partial(_do_click, button="right"), summarize=_summarize_click),

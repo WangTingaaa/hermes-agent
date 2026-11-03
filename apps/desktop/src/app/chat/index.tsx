@@ -11,6 +11,7 @@ import { Thread } from '@/components/assistant-ui/thread'
 import { TranscriptWindowProvider } from '@/components/assistant-ui/thread/transcript-window'
 import { Backdrop } from '@/components/Backdrop'
 import { COMPOSER_HEART_CONFIG, HeartField } from '@/components/chat/vibe-hearts'
+import { DesktopControl } from '@/components/desktop-control'
 import { useSetupChatView } from '@/components/onboarding/first-run/assembly'
 import { $introHoldsThread } from '@/components/onboarding/first-run/intro'
 import { IntroCopy } from '@/components/onboarding/first-run/intro-copy'
@@ -777,7 +778,7 @@ const ChatViewContent = memo(function ChatViewContent({
           so a tiled/background session's blocking prompt surfaces instead of
           stalling to timeout. */}
       <PromptOverlays sessionId={activeSessionId} />
-
+      <DesktopControl busy={busy} hidden={showIntro} messagesStore={view.$messages} onStop={haltRun} sessionId={activeSessionId} />
       <ChatRuntimeBoundary
         busy={busy}
         onCancel={haltRun}

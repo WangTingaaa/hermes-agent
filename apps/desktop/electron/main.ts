@@ -225,6 +225,7 @@ import { resolveDesktopHermesHome, resolveDesktopUserData } from './data-paths'
 import { registerDeepLinkProtocol as registerDeepLinkProtocolWith } from './deep-link-protocol'
 import { loadOrCreateInstallationId, sshOwnershipId } from './desktop-installation'
 import { formatDesktopLogLine, formatLogStamp } from './desktop-log-line'
+import { installDesktopMediaPermissions } from './desktop-preview'
 import {
   createDesktopProfilePreferences,
   DESKTOP_PROFILE_NAME_RE,
@@ -382,7 +383,6 @@ import {
   waitForManagedUpdateOperations
 } from './managed-ssh-update'
 import { registerMcpOauthCallbackIpc } from './mcp-oauth-callback-ipc'
-import { isMediaCapturePermission } from './media-capture-permission'
 import { createMediaProtocolHandler, MEDIA_PROTOCOL, mediaProtocolDownloadName } from './media-protocol'
 import { fetchLocalMedia } from './media-range'
 import { createMinimizeToTray } from './minimize-to-tray'
@@ -6774,34 +6774,11 @@ function installDownloadHandling() {
 }
 
 function installMediaPermissions() {
-  // Async request handler: the prompt-style path (most platforms).
-  // clipboard-sanitized-write is granted ONLY to the exact Skills Hub origins
-  // (hub-iframe-policy.ts): the picker's Copy controls write to the clipboard,
-  // and every other frame — artifact previews included — stays denied.
-  session.defaultSession.setPermissionRequestHandler((webContents, permission, callback, details) => {
-    if ((permission as string) === 'clipboard-sanitized-write') {
-      callback(isHermesHubClipboardWrite(focusedFrameOrigin(webContents)))
+  installDesktopMediaPermissions(session.defaultSession, contents => {
+    const expected = DEV_SERVER || pathToFileURL(resolveRendererIndex()).toString()
 
-      return
-    }
-
-    callback(isMediaCapturePermission(permission, details))
-  })
-
-  // Synchronous check handler: Chromium consults this for getUserMedia on
-  // Windows in addition to (or instead of) the request handler. Without it,
-  // the check defaults to false and capture is denied before the request
-  // handler ever runs. The check handler carries no mediaTypes metadata, so
-  // the shared predicate runs with `undefined` details and allows the capture
-  // permissions — identical policy to the request handler below, just without
-  // the metadata refinement (absent metadata is allowed there too).
-  session.defaultSession.setPermissionCheckHandler((webContents, permission) => {
-    if ((permission as string) === 'clipboard-sanitized-write') {
-      return isHermesHubClipboardWrite(focusedFrameOrigin(webContents))
-    }
-
-    return isMediaCapturePermission(permission, undefined)
-  })
+    return contents.getURL().split(/[?#]/)[0].replace(/\/$/, '') === expected.replace(/\/$/, '')
+  }, contents => isHermesHubClipboardWrite(focusedFrameOrigin(contents)))
 }
 
 // Origin of the frame a permission request came from. The request handler is

@@ -30,6 +30,11 @@ const uiPreferencesSnapshot = ipcRenderer.sendSync('hermes:ui-preferences:snapsh
 import { unwrapExpectedNotFound } from './api-expected-404'
 
 contextBridge.exposeInMainWorld('hermesDesktop', {
+  desktopPreview: {
+    sources: () => ipcRenderer.invoke('hermes:desktop-preview:sources'),
+    select: sourceId => ipcRenderer.invoke('hermes:desktop-preview:select', sourceId),
+    snapshot: target => ipcRenderer.invoke('hermes:desktop-preview:snapshot', target)
+  },
   glassSupported: translucencySupport?.glass === true,
   translucencySupported: translucencySupport?.translucency === true,
   // Launch-flag fact: the app was started with --local, so the renderer may

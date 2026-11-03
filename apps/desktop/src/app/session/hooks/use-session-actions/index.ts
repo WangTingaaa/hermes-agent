@@ -10,6 +10,7 @@ import {
   olderPageReader
 } from '@/app/chat/transcript-backfill'
 import { defaultNewSessionTarget, prepareDefaultNewSession } from '@/app/session/new-session-route'
+import { $showWorkspaceOverview } from '@/components/chat/mira-workspace/presentation'
 import { revealTreePane } from '@/components/pane-shell/tree/store'
 import { setWorkspaceScope } from '@/components/pane-shell/workspace-scope'
 import {
@@ -499,6 +500,7 @@ export function useSessionActions({
 
   const startFreshSessionDraft = useCallback(
     (options: boolean | FreshSessionDraftOptions = false) => {
+      $showWorkspaceOverview.set(false)
       const draftOptions = typeof options === 'boolean' ? { replaceRoute: options } : options
       const preserveRoute = draftOptions.preserveRoute ?? false
       createIntentRef.current = null

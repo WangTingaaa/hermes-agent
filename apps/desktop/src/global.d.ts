@@ -12,6 +12,7 @@ import type { UpdateHoldWire } from '../electron/update-hold-types'
 import type { UpdateRunReport } from '../electron/updater/update-metrics'
 import type { WindowSizeMode } from '../electron/window-size-types'
 
+import type { DesktopPreviewApi } from './components/desktop-control/type'
 import type { UiPreferencesBridge } from './lib/ui-preferences/sync'
 import type { WakeIndicatorState } from './lib/wake-indicator'
 import type {
@@ -61,6 +62,7 @@ declare global {
 
   interface Window {
     hermesDesktop: {
+      desktopPreview?: DesktopPreviewApi
       // Resolve a backend connection. Omit `profile` (or pass the primary) for
       // the window's backend; pass a named profile to dial/reuse that profile's
       // cached gateway descriptor.

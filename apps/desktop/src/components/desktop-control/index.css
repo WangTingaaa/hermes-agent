@@ -1,0 +1,286 @@
+.mira-control {
+  position: absolute;
+  top: 56px;
+  right: 20px;
+  z-index: 25;
+  width: clamp(164px, 18cqw, 224px);
+  font-size: 11px;
+  color: var(--ui-text-primary);
+}
+.mira-control__thumbnail {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid var(--stroke-nous);
+  border-radius: 12px;
+  background: var(--ui-bg-elevated);
+  box-shadow: var(--shadow-nous);
+  text-align: left;
+  cursor: pointer;
+  transition: transform 150ms ease;
+}
+.mira-control__thumbnail:hover {
+  transform: translateY(-2px);
+}
+.mira-control__thumbnail:focus-visible {
+  outline: 2px solid var(--ui-accent);
+  outline-offset: 3px;
+}
+.mira-control__mini-heading,
+.mira-control__mini-footer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+}
+.mira-control__mini-heading strong {
+  flex: 1;
+  font-size: 11px;
+}
+.mira-control__mini-heading > span {
+  font-size: 10px;
+  color: var(--ui-text-tertiary);
+}
+.mira-control__mini-heading > [data-busy='true'] {
+  color: var(--ui-accent);
+}
+.mira-control__mini-footer {
+  justify-content: space-between;
+  color: var(--ui-text-secondary);
+}
+.mira-control__mini-footer > span,
+.mira-control__section-title > span:first-child {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.mira-control__preview {
+  display: grid;
+  align-items: center;
+  justify-items: center;
+  background: var(--ui-chat-surface-background);
+  min-height: 100px;
+  overflow: hidden;
+}
+.mira-control__image {
+  position: relative;
+  max-width: 100%;
+  max-height: 58vh;
+  width: fit-content;
+}
+.mira-control__image img {
+  display: block;
+  max-width: 100%;
+  max-height: 58vh;
+  object-fit: contain;
+}
+.mira-control__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 24px 12px;
+  min-height: 120px;
+  color: var(--ui-text-tertiary);
+  font-size: 11px;
+  text-align: center;
+}
+.mira-control__pointer {
+  position: absolute;
+  pointer-events: none;
+  color: var(--ui-accent);
+  transition:
+    left 180ms ease,
+    top 180ms ease;
+  filter: drop-shadow(0 1px 2px var(--ui-bg-elevated));
+}
+.mira-control__pointer-label {
+  display: block;
+  margin-left: 18px;
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 10px;
+  color: var(--dt-primary-solid-foreground);
+  background: var(--dt-primary-solid);
+}
+.mira-control__ripple {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  left: -14px;
+  top: -14px;
+  border: 2px solid var(--ui-accent);
+  border-radius: 50%;
+  animation: mira-click 650ms ease-out both;
+}
+.mira-control__dialog {
+  width: min(1100px, calc(100vw - 48px));
+  max-width: min(1100px, calc(100vw - 48px));
+  font-size: 12px;
+}
+.mira-control__header {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 4px 32px 20px 0;
+}
+.mira-control__brand {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  color: var(--ui-accent);
+  background: var(--ui-bg-quaternary);
+}
+.mira-control__header > div {
+  flex: 1;
+  min-width: 0;
+}
+.mira-control__status {
+  color: var(--ui-text-tertiary);
+  font-size: 11px;
+}
+.mira-control__status[data-busy='true'] {
+  color: var(--ui-accent);
+}
+.mira-control__body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 240px;
+  gap: 24px;
+}
+.mira-control__stage {
+  min-width: 0;
+}
+.mira-control__stage .mira-control__preview {
+  border-radius: 10px;
+  min-height: clamp(240px, 32vw, 440px);
+}
+.mira-control__section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  font-size: 12px;
+}
+.mira-control__section-title > span:last-child {
+  margin-left: auto;
+  font-size: 10px;
+  color: var(--ui-text-tertiary);
+}
+.mira-control__timeline {
+  min-width: 0;
+}
+.mira-control__timeline ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: min(440px, 48vh);
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+.mira-control__timeline li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 14px 0;
+  color: var(--ui-text-secondary);
+}
+.mira-control__timeline li > svg {
+  margin-top: 3px;
+  flex-shrink: 0;
+}
+.mira-control__timeline li > div {
+  flex: 1;
+  min-width: 0;
+}
+.mira-control__timeline li strong {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ui-text-primary);
+}
+.mira-control__timeline li span {
+  display: block;
+  margin-top: 4px;
+  font-size: 11px;
+}
+.mira-control__timeline small {
+  font-size: 10px;
+  color: var(--ui-text-tertiary);
+}
+.mira-control__timeline li[data-status='running'] > svg {
+  color: var(--ui-accent);
+}
+.mira-control__timeline li[data-status='failed'] > svg {
+  color: var(--destructive);
+}
+.mira-control__hint {
+  color: var(--ui-text-tertiary);
+  font-size: 11px;
+  margin-top: 10px;
+}
+.mira-control__error {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--ui-text-secondary);
+}
+.mira-control__footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--ui-stroke-tertiary);
+}
+@keyframes mira-click {
+  from {
+    transform: scale(0.3);
+    opacity: 1;
+  }
+  to {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+@media (max-width: 760px) {
+  .mira-control {
+    right: 12px;
+    width: 164px;
+  }
+  .mira-control__body {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+  .mira-control__timeline ol {
+    max-height: 18vh;
+  }
+  .mira-control__stage .mira-control__preview {
+    min-height: 160px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mira-control *,
+  .mira-control__pointer {
+    animation: none;
+    transition: none;
+  }
+}
+
+.mira-control__thumbnail .mira-control__preview {
+  height: 124px;
+  min-height: 124px;
+}
+.mira-control__thumbnail .mira-control__image,
+.mira-control__thumbnail .mira-control__image img {
+  max-height: 124px;
+}

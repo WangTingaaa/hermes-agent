@@ -22,6 +22,8 @@ import { readHyprlandWindows } from './hyprland'
 
 export interface EnumeratedWindow {
   app: string
+  appId?: string
+  appPath?: string
   bounds: { x: number; y: number; width: number; height: number }
   id: number
   pid: number
@@ -130,7 +132,7 @@ type GetWindowsModule = {
     Array<{
       bounds?: { height?: number; width?: number; x?: number; y?: number }
       id?: number
-      owner?: { name?: string; processId?: number }
+      owner?: { name?: string; processId?: number; bundleId?: string; path?: string }
       title?: string
     }>
   >
@@ -272,6 +274,8 @@ async function enumerateViaGetWindows(titlesAvailable: boolean): Promise<Enumera
 
   return ordered.map(w => ({
     app: w.owner?.name ?? '',
+    appId: w.owner?.bundleId,
+    appPath: w.owner?.path,
     bounds: {
       x: w.bounds?.x ?? 0,
       y: w.bounds?.y ?? 0,

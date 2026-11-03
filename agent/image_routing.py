@@ -289,6 +289,11 @@ def _probe_models_dev(provider: str, model: str, cfg: Optional[dict[str, Any]]) 
     The fetch is cached (4h TTL) and backoff-limited."""
     from agent.models_dev import get_model_capabilities
 
+    if provider == "custom" or provider.startswith("custom:"):
+        from agent.model_metadata import _infer_provider_from_url
+
+        provider = _infer_provider_from_url(_resolve_inference_base_url(cfg, provider)) or provider
+
     # allow_network=True on purpose: vision-capability lookup runs when an image actually needs routing (not
     # per turn), and the #31179 text-only-main guard depends on catalog data — a cold cache returning
     # "unknown" would fall back to attempting the call and reintroduce the bug. This preserves the

@@ -32,6 +32,7 @@ _PROPERTIES: dict[str, Any] = {
             "list_apps",
             "list_windows",
             "focus_app",
+            "launch_app",
         ],
         "description": (
             "Which action to perform. `capture` is free (no side effects). All other actions "
@@ -188,7 +189,7 @@ _PROPERTIES: dict[str, Any] = {
 COMPUTER_USE_SCHEMA: dict[str, Any] = {
     "name": "computer_use",
     "description": (
-        "Drive the desktop via cua-driver: screenshots, mouse, keyboard, scroll, drag. macOS, "
+        "Open installed apps and drive the desktop via cua-driver: screenshots, mouse, keyboard, scroll, drag. macOS, "
         "Windows, and Linux. Input is background-FIRST, not background-only: the default delivery "
         "routes to the target window without stealing the user's cursor or focus (works even on "
         "hidden/minimized windows), and when a result's `verdict` says to escalate you climb — "
@@ -196,7 +197,9 @@ COMPUTER_USE_SCHEMA: dict[str, Any] = {
         "approval). Each result carries a `verdict` with the next step; follow it — never repeat "
         "confirmed input, and re-capture to verify an unverifiable one before retrying. Workflow: "
         "action='capture' (mode='som' gives numbered element overlays), then click by `element` "
-        "index; re-capture after state-changing actions (or pass capture_after=true). Image "
+        "index. To open an installed app, use launch_app with app=its name, then capture(app=...). "
+        "Prefer this over shell scripts, fixed sleeps, port scans or restarting a logged-in app. "
+        "Re-capture after state-changing actions (or pass capture_after=true). Image "
         "captures include a shareable `screenshot_path`; deliver it via the platform's MEDIA "
         "syntax when the user asks to see it — not for captures used only for control."
     ),
