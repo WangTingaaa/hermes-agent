@@ -371,6 +371,13 @@ declare global {
         path?: string
         saved: boolean
       }>
+      /** Ticketed download URL for streaming original bytes into a browser-selected local folder. */
+      getGatewayFileDownloadUrl?: (payload: {
+        connectionId?: null | string
+        path: string
+        profile?: null | string
+        sessionId?: string
+      }) => Promise<string>
       /** Browser media elements need an authenticated HTTP source, not Electron's custom protocol. */
       getGatewayFileStreamUrl?: (payload: {
         connectionId?: null | string

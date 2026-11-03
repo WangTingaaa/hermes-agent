@@ -28,7 +28,7 @@ import { firstRunIntro } from '@/components/onboarding/first-run/kickoff'
 import { OnboardingEnd } from '@/components/onboarding/onboarding-end'
 import { $newSessionTabAction, registerPaneCloser } from '@/components/pane-shell/tree/store'
 import { setWorkspaceScope } from '@/components/pane-shell/workspace-scope'
-import { FloatingPet } from '@/components/pet/floating-pet'
+import { FloatingCompanion } from '@/components/pet/mira/floating-companion'
 import { RemoteDisplayBanner } from '@/components/remote-display-banner'
 import { SendDiagnosticsHost } from '@/components/send-diagnostics-dialog'
 import { SharedMetricsConsentDialog } from '@/components/shared-metrics/consent-dialog'
@@ -1434,7 +1434,7 @@ export function ContribWiring({ children }: { children: ReactNode }) {
 
       {/* Petdex floating mascot — renders nothing unless installed + enabled.
           Never in the HUD: that window is the chat bar and nothing else. */}
-      {!isHudWindow() && !isBrowserWindow() && <FloatingPet />}
+      {!isHudWindow() && !isBrowserWindow() && <FloatingCompanion />}
 
       {/* In-app tips. Renders nothing until the app is quiet and has something
           to point at, and nothing at all once they're off or all retired. The

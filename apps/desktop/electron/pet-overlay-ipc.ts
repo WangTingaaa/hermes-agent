@@ -173,7 +173,7 @@ export function registerPetOverlayIpc({
 
     // The mail icon means "take me to the app": raise the main window (it may be
     // minimized or buried) before the renderer navigates to the latest thread.
-    if (payload && payload.type === 'open-app') {
+    if (payload && (payload.type === 'open-app' || payload.type === 'customize')) {
       if (mainWindow.isMinimized()) {
         mainWindow.restore()
       }

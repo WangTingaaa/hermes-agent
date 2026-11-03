@@ -13,11 +13,13 @@ import { useEffect, useMemo } from 'react'
 import { StatusRow } from '@/app/command-palette/status-row'
 import { HUD_ITEM, HUD_TEXT } from '@/app/floating-hud'
 import { useGatewayRequest } from '@/app/gateway/hooks/use-gateway-request'
+import { MiraPaletteEntry } from '@/components/pet/mira/palette-entry'
 import { PetThumb } from '@/components/pet/pet-thumb'
 import { useI18n } from '@/i18n'
 import { triggerHaptic } from '@/lib/haptics'
 import { Check, Egg, Loader2, PawPrint } from '@/lib/icons'
 import { cn } from '@/lib/utils'
+import { $displayPetInfo } from '@/store/pet'
 import {
   $petBusy,
   $petGallery,
@@ -29,6 +31,7 @@ import {
   rankedGalleryPets,
   setPetEnabled
 } from '@/store/pet-gallery'
+import { $petPersonalization, savePetPersonalization } from '@/store/pet-personalization'
 
 interface PetPalettePageProps {
   search: string
@@ -45,6 +48,7 @@ export function PetPalettePage({ search, onGenerate }: PetPalettePageProps) {
   const status = useStore($petGalleryStatus)
   const error = useStore($petGalleryError)
   const busy = useStore($petBusy)
+  const personal = useStore($petPersonalization)
 
   useEffect(() => {
     void loadPetGallery(requestGateway)
@@ -60,21 +64,37 @@ export function PetPalettePage({ search, onGenerate }: PetPalettePageProps) {
   }
 
   if (status === 'loading' && !gallery) {
-    return <StatusRow icon={<Loader2 className="size-3.5 animate-spin" />} text={copy.loading} />
+    return (
+      <>
+        <MiraPaletteEntry />
+        <StatusRow icon={<Loader2 className="size-3.5 animate-spin" />} text={copy.loading} />
+      </>
+    )
   }
 
   if (status === 'stale') {
-    return <StatusRow text={copy.staleBackend} tone="error" />
+    return (
+      <>
+        <MiraPaletteEntry />
+        <StatusRow text={copy.staleBackend} tone="error" />
+      </>
+    )
   }
 
   if (!gallery?.pets.length && error) {
-    return <StatusRow text={error} tone="error" />
+    return (
+      <>
+        <MiraPaletteEntry />
+        <StatusRow text={error} tone="error" />
+      </>
+    )
   }
 
   const mutating = Boolean(busy)
 
   return (
     <div role="listbox">
+      <MiraPaletteEntry />
       {onGenerate && (
         <button
           className={cn(
@@ -99,7 +119,7 @@ export function PetPalettePage({ search, onGenerate }: PetPalettePageProps) {
         <StatusRow text={copy.empty} />
       ) : (
         shown.map(pet => {
-          const isActive = enabled && pet.slug === active
+          const isActive = personal.mode === 'gateway' && enabled && pet.slug === active
           const isBusy = busy === pet.slug
 
           return (
@@ -164,14 +184,17 @@ export function PetInlineToggle() {
   const { requestGateway } = useGatewayRequest()
   const gallery = useStore($petGallery)
   const busy = useStore($petBusy)
-
-  if (!gallery) {
-    return null
-  }
-
-  const enabled = gallery.enabled
+  const info = useStore($displayPetInfo)
+  const personal = useStore($petPersonalization)
+  const enabled = info.enabled
 
   const toggle = () => {
+    if (personal.mode !== 'gateway' || !gallery) {
+      savePetPersonalization({ mode: enabled ? 'off' : 'mira' })
+
+      return
+    }
+
     void setPetEnabled(requestGateway, !enabled, {
       noneAvailable: copy.noneAvailable,
       fallback: copy.toggleFailed(!enabled)

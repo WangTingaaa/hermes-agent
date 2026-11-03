@@ -31,6 +31,7 @@ export function createBrowserFilesBridge({
   currentProfile
 }: BrowserFilesOptions): Pick<
   Window['hermesDesktop'],
+  | 'getGatewayFileDownloadUrl'
   | 'getGatewayFileStreamUrl'
   | 'readDir'
   | 'readFileDataUrl'
@@ -63,6 +64,17 @@ export function createBrowserFilesBridge({
   }
 
   return {
+    getGatewayFileDownloadUrl: async payload => {
+      requireBrowserConnection(payload.connectionId)
+
+      return (
+        await fileEndpointUrl(bootstrap, 'download', {
+          path: payload.path,
+          profile: payload.profile ?? currentProfile(),
+          session_id: payload.sessionId
+        })
+      ).href
+    },
     getGatewayFileStreamUrl: async payload => {
       requireBrowserConnection(payload.connectionId)
 

@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router'
 import { afterEach, expect, it, vi } from 'vitest'
 
@@ -12,6 +12,8 @@ import { uploadArtifactToCloud } from './upload-to-cloud'
 import { ArtifactFileInteraction } from './index'
 
 vi.mock('./upload-to-cloud', () => ({ uploadArtifactToCloud: vi.fn().mockResolvedValue(undefined) }))
+const host = vi.hoisted(() => ({ isWenjingHost: false }))
+vi.mock('@/themes/context', () => ({ useTheme: () => host }))
 
 vi.mock('@/hermes', async () => ({ ...(await vi.importActual('@/hermes')), hermesApi: vi.fn() }))
 
@@ -28,6 +30,7 @@ const artifact: ArtifactRecord = {
 }
 
 afterEach(() => {
+  host.isWenjingHost = false
   cleanup()
   vi.clearAllMocks()
   vi.unstubAllGlobals()
@@ -69,8 +72,9 @@ it('opens the same preview/download menu on right-click and downloads only when 
   render(<Fixture />)
   fireEvent.contextMenu(screen.getByRole('button', { name: 'chart.png' }))
   expect(await screen.findByRole('menuitem', { name: 'Preview' })).toBeTruthy()
+  expect(screen.getAllByRole('menuitem').map(item => item.textContent)).toEqual(['Preview', 'Download'])
   expect(saveGatewayFile).not.toHaveBeenCalled()
-  fireEvent.click(screen.getByRole('menuitem', { name: 'Download' }))
+  await act(async () => fireEvent.click(screen.getByRole('menuitem', { name: 'Download' })))
   expect(saveGatewayFile).toHaveBeenCalledExactlyOnceWith({
     connectionId: 'office',
     profile: 'writer',
@@ -82,6 +86,7 @@ it('opens the same preview/download menu on right-click and downloads only when 
 })
 
 it('starts a new cloud-upload conversation only when the upload menu item is selected', async () => {
+  host.isWenjingHost = true
   render(<Fixture />)
   fireEvent.contextMenu(screen.getByRole('button', { name: 'chart.png' }))
   expect(uploadArtifactToCloud).not.toHaveBeenCalled()
@@ -95,6 +100,7 @@ it('starts a new cloud-upload conversation only when the upload menu item is sel
 })
 
 it('offers preview, upload, download in order and delegates embedded downloads to the host folder flow', async () => {
+  host.isWenjingHost = true
   const download = vi.fn().mockResolvedValue({ saved: false, canceled: true })
   const saveGatewayFile = vi.fn()
   vi.stubGlobal('hermesDesktop', { artifactFiles: { download }, saveGatewayFile })
@@ -111,4 +117,16 @@ it('offers preview, upload, download in order and delegates embedded downloads t
     suggestedName: 'chart.png'
   })
   expect(saveGatewayFile).not.toHaveBeenCalled()
+})
+
+it('uses the local save dialog outside Wenjing even if a host download bridge is present', async () => {
+  const download = vi.fn()
+  const saveGatewayFile = vi.fn().mockResolvedValue({ saved: true })
+  vi.stubGlobal('hermesDesktop', { artifactFiles: { download }, saveGatewayFile })
+  render(<Fixture />)
+  fireEvent.contextMenu(screen.getByRole('button', { name: 'chart.png' }))
+  const item = await screen.findByRole('menuitem', { name: 'Download' })
+  await act(async () => fireEvent.click(item))
+  expect(saveGatewayFile).toHaveBeenCalledWith(expect.objectContaining({ path: artifact.value }))
+  expect(download).not.toHaveBeenCalled()
 })

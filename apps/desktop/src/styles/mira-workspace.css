@@ -123,7 +123,8 @@ html[data-hermes-theme='mesoInsights']:not(:has([data-hud-shell])) [data-chat-su
   margin: 0 -5px;
   padding-bottom: 0;
   transform: none;
-  translate: none;
+  /* Keep the individual translate reset after production CSS optimization. */
+  translate: initial;
 }
 html .mira-workspace__composer-host [data-slot='composer-surface'] {
   border: 0 !important;

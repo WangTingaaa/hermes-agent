@@ -3,6 +3,8 @@ import { memo, useEffect, useMemo, useRef, useState } from 'react'
 import { createRendererLoopPauseController } from '@/lib/renderer-loop-pause'
 import { $petState, type PetInfo, type PetState } from '@/store/pet'
 
+import { MiraSprite } from './mira/mira-sprite'
+
 const DEFAULT_FRAME_W = 192
 const DEFAULT_FRAME_H = 208
 const DEFAULT_FRAMES = 6
@@ -417,4 +419,6 @@ function PetSpriteImpl({ info, zoom = 1, stateOverride, rowOverride, pauseWhenUn
  * Memoized so a parent re-render (e.g. a position commit on drag-end) doesn't
  * re-run the canvas setup. Props change only when the pet itself changes.
  */
-export const PetSprite = memo(PetSpriteImpl)
+export const PetSprite = memo(function PetSprite(props: PetSpriteProps) {
+  return props.info.mira ? <MiraSprite {...props} /> : <PetSpriteImpl {...props} />
+})

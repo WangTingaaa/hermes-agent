@@ -1,0 +1,13 @@
+Generator: built-in image_gen
+Reference: apps/desktop/public/logo.png
+Transparent background: true
+
+Use case: stylized-concept
+Asset type: original anime mascot full-body character illustration for the Hermes desktop companion pet.
+Input image: the supplied LOCAL IMAGE is the Hermes brand logo, a dimensional continuous folded infinity ribbon with saturated cobalt-blue to cyan/turquoise gradients. Use this for brand identity, colors and distinctive shapes, not as the character itself.
+Primary request: Create a polished, extremely cute original chibi anime girl spirit mascot inspired by this logo. The user likes the friendly big-eyed, tiny full-body anime mascot format of an elegant blue-haired maid character, but Hermes should have its own infinity-ribbon messenger-spirit identity. Draw ONE coherent finished character, not a sheet.
+Subject design: approximately 2.7 heads tall, very large expressive blue-cyan eyes, rosy cheeks, cheerful soft open-mouth smile; silky cobalt-blue hair with cyan gradient ends, rounded airy locks and two flowing ribbonlike side locks. A prominent dimensional folded infinity-loop hair ornament clearly echoes the reference logo. Outfit is a tasteful fully clothed miniature magical messenger dress with navy/cobalt panels, white frilled trim, a little cyan bow and the blue-cyan infinity emblem on the chest; short capelet, white socks, rounded blue shoes. A pair of long blue-to-cyan ribbons curl behind her in an elegant recognizable infinity-loop silhouette. Charming and friendly, clear design readable at desktop-pet scale. No animal ears or whale/shark motifs.
+Pose/composition: front three-quarter view, full body centered, upright standing with both feet fully visible, one hand raised in a friendly small wave, the other hand relaxed. All hair, ribbons, shoes and fingers fully inside the canvas, generous clear margin. Clear five-finger hand anatomy. No objects or extra characters.
+Style/medium: professional Japanese chibi anime illustration, delicate clean lineart, softly layered cel shading, luminous detailed eyes, gently glossy hair, carefully drawn folds; high-quality finished mascot sticker, consistent illustration style rather than 3D rendering.
+Scene/backdrop: genuinely transparent alpha background, no white rectangle, no checkerboard printed into the art, no ground or cast shadow.
+Constraints: preserve the logo's cobalt-to-cyan palette and distinctive continuous folded infinity-ribbon shape in key design elements. No text, letters, captions, watermark, logos other than the integrated infinity emblem, no frame. Wholesome adorable companion character.

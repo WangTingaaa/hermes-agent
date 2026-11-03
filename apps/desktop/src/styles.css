@@ -30,11 +30,11 @@ html[data-host-surface='wenjing'] [data-contrib-wiring] {
   --titlebar-controls-top: 3px !important;
 }
 
-/* 文镜's bottom-center floating switch occupies the app's usual composer
-   lane. Reserve its 45px host-safe area for the docked composer only; a
-   user-popped composer and the standalone/HUD surfaces keep their positions. */
-html[data-host-surface='wenjing'] [data-slot='composer-dock']:not([data-popped-out]),
-html[data-host-surface='wenjing'] [data-composer-fallback] {
+/* 文镜's bottom-center floating switch occupies the conversation's composer
+   lane. Reserve its 45px host-safe area for that bottom dock; the home editor
+   stays in flow, and floating/standalone/HUD surfaces keep their positions. */
+html[data-host-surface='wenjing'] [data-slot='composer-dock']:not([data-popped-out]):not(.mira-workspace__composer-host *),
+html[data-host-surface='wenjing'] [data-composer-fallback]:not(.mira-workspace__composer-host *) {
   bottom: 2.8125rem;
 }
 

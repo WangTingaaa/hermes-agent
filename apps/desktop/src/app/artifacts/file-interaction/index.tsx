@@ -8,6 +8,7 @@ import { Download, Eye, iconSize, MoreHorizontal, Upload } from '@/lib/icons'
 import { cn } from '@/lib/utils'
 import { $activeConnectionId } from '@/store/connections'
 import { notifyError } from '@/store/notifications'
+import { useTheme } from '@/themes/context'
 
 import { downloadArtifactFile } from './file-access'
 import { ArtifactPreviewDialog } from './preview-dialog'
@@ -22,6 +23,7 @@ export function ArtifactFileInteraction({
   variant = 'row'
 }: ArtifactFileInteractionProps) {
   const { t } = useI18n()
+  const { isWenjingHost } = useTheme()
   const navigate = useNavigate()
   const [uploading, setUploading] = useState(false)
   const uploadInFlight = useRef(false)
@@ -43,7 +45,7 @@ export function ArtifactFileInteraction({
     setSaving(true)
 
     try {
-      await downloadArtifactFile(artifact, ownerNow())
+      await downloadArtifactFile(artifact, ownerNow(), isWenjingHost)
     } catch (error) {
       notifyError(error, t.fileMenu.downloadFailed)
     } finally {
@@ -76,10 +78,12 @@ export function ArtifactFileInteraction({
           <Eye className={iconSize.md} />
           {t.preview.tab}
         </kit.Item>
-        <kit.Item disabled={uploading} onSelect={() => void handleUploadToCloud()}>
-          <Upload className={iconSize.md} />
-          {t.artifacts.fileActions.uploadToCloud}
-        </kit.Item>
+        {isWenjingHost && (
+          <kit.Item disabled={uploading} onSelect={() => void handleUploadToCloud()}>
+            <Upload className={iconSize.md} />
+            {t.artifacts.fileActions.uploadToCloud}
+          </kit.Item>
+        )}
         <kit.Item disabled={saving} onSelect={() => void handleDownload()}>
           <Download className={iconSize.md} />
           {t.fileMenu.download}

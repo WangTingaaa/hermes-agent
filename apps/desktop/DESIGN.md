@@ -481,6 +481,21 @@ from their root base tokens; do not multiply the global tokens or nest CSS zoom.
 
 ## Motion
 
+### Desktop companion
+
+Mira is the bundled default desktop companion. Its name, outfit, expression and
+visibility are device-wide presentation preferences, separate from the gateway's
+per-profile pet library. The old Mira remains on disk but is hidden in the picker.
+Settings → Appearance → Pets and the pet palette open the same wardrobe dialog;
+drafts preview immediately and commit together on Done, while Cancel and Escape
+discard them. Clicking the in-window pet plays a short cute reaction; double-click,
+right-click or Enter opens its wardrobe. The popped-out pet uses right-click for
+the wardrobe, preserving its existing composer and app-toggle gestures.
+
+Three bundled transparent WebP atlases provide four expressions each. Canvas
+motion respects reduced motion and pauses in hidden windows. The main renderer
+mirrors the complete appearance to the overlay so both windows use the same art.
+
 - Visible windows keep animating when another app takes focus. Hidden/minimized
   windows and inactive panes may pause; background polling stays focus-gated.
 - Animated integer counts reuse `AnimatedInt` in `src/components/ui/diff-count.tsx`.

@@ -2,6 +2,7 @@ import { useStore } from '@nanostores/react'
 import { type ReactNode, useEffect, useState } from 'react'
 
 import { useGatewayRequest } from '@/app/gateway/hooks/use-gateway-request'
+import { MiraCompanionSettings } from '@/components/pet/mira/companion-settings'
 import { PetThumb } from '@/components/pet/pet-thumb'
 import { Button } from '@/components/ui/button'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
@@ -37,6 +38,7 @@ import {
   setPetEnabled,
   setPetScale
 } from '@/store/pet-gallery'
+import { $petPersonalization } from '@/store/pet-personalization'
 import { $gatewayState } from '@/store/session'
 
 import { ListRow, SectionHeading, ToggleRow } from './primitives'
@@ -59,6 +61,7 @@ export function PetSettings() {
   const busySlug = useStore($petBusy)
   const petInfo = useStore($petInfo)
   const roam = useStore($petRoam)
+  const personal = useStore($petPersonalization)
   const [query, setQuery] = useState('')
   const [confirmDelete, setConfirmDelete] = useState<GalleryPet | null>(null)
   const [renameTarget, setRenameTarget] = useState<GalleryPet | null>(null)
@@ -122,6 +125,8 @@ export function PetSettings() {
         {copy.intro}
       </p>
 
+      <MiraCompanionSettings />
+
       {staleBackend && (
         <p className="mt-2 rounded-lg border border-(--ui-stroke-tertiary) bg-(--ui-bg-quinary) px-3 py-2 text-[length:var(--conversation-caption-font-size)] leading-(--conversation-caption-line-height) text-(--ui-text-tertiary)">
           {copy.restartHint}
@@ -167,7 +172,7 @@ export function PetSettings() {
                 ) : (
                   <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
                     {shown.map(pet => {
-                      const isActive = enabled && active === pet.slug
+                      const isActive = personal.mode === 'gateway' && enabled && active === pet.slug
                       const isBusy = busySlug === pet.slug
 
                       return (
@@ -261,7 +266,7 @@ export function PetSettings() {
           wide
         />
 
-        {enabled && (
+        {enabled && personal.mode === 'gateway' && (
           <ListRow
             action={
               <div className="flex items-center gap-3">
@@ -286,7 +291,7 @@ export function PetSettings() {
           />
         )}
 
-        {enabled && (
+        {(personal.mode === 'mira' || enabled) && (
           <ToggleRow checked={roam} description={copy.roamDesc} label={copy.roamTitle} onChange={setPetRoam} />
         )}
       </div>

@@ -7,7 +7,7 @@ import { PetSprite } from '@/components/pet/pet-sprite'
 import { type PetZoomAnchor, usePetZoomGesture } from '@/components/pet/use-pet-zoom-gesture'
 import { Mail } from '@/lib/icons'
 import { isSubmitEnter } from '@/lib/ime'
-import { $petActivity, $petInfo, setPetInfo } from '@/store/pet'
+import { $petActivity, $petInfo, hasPetArt, setPetInfo } from '@/store/pet'
 import { overlayWindowSize } from '@/store/pet-overlay'
 import { mirrorPetPluginMessages } from '@/store/pet-plugin-messages'
 import { setAwaitingResponse, setBusy } from '@/store/session'
@@ -64,6 +64,7 @@ interface DragState {
 
 export function PetOverlayApp() {
   const info = useStore($petInfo)
+  const active = info.enabled && hasPetArt(info)
   const [composerOpen, setComposerOpen] = useState(false)
   const [draft, setDraft] = useState('')
   // Mirrored from the main renderer: a finish landed while you were away.
@@ -314,7 +315,7 @@ export function PetOverlayApp() {
     window.hermesDesktop?.petOverlay?.control({ scale: next, type: 'scale' })
   }, [])
 
-  usePetZoomGesture(petRef, onScale, Boolean(info.enabled && info.spritesheetBase64))
+  usePetZoomGesture(petRef, onScale, active)
 
   // Grow/shrink the OS overlay window to fit the pet at its current scale so the
   // sprite is never cropped — covers both the wheel gesture here and a scale
@@ -324,7 +325,7 @@ export function PetOverlayApp() {
   // bounds are persisted so the pet reopens at the right size.
   // eslint-disable-next-line no-restricted-syntax -- legitimate non-atom ref write (see eslint rule comment)
   useEffect(() => {
-    if (!info.enabled || !info.spritesheetBase64) {
+    if (!active) {
       return
     }
 
@@ -362,9 +363,9 @@ export function PetOverlayApp() {
 
     window.hermesDesktop?.petOverlay?.setBounds(bounds)
     window.hermesDesktop?.petOverlay?.control({ bounds, type: 'bounds' })
-  }, [info.enabled, info.spritesheetBase64, info.scale, info.frameW, info.frameH])
+  }, [active, info.scale, info.frameW, info.frameH])
 
-  if (!info.enabled || !info.spritesheetBase64) {
+  if (!active) {
     return null
   }
 
@@ -436,7 +437,14 @@ export function PetOverlayApp() {
           <PetBubble />
         </div>
         <div style={{ lineHeight: 0, position: 'relative' }}>
-          <PetSprite info={info} pauseWhenUnfocused={false} />
+          <div
+            onContextMenu={event => {
+              event.preventDefault()
+              window.hermesDesktop?.petOverlay?.control({ type: 'customize' })
+            }}
+          >
+            <PetSprite info={info} pauseWhenUnfocused={false} />
+          </div>
 
           {/* Hearts on the popped-out pet — identical to in-window. */}
           <PetHeartField

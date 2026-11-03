@@ -2,7 +2,8 @@ import { atom } from 'nanostores'
 
 import { PRIMARY_SESSION_VIEW } from '@/app/chat/session-view'
 import { persistBoolean, persistString, storedBoolean, storedString } from '@/lib/storage'
-import { $petActivity, $petInfo, $petUnread, clearPetUnread, type PetActivity, type PetInfo } from '@/store/pet'
+import { $displayPetInfo, $petActivity, $petUnread, clearPetUnread, type PetActivity, type PetInfo } from '@/store/pet'
+import { openMiraWardrobe } from '@/store/pet-personalization'
 import { $petPluginMessages, type PetPluginMessage } from '@/store/pet-plugin-messages'
 
 /**
@@ -56,6 +57,7 @@ export interface PetOverlayStatePayload {
 export type PetOverlayControl =
   | { type: 'pop-in' }
   | { type: 'ready' }
+  | { type: 'customize' }
   | { type: 'submit'; text: string }
   | { type: 'bounds'; bounds: PetOverlayBounds }
   | { type: 'open-app' }
@@ -145,7 +147,7 @@ let scaleHandler: ((scale: number) => void) | null = null
 
 function currentPayload(): PetOverlayStatePayload {
   return {
-    info: $petInfo.get(),
+    info: $displayPetInfo.get(),
     activity: $petActivity.get(),
     busy: PRIMARY_SESSION_VIEW.$busy.get(),
     awaiting: PRIMARY_SESSION_VIEW.$awaitingResponse.get(),
@@ -183,7 +185,7 @@ function openOverlay(request: PetOverlayOpenRequest): void {
   // Mirror live state into the overlay. subscribe() fires immediately, so the
   // overlay also gets a first frame the moment it's ready (it asks via 'ready').
   stateUnsubs = [
-    $petInfo.subscribe(pushNow),
+    $displayPetInfo.subscribe(pushNow),
     $petActivity.subscribe(pushNow),
     PRIMARY_SESSION_VIEW.$busy.subscribe(pushNow),
     PRIMARY_SESSION_VIEW.$awaitingResponse.subscribe(pushNow),
@@ -214,7 +216,7 @@ export function popOutPet(petRect: PetOverlayBounds): void {
 
   // Size the window off the pet's scale (not the measured rect, which includes
   // the shadow) so it matches the live resize math exactly — no jump on open.
-  const pet = $petInfo.get()
+  const pet = $displayPetInfo.get()
   const { width, height } = overlayWindowSize(pet.frameW ?? 192, pet.frameH ?? 208, pet.scale ?? 0.33)
   const x = Math.round(petRect.x - (width - petRect.width) / 2)
   const y = Math.round(petRect.y - (height - petRect.height) / 2)
@@ -281,7 +283,9 @@ export function initPetOverlayBridge(): () => void {
   }
 
   controlUnsub = api.onControl(payload => {
-    if (payload?.type === 'pop-in') {
+    if (payload?.type === 'customize') {
+      openMiraWardrobe()
+    } else if (payload?.type === 'pop-in') {
       popInPet()
     } else if (payload?.type === 'ready') {
       // The overlay just mounted — hand it the current frame.

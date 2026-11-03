@@ -2,6 +2,8 @@ import { atom, computed } from 'nanostores'
 
 import { PRIMARY_SESSION_VIEW } from '@/app/chat/session-view'
 import { persistBoolean, storedBoolean } from '@/lib/storage'
+import { $miraReaction, $petPersonalization, miraAtlasUrl } from '@/store/pet-personalization'
+import type { MiraAppearance } from '@/store/pet-personalization/type'
 import { $activeGatewayProfile, normalizeProfileKey } from '@/store/profile'
 
 /**
@@ -17,6 +19,9 @@ export type PetState = 'idle' | 'wave' | 'run' | 'failed' | 'review' | 'jump' | 
 
 export interface PetInfo {
   enabled: boolean
+  /** Bundled desktop companion; the gateway spritesheet contract is unchanged. */
+  mira?: MiraAppearance
+  assetUrl?: string
   slug?: string
   displayName?: string
   mime?: string
@@ -138,9 +143,37 @@ export function derivePetState(activity: PetActivity): PetState {
 
 export const $petInfo = atom<PetInfo>({ enabled: false })
 export const $petActivity = atom<PetActivity>({})
+export const $gatewayPetReady = computed($petInfo, info => info.enabled && Boolean(info.spritesheetBase64))
+
+export const $displayPetInfo = computed(
+  [$petInfo, $petPersonalization, $miraReaction],
+  (gateway, personal, reaction): PetInfo => {
+    if (personal.mode === 'gateway') {
+      return gateway
+    }
+
+    if (personal.mode === 'off') {
+      return { enabled: false }
+    }
+
+    return {
+      enabled: true,
+      slug: 'hermes-mira',
+      displayName: personal.name,
+      assetUrl: miraAtlasUrl(personal.outfit),
+      mira: { outfit: personal.outfit, emotion: reaction ?? personal.emotion },
+      frameW: 240,
+      frameH: 288,
+      scale: personal.scale,
+      loopMs: 1600
+    }
+  }
+)
+
+export const hasPetArt = (info: PetInfo): boolean => Boolean(info.spritesheetBase64 || (info.mira && info.assetUrl))
 
 /** Pet installed + enabled with a loaded spritesheet (ready to show/react). */
-export const $petActive = computed($petInfo, info => info.enabled && Boolean(info.spritesheetBase64))
+export const $petActive = computed($displayPetInfo, info => info.enabled && hasPetArt(info))
 
 /**
  * Profile the pet RPCs should resolve against. Pets are per-profile — the active

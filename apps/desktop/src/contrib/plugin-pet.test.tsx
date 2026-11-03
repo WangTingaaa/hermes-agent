@@ -6,6 +6,7 @@ import { FloatingPet } from '@/components/pet/floating-pet'
 import { PetBubble } from '@/components/pet/pet-bubble'
 import { $petActivity, setPetInfo } from '@/store/pet'
 import { $petOverlayActive, popInPet, popOutPet } from '@/store/pet-overlay'
+import { $petPersonalization, MIRA_DEFAULTS } from '@/store/pet-personalization'
 import { $petPluginMessages, mirrorPetPluginMessages, resetPetPluginMessages } from '@/store/pet-plugin-messages'
 
 import { createPluginContext } from './plugin'
@@ -31,6 +32,10 @@ const PET = {
   scale: 0.33,
   spritesheetBase64: 'stub'
 }
+
+// This suite exercises gateway-owned pets; bundled Mira is covered separately.
+beforeEach(() => $petPersonalization.set({ ...MIRA_DEFAULTS, mode: 'gateway' }))
+afterEach(() => $petPersonalization.set({ ...MIRA_DEFAULTS }))
 
 // Each test gets its own plugin id, so per-plugin rate windows never leak
 // between tests; afterEach resets the store so a live line cannot leak.

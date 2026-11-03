@@ -11,6 +11,7 @@ import {
   petProfile,
   setPetInfo
 } from '@/store/pet'
+import { $petPersonalization, savePetPersonalization } from '@/store/pet-personalization'
 
 /**
  * Feature store for the petdex gallery picker (Cmd+K "Pets…" + Settings).
@@ -235,6 +236,7 @@ async function syncInfo(request: GatewayRequest): Promise<void> {
  * wait on `pet.gallery`'s remote petdex manifest fetch.
  */
 export async function applyAdoptedPet(request: GatewayRequest, slug: string, displayName: string): Promise<void> {
+  savePetPersonalization({ mode: 'gateway' })
   patchGallery(gallery => ({
     ...gallery,
     enabled: true,
@@ -274,6 +276,9 @@ export function rankedGalleryPets(gallery: PetGallery | null, query = ''): Galle
     .filter(
       p =>
         !/^clawd(-|$)/i.test(p.slug) &&
+        // Retired Mira is kept on disk for recovery; the bundled Mira owns the name.
+        p.slug.toLowerCase() !== 'mira' &&
+        p.displayName.trim().toLowerCase() !== 'mira' &&
         (!needle || p.slug.toLowerCase().includes(needle) || p.displayName.toLowerCase().includes(needle))
     )
     .sort((a, b) => rank(b) - rank(a))
@@ -319,6 +324,7 @@ async function mutate(
 export function adoptPet(request: GatewayRequest, slug: string, fallback: string): Promise<boolean> {
   return mutate(slug, fallback, request, async () => {
     await petRpc(request, 'pet.select', { slug })
+    savePetPersonalization({ mode: 'gateway' })
     patchGallery(g => ({
       ...g,
       enabled: true,
@@ -358,6 +364,7 @@ export function setPetEnabled(
   return mutate(on ? TOGGLE_ON : TOGGLE_OFF, copy.fallback, request, async () => {
     if (on) {
       await petRpc(request, 'pet.select', { slug })
+      savePetPersonalization({ mode: 'gateway' })
     } else {
       await petRpc(request, 'pet.disable')
     }
@@ -398,6 +405,12 @@ let scalePersist: ReturnType<typeof setTimeout> | undefined
  */
 export function setPetScale(request: GatewayRequest, scale: number): void {
   const next = clampPetScale(scale)
+
+  if ($petPersonalization.get().mode !== 'gateway') {
+    savePetPersonalization({ scale: next })
+
+    return
+  }
 
   setPetInfo({ ...$petInfo.get(), scale: next })
 

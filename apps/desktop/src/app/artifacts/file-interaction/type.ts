@@ -33,3 +33,16 @@ export interface ArtifactImagePreviewProps {
 }
 
 export type ArtifactUploadNavigate = Parameters<typeof openSession>[1]
+
+export interface ArtifactDownloadDirectory {
+  getFileHandle: (
+    name: string,
+    options: { create: true }
+  ) => Promise<{
+    createWritable: () => Promise<WritableStream<Uint8Array>>
+  }>
+}
+
+export interface ArtifactDownloadWindow extends Window {
+  showDirectoryPicker?: (options: { mode: 'readwrite' }) => Promise<ArtifactDownloadDirectory>
+}

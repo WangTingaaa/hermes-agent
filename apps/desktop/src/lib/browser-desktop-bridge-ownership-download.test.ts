@@ -1,6 +1,7 @@
 import { afterEach, expect, it, vi } from 'vitest'
 
 import { setApiRequestConnection, setApiRequestProfile } from '@/api/client'
+import { downloadArtifactFile } from '@/app/artifacts/file-interaction/file-access'
 import { $notifications, clearNotifications } from '@/store/notifications'
 import { $connection } from '@/store/session'
 import { clearWebappSession, seedWebappSession } from '@/test/webapp-session'
@@ -43,6 +44,54 @@ it('keeps a captured download on its owning browser profile after a foreground s
   expect(url.searchParams.get('ticket')).toBe('file-ticket')
   expect(JSON.parse(String(fetchMock.mock.calls[1][1]?.body))).toMatchObject({ profile: 'file-owner' })
   expect(downloads[0].download).toBe('report.pdf')
+})
+
+it('streams a non-media artifact through a download ticket into the chosen local folder', async () => {
+  seedWebappSession('served-token')
+  const chunks: Uint8Array[] = []
+
+  const writable = new WritableStream<Uint8Array>({
+    write: chunk => {
+      chunks.push(chunk)
+    }
+  })
+
+  const getFileHandle = vi.fn().mockResolvedValue({ createWritable: async () => writable })
+  vi.stubGlobal('showDirectoryPicker', vi.fn().mockResolvedValue({ getFileHandle }))
+
+  const fetchMock = vi.fn(async (input: URL | string, _init?: RequestInit) =>
+    new URL(input, window.location.origin).pathname === '/api/files/ticket'
+      ? new Response(JSON.stringify({ ticket: 'artifact-ticket' }), { status: 200 })
+      : new Response(new Uint8Array([0, 42, 255]))
+  )
+
+  vi.stubGlobal('fetch', fetchMock)
+  expect(installBrowserDesktopBridge()).toBe(true)
+  setApiRequestProfile('foreground')
+  await downloadArtifactFile(
+    {
+      id: 'pdf',
+      kind: 'file',
+      value: '/workspace/report.pdf',
+      href: 'file:///workspace/report.pdf',
+      label: 'report.pdf',
+      sessionId: 'author-session',
+      profile: 'author',
+      sessionTitle: 'Report',
+      timestamp: 1
+    },
+    { connectionId: 'local', profile: 'author' }
+  )
+
+  const ticket = JSON.parse(String(fetchMock.mock.calls[0][1]?.body))
+  expect(ticket).toMatchObject({ profile: 'author', path: '/workspace/report.pdf', session_id: 'author-session' })
+  const target = new URL(fetchMock.mock.calls[1][0], window.location.origin)
+  expect(target.pathname).toBe('/api/fs/download')
+  expect(target.searchParams.get('ticket')).toBe('artifact-ticket')
+  expect(target.searchParams.get('profile')).toBe('author')
+  expect(target.searchParams.get('session_id')).toBe('author-session')
+  expect(getFileHandle).toHaveBeenCalledExactlyOnceWith('report.pdf', { create: true })
+  expect(chunks.flatMap(chunk => [...chunk])).toEqual([0, 42, 255])
 })
 
 it.each([

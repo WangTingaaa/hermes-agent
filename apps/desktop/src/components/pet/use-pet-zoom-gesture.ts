@@ -1,6 +1,6 @@
 import { type RefObject, useEffect } from 'react'
 
-import { $petInfo } from '@/store/pet'
+import { $displayPetInfo, $petInfo } from '@/store/pet'
 import { nextScaleFromWheel, PET_SCALE_DEFAULT } from '@/store/pet-gallery'
 
 /** Where the gesture happened + how much it scaled — lets callers zoom toward the
@@ -46,7 +46,8 @@ export function usePetZoomGesture<T extends HTMLElement>(
 
       event.preventDefault()
 
-      const base = $petInfo.get().scale ?? PET_SCALE_DEFAULT
+      const overlay = new URLSearchParams(window.location.search).get('win') === 'overlay'
+      const base = (overlay ? $petInfo.get() : $displayPetInfo.get()).scale ?? PET_SCALE_DEFAULT
       const next = nextScaleFromWheel(base, event.deltaY)
       onScale(next, { clientX: event.clientX, clientY: event.clientY, ratio: next / base })
     }

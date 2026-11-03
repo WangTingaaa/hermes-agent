@@ -6,14 +6,19 @@ import { useOnProfileSwitch } from '@/app/hooks/use-on-profile-switch'
 import { useRouteOverlayActive } from '@/app/hooks/use-route-overlay-active'
 import { PetHeartField } from '@/components/chat/vibe-hearts'
 import { PetBubble } from '@/components/pet/pet-bubble'
+import { useI18n } from '@/i18n'
+import { miraCopyForLocale } from '@/i18n/mira-pet'
 import { persistString, storedString } from '@/lib/storage'
 import { $changeEventsAvailable, $petChange } from '@/store/live-sync'
 import {
+  $displayPetInfo,
+  $gatewayPetReady,
   $petAtRest,
   $petInfo,
   $petRoam,
   $petRoamDir,
   clearPetUnread,
+  hasPetArt,
   hasPetSpriteForMeta,
   mergePetInfoMeta,
   type PetInfo,
@@ -23,10 +28,12 @@ import {
 } from '@/store/pet'
 import { resetPetGallery, setPetScale } from '@/store/pet-gallery'
 import { $petOverlayActive, initPetOverlayBridge, popOutPet, restorePetOverlay } from '@/store/pet-overlay'
+import { openMiraWardrobe } from '@/store/pet-personalization'
 import { $gatewayState } from '@/store/session'
 import { isSecondaryWindow } from '@/store/windows'
 import { useTheme } from '@/themes/context'
 
+import { handleMiraClick, handleMiraContextMenu, handleMiraKeyDown } from './mira/interactions'
 import { PET_STARTUP_RETRY_MS, petInfoPollIntervalMs } from './pet-info-poll'
 import { PetSprite, roamWalkRow } from './pet-sprite'
 import { usePetRoam } from './use-pet-roam'
@@ -104,7 +111,10 @@ export function FloatingPet() {
   const { requestGateway } = useGatewayRequest()
   const { resolvedMode } = useTheme()
   const gatewayState = useStore($gatewayState)
-  const info = useStore($petInfo)
+  const info = useStore($displayPetInfo)
+  const gatewayActive = useStore($gatewayPetReady)
+  const { locale } = useI18n()
+  const copy = miraCopyForLocale(locale)
   const changeEventsAvailable = useStore($changeEventsAvailable)
   const petChange = useStore($petChange)
   const overlayActive = useStore($petOverlayActive)
@@ -137,7 +147,7 @@ export function FloatingPet() {
   // Fetch pet.info on connect. pet.changed re-runs this effect when the
   // signature moves; a slow backstop covers silent seed + cold-start races.
   // Older backends (no change_events) keep the legacy fast-while-inactive poll.
-  const active = info.enabled && Boolean(info.spritesheetBase64)
+  const active = info.enabled && hasPetArt(info)
   useEffect(() => {
     if (gatewayState !== 'open') {
       return
@@ -157,7 +167,7 @@ export function FloatingPet() {
 
     const pull = async () => {
       try {
-        if (active) {
+        if (gatewayActive) {
           try {
             const meta = await requestGateway<PetInfoMeta>('pet.info.meta', { profile: petProfile() })
 
@@ -255,7 +265,7 @@ export function FloatingPet() {
     // Always keep a timer. Event-capable backends use the slow backstop (same
     // contract as cron/sessions in use-background-sync); legacy keeps the
     // historical fast-while-inactive cadence.
-    const timer = window.setInterval(pullIfVisible, petInfoPollIntervalMs(changeEventsAvailable, active))
+    const timer = window.setInterval(pullIfVisible, petInfoPollIntervalMs(changeEventsAvailable, gatewayActive))
 
     return () => {
       cancelled = true
@@ -267,7 +277,7 @@ export function FloatingPet() {
 
       window.clearInterval(timer)
     }
-  }, [gatewayState, active, changeEventsAvailable, petChange, requestGateway])
+  }, [gatewayState, gatewayActive, changeEventsAvailable, petChange, requestGateway])
 
   // Pets are per-profile. When the active profile changes, drop the previous
   // profile's mascot + gallery cache so the poll above refetches the new
@@ -338,6 +348,10 @@ export function FloatingPet() {
   }, [clamp])
 
   const onPointerDown = useCallback((e: React.PointerEvent) => {
+    if (e.button !== 0) {
+      return
+    }
+
     const el = containerRef.current
 
     if (!el) {
@@ -460,16 +474,22 @@ export function FloatingPet() {
 
   // While popped out, the desktop overlay window owns the mascot — hide the
   // in-window one so there aren't two.
-  if (!info.enabled || !info.spritesheetBase64 || overlayActive) {
+  if (!info.enabled || !hasPetArt(info) || overlayActive) {
     return null
   }
 
   return (
     <div
+      aria-label={copy.customizeName.replace('{name}', info.displayName ?? 'Mira')}
+      onClick={handleMiraClick}
+      onContextMenu={handleMiraContextMenu}
+      onDoubleClick={openMiraWardrobe}
+      onKeyDown={handleMiraKeyDown}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
       ref={containerRef}
+      role="button"
       style={{
         cursor: 'grab',
         left: position.x,
@@ -480,6 +500,7 @@ export function FloatingPet() {
         userSelect: 'none',
         zIndex: 60
       }}
+      tabIndex={0}
     >
       <div
         aria-hidden

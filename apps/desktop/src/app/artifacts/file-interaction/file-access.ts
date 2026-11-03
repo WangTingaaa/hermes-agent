@@ -7,6 +7,7 @@ import { downloadGatewayMediaFile, filePathFromMediaPath, isArtifactFilePath } f
 
 import type { ArtifactRecord } from '../artifact-utils'
 
+import { downloadArtifactToLocalFolder } from './local-download'
 import type { ArtifactFileOwner, ArtifactFilePreview } from './type'
 
 export async function loadArtifactFilePreview(
@@ -45,8 +46,8 @@ export async function loadArtifactFilePreview(
   return { kind: 'text', text: result.text, truncated: result.truncated }
 }
 
-export async function downloadArtifactFile(artifact: ArtifactRecord, owner: ArtifactFileOwner) {
-  if (window.hermesDesktop?.artifactFiles) {
+export async function downloadArtifactFile(artifact: ArtifactRecord, owner: ArtifactFileOwner, isWenjingHost = false) {
+  if (isWenjingHost && window.hermesDesktop?.artifactFiles) {
     await window.hermesDesktop.artifactFiles.download({
       ...owner,
       sessionId: artifact.sessionId,
@@ -55,6 +56,10 @@ export async function downloadArtifactFile(artifact: ArtifactRecord, owner: Arti
       ...(!isArtifactFilePath(artifact.value) ? { url: artifact.href } : {})
     })
 
+    return
+  }
+
+  if (await downloadArtifactToLocalFolder(artifact, owner)) {
     return
   }
 
