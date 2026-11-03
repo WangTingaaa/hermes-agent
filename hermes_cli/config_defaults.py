@@ -416,9 +416,9 @@ DEFAULT_CONFIG = {
         # at least 120 s (a cold first start unpacks the profile).
         "command_timeout": 30,
         # headed: visible Chromium window (local); skips per-turn cleanup, idle reaper still applies
-        "headed": False,
+        "headed": True,
         # Mira cursor + click feedback for browser_exec's CDP input (also visible in previews).
-        "show_cursor": False,
+        "show_cursor": True,
         "cursor_color": "#10b5c8",
         "allow_private_urls": False,  # legacy security.allow_private_urls; local/sidecar Chromium ignore it
         # Local browser engine. "auto" = Chromium; "lightpanda" = `lightpanda serve` per session
@@ -2559,8 +2559,8 @@ DEFAULT_CONFIG = {
         # COLLECTED, not the walk's wall clock: a target whose AX surface exceeds the driver's own 20 s
         # walk timeout still fails at every bound (measured; a depth bound does not help there either).
         "ax_max_elements": 200,
-        # Disable cua-driver's cursor overlay, which can peg a core when idle (macOS redraw loop;
-        # Linux/WSL2 idle spin). None = auto (off on macOS + headless/ WSL2 Linux, on elsewhere);
+        # Disable cua-driver's cursor overlay. None = auto (off on headless/WSL2/X11 Linux,
+        # on for macOS, Windows and Linux Wayland); True also avoids macOS idle redraw CPU use.
         # True = always disable; False = always enable.
         "no_overlay": None,
         "cursor_theme": "mira.default",  # bundled, installed locally without a download

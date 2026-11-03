@@ -1,5 +1,7 @@
 """Match and fill editable SVG layouts without asking the model to redraw them."""
 
+from __future__ import annotations
+
 import json
 import re
 import unicodedata

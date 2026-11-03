@@ -4,7 +4,7 @@ cua-driver's cursor overlay rendering loop can consume CPU indefinitely when
 idle (#28152, #47032), and on Linux/X11 its fullscreen always-on-top overlay
 window can wedge the desktop when a session ends uncleanly. Hermes passes
 ``--no-overlay`` to suppress it when the ``computer_use.no_overlay`` config is
-enabled (or auto-detected on macOS, headless Linux / WSL2, and Linux X11).
+enabled (or auto-detected on headless Linux / WSL2 and Linux X11).
 
 These assert the behavior contract (auto-detect, explicit override, version
 probe), not specific config snapshots.
@@ -33,14 +33,18 @@ class TestNoOverlayFlag:
 
     @pytest.mark.platforms("macos")
     def test_config_load_failure_falls_through_to_auto_detect_macos(self):
-        """Unreadable config => auto-detect (macOS defaults to overlay off).
+        """Unreadable config => auto-detect (macOS defaults to a visible cursor).
 
-        macOS-only: the auto-detect verdict IS ``sys.platform == "darwin"``,
-        so a patched platform would only re-assert the patch.
+        Exercise the host's policy without faking sys.platform.
         """
         with patch("hermes_cli.config.load_config",
                    side_effect=RuntimeError("boom")):
-            assert cua_backend._cua_no_overlay() is True
+            assert cua_backend._cua_no_overlay() is False
+
+    @pytest.mark.platforms("macos")
+    def test_macos_cursor_visible_with_unset_policy(self):
+        with patch("hermes_cli.config.load_config", return_value={}):
+            assert cua_backend._cua_no_overlay() is False
 
     @pytest.mark.platforms("linux")
     def test_config_load_failure_falls_through_to_auto_detect_linux(self, monkeypatch):

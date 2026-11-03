@@ -1,5 +1,7 @@
 """Bridge Hermes to the bundled, unchanged PPT Master in its own managed runtime."""
 
+from __future__ import annotations
+
 import argparse
 import json
 import subprocess

@@ -1,4 +1,5 @@
 import type { useSessionActions } from '@/app/session/hooks/use-session-actions'
+import { $showWorkspaceOverview } from '@/components/chat/mira-workspace/presentation'
 import { $workspaceMode, $workspaceNewSessionTarget, $workspaceOwnerKey } from '@/components/pane-shell/workspace-scope'
 
 import { frontUntouchedDraftTab } from './reuse-draft-tab'
@@ -27,6 +28,7 @@ let pendingDraftCreate: null | Promise<void> = null
  * be dead just because the sidebar's current selection has nowhere to route.
  */
 export function openNewSessionTab(openNewSessionTile: OpenNewSessionTile): void {
+  $showWorkspaceOverview.set(false)
   const workspaceOwnerKey = $workspaceOwnerKey.get()
   const workspaceNewSessionTarget = $workspaceNewSessionTarget.get()
 

@@ -1,4 +1,4 @@
-"""Opt-in visual feedback for the browser harness's actual CDP input calls."""
+"""Visual feedback for the browser harness's actual CDP input calls."""
 
 from __future__ import annotations
 
@@ -20,7 +20,7 @@ def cursor_preamble(color: str = "#10b5c8") -> str:
 
 
 def with_cursor_feedback(code: str, config: dict[str, Any]) -> str:
-    return cursor_preamble(config.get("cursor_color", "#10b5c8")) + code if config.get("show_cursor") is True else code
+    return cursor_preamble(config.get("cursor_color", "#10b5c8")) + code if config.get("show_cursor", True) is True else code
 
 
 def _pointer_event(method: str, params: dict[str, Any]) -> dict[str, Any] | None:
@@ -46,7 +46,7 @@ def install_cursor(namespace: dict[str, Any], color: str = "#10b5c8") -> None:
     if getattr(original, "_hermes_visual_cursor", False):
         namespace["cdp"] = original
         return
-    script = Path(__file__).with_suffix(".js").read_text(encoding="utf-8")
+    script = Path(__file__).with_suffix(".js").read_text(encoding="utf-8-sig")
 
     @functools.wraps(original)
     def with_cursor(method, session_id=None, *args, **params):

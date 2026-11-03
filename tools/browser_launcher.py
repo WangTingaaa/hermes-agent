@@ -212,8 +212,8 @@ def _has_display(env: dict) -> bool:
 
 
 def _resolve_headed(headed: Optional[bool], env: dict) -> bool:
-    """Headless unless ``browser.headed``; a display-less Linux host stays headless (a headed launch
-    would die there). Windows obeys the same rule: headless unless the user opted in (#64867)."""
+    """Visible unless ``browser.headed`` is disabled; a display-less Linux host stays headless
+    because a headed launch would die there."""
     if headed is None:
         from tools.browser_session_cloud import is_headed_mode
         headed = is_headed_mode()

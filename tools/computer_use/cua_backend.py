@@ -43,16 +43,15 @@ def _computer_use_cfg() -> dict[str, Any]:
     return {}
 
 def _cua_no_overlay() -> bool:
-    """Pass ``--no-overlay``? ``computer_use.no_overlay`` overrides; else off on macOS (cursor-overlay redraw
-    loop can peg a core after a session), headless Linux / WSL2 / containers, and Linux X11 (the overlay is a
-    fullscreen always-on-top all-workspaces window with no compositor-owned lifecycle, so an unclean session
-    end can leave it wedged over every app); on for Windows and Linux Wayland (compositor owns the surface).
+    """Pass ``--no-overlay``? ``computer_use.no_overlay`` overrides; else off on headless Linux / WSL2 /
+    containers and Linux X11 (a fullscreen always-on-top overlay with no compositor-owned lifecycle, so an unclean session
+    end can leave it wedged over every app); on for macOS, Windows and Linux Wayland.
 
     Explicit ``True`` / ``False`` overrides auto-detection. See #28152, #47032.
     """
     val = _computer_use_cfg().get("no_overlay")
     if val is not None or sys.platform != "linux":
-        return bool(val) if val is not None else sys.platform == "darwin"
+        return bool(val) if val is not None else False
     wsl = is_wsl()
     return wsl or not os.environ.get("DISPLAY") or (
         # Linux/X11: the cursor overlay is a fullscreen, always-on-top, all-workspaces X11 window
@@ -219,8 +218,6 @@ def _linux_session_locked() -> Optional[bool]:
     """Is the graphical session locked? (Linux; best-effort.) A locked KDE/GNOME session freezes renderers and
     half-disables the AX tree, so discovery legitimately returns nothing — which otherwise reads as a driver bug.
     True/False when loginctl answers, None when unavailable (non-Linux, no systemd-logind, probe failure)."""
-    # Auto-detect: macOS overlay can peg a core indefinitely after a computer_use session (#47032). Prefer
-    # off until the driver teardown is solid; set computer_use.no_overlay: false to keep the cursor.
     if sys.platform != "linux":
         return None
     try:

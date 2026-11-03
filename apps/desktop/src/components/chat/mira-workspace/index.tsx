@@ -1,3 +1,5 @@
+import { useStore } from '@nanostores/react'
+
 import { Codicon } from '@/components/ui/codicon'
 import { useI18n } from '@/i18n'
 import { BRAND_AGENT_NAME } from '@/lib/branding'
@@ -7,12 +9,14 @@ import { MiraCapabilityExplorer } from './capability-explorer'
 import { useWorkspaceComposerHost } from './composer-host'
 import { MiraWorkspaceDetails } from './details'
 import { MiraIdeaVisual } from './idea-visual'
+import { $showWorkspaceOverview } from './presentation'
 import type { MiraWorkspaceProps } from './type'
 
 export function MiraWorkspace({ body }: MiraWorkspaceProps) {
   const { t } = useI18n()
   const copy = t.composer.workspace
   const composerRef = useWorkspaceComposerHost()
+  const showOverview = useStore($showWorkspaceOverview)
 
   function renderWelcome() {
     return (
@@ -57,12 +61,16 @@ export function MiraWorkspace({ body }: MiraWorkspaceProps) {
     <div className="mira-workspace" data-slot="aui_intro">
       {renderWelcome()}
       {renderComposer()}
-      <div className="mira-workspace__grid">
-        <MiraCapabilityExplorer />
-        <MiraWorkspaceDetails />
-      </div>
-      <MiraWorkspaceCapabilities />
-      <p className="mira-workspace__footer">{copy.footer}</p>
+      {showOverview && (
+        <>
+          <div className="mira-workspace__grid">
+            <MiraCapabilityExplorer />
+            <MiraWorkspaceDetails />
+          </div>
+          <MiraWorkspaceCapabilities />
+          <p className="mira-workspace__footer">{copy.footer}</p>
+        </>
+      )}
     </div>
   )
 }

@@ -245,13 +245,14 @@ concurrent runs and subagents get distinct cursors. The MCP transport owns the
 private lifecycle session inside the runtime; the public name does not.
 
 The overlay cursor is cosmetic — captures, clicks, and typing all work
-without it. Hermes disables it automatically where it is a known failure
-mode: macOS (idle CPU burn), headless Linux / WSL2 / containers, and
+without it. It is enabled by default on macOS and Windows. Hermes disables it automatically on
+headless Linux / WSL2 / containers and
 **Linux X11 desktops** (the overlay is a fullscreen always-on-top window
 that can get stuck over every workspace after an unclean session end,
-wedging desktop input). Linux Wayland and Windows keep the overlay. Set
+wedging desktop input). Linux Wayland keeps the overlay. Set
 `computer_use.no_overlay: false` in `config.yaml` to force the cursor on
 (or `true` to force it off) on any platform.
+On macOS, `true` also avoids the driver's known idle cursor redraw CPU use.
 
 `computer_use.cursor_theme: mira.default` selects the bundled Mira teal theme
 (`#10b5c8`), installed from local assets without a download.

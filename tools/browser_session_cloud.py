@@ -138,7 +138,7 @@ def get_browser_engine() -> str:
 
 def is_headed_mode() -> bool:
     """``browser.headed``: launch a visible window (Linux: only when a display exists)."""
-    return _memo("headed", lambda: browser_cfg("headed", False, _truthy))
+    return _memo("headed", lambda: browser_cfg("headed", True, _truthy))
 
 
 def auto_local_for_private_urls() -> bool:

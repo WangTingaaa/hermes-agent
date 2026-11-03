@@ -9,8 +9,16 @@ it means the current agent reviews the preview before export.
 
 1. Run `doctor` once; use its independent interpreter and absolute upstream
    paths. Read selected references once in a batch. Do not rediscover paths,
-   probe several Python environments or repeatedly inspect CLI help.
-2. Choose layouts by page job and selected visual style. `svg-catalog` returns
+   probe several Python environments or repeatedly inspect CLI help. The bridge
+   bootstraps from the terminal's explicit profile and delegates to the installed
+   interpreter. A missing runtime is a setup error, not permission to search the
+   filesystem for another checkout.
+2. Read the selected route's mandatory reference/capability batch once. Freeze
+   one concise roster: each page's source-backed takeaway, layout/carrier and
+   notes. A template's metric slot without source measurements is qualitative
+   and visibly marked `未量化 / 待核实`; this is a resolved source gap, not a reason
+   to invent numbers or revisit the planning decision on every page.
+   Choose layouts by page job and selected visual style. `svg-catalog` returns
    all names, scenarios and field schemas in one call; `svg-search` handles a
    narrow query. Common layouts are editable page sources, not screenshots.
 3. If the common layouts fit the requested theme and structure, author one
@@ -35,8 +43,20 @@ must cover every slide. The helper retains the early gate after page 5 for a
 new roster of 7+ slides, then runs the final gate and renders contact sheets.
 It replaces a separate `svg-render-batch` pass; do not run both on the same input.
 Do not apply common geometry over a binding Layout/Deck/Master or an incompatible
-canvas/style. For custom pages, author the SVGs directly and run
-`quick-prepare "<project>"` without `--deck` after the route's early checkpoint.
+canvas/style. For custom pages, write one project-local authoring script that
+reuses the deck's geometry, typography and icon setup. Write pages 1–5 in one
+batch, run the documented early checker once when required, then write the
+remaining pages in one batch. This remains main-agent authoring, with each page
+retaining its own content and topology decisions. Do not check before page 5
+merely to test a pattern. Finally run `quick-prepare "<project>"` without `--deck`.
+
+Use the official checker's JSON report and `validation/quick-*.log` to repair
+concrete errors together. Before an actual checker/export failure, do not inspect
+checker, exporter, project-manager or native-data implementation source to guess
+their rules. If a failure genuinely requires source-level diagnosis, read only
+the reported subsystem once and return to authoring; additional inspection
+requires new error evidence. Keep required contract documentation and capability
+discovery; do not replace them with code tours.
 
 4. Review the returned carrier receipts against the chosen page jobs and inspect
    each contact sheet once. Sheets contain up to 12 pages; use focused closeups

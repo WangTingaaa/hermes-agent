@@ -16,6 +16,7 @@ import { useLocation, useNavigate } from 'react-router'
 import { formatRefValue } from '@/components/assistant-ui/directive-text'
 import { BackendCompatibilityOverlay } from '@/components/backend-compatibility-overlay'
 import { StartupOverlay } from '@/components/boot-failure-overlay'
+import { $showWorkspaceOverview } from '@/components/chat/mira-workspace/presentation'
 import { ConfirmHost } from '@/components/confirm-host'
 import { DesktopInstallOverlay } from '@/components/desktop-install-overlay'
 import { ExternalOpenFailedDialog } from '@/components/external-open-failed-dialog'
@@ -602,6 +603,7 @@ export function ContribWiring({ children }: { children: ReactNode }) {
   // prefills the MAIN composer right after, so it has to own that surface.
   const startSessionInWorkspace = useCallback(
     (path: null | string, options?: { openTab?: boolean }) => {
+      $showWorkspaceOverview.set(false)
       setWorkspaceScope('sessions')
 
       if (options?.openTab && mainChatOccupied(activeSessionIdRef.current, $selectedStoredSessionId.get())) {

@@ -2,7 +2,16 @@
 
 import pytest
 
-from tools.browser_cursor import install_cursor
+from tools.browser_cursor import install_cursor, with_cursor_feedback
+
+
+@pytest.mark.parametrize("enabled", [None, True, False])
+def test_cursor_defaults_on_and_respects_opt_out(monkeypatch, enabled):
+    monkeypatch.setattr("tools.browser_cursor.cursor_preamble", lambda color: "cursor installed\n")
+    config = {} if enabled is None else {"show_cursor": enabled}
+    code = "click_at_xy(15, 20)"
+    expected = code if enabled is False else "cursor installed\n" + code
+    assert with_cursor_feedback(code, config) == expected
 
 
 def test_cursor_preserves_coordinates_target_and_private_input(monkeypatch):

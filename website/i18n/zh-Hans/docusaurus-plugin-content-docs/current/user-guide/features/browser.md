@@ -7,8 +7,8 @@ sidebar_position: 5
 
 # 浏览器自动化
 
-设置 `browser.show_cursor: true` 后，`browser_exec` 的鼠标和键盘输入会显示带 Mira 操作提示的虚拟指针与点击波纹。
-本地浏览器还需设置 `browser.headed: true`，让操作窗口可见。指针不拦截页面点击，停止操作 4.5 秒后自动隐藏。
+`browser_exec` 默认显示带 Mira 操作提示的虚拟指针与点击波纹，本地浏览器在有桌面环境时默认显示窗口。
+设置 `browser.show_cursor: false` 可关闭指针，`browser.headed: false` 可启用无头模式。指针不拦截页面点击，停止操作 4.5 秒后自动隐藏。
 桌面应用的虚拟指针由独立设置 `computer_use.no_overlay` 控制。
 `browser.cursor_color` 设置指针主题色，默认使用 Mira 青色 `#10b5c8`。
 
@@ -23,7 +23,7 @@ sidebar_position: 5
 
 浏览器来源是另一项独立选择：
 
-- **本地 Chromium（默认）**——Hermes 启动自己打包的 Chromium，无头模式，每个会话一个浏览器。无需 API 密钥，无需配置。
+- **本地 Chromium（默认）**——Hermes 启动自己打包的 Chromium，有桌面环境时显示窗口，每个会话一个浏览器。无需 API 密钥，无需配置。
 - **云端浏览器**——[Nous 订阅](tool-gateway.md)、[Browserbase](https://browserbase.com)、[Browser Use](https://browser-use.com) 云端、[Firecrawl](https://firecrawl.dev)，或浏览器提供商插件。
 - **[Lightpanda](https://lightpanda.io)**——轻量级无头引擎，适合在小型机器上以文本为主的浏览。
 - **您自己的浏览器**——用 `/browser connect` 连接正在运行的 Chrome、Brave、Chromium 或 Edge。
@@ -76,7 +76,7 @@ print(js("[...document.querySelectorAll('article h2 a')].slice(0, 10).map(a => a
 在未配置云端提供商、`/browser connect` 端点或真实 profile 开关时，Hermes 会自己为会话启动一个 Chromium，并让 `browser_exec` 指向它。您安装的 Chrome 永远不会被触碰——无需开启 `chrome://inspect` 开关，也不会弹出"允许远程调试？"对话框——在完全没有桌面浏览器的无头服务器上也能工作。
 
 - **每个会话一个浏览器**，默认使用全新的一次性 profile：Agent 起始时未登录任何网站，会话结束后不留下任何内容。
-- **默认无头。** 设置 `browser.headed: true` 可显示窗口（见[下文](#headed-mode-visible-browser-window)）。
+- **默认显示窗口。** 设置 `browser.headed: false` 可启用无头模式；Linux 无显示环境时自动使用无头模式（见[下文](#headed-mode-visible-browser-window)）。
 - **自动清理。** 浏览器空闲 `browser.inactivity_timeout` 秒（默认 120）后、Hermes 退出时，以及进程崩溃后的孤儿清理中都会被关闭。
 
 **使用哪个 Chromium。** Hermes 按顺序选择第一个存在的：
@@ -101,7 +101,7 @@ browser:
   executable_path: ""     # Chromium binary to launch instead of the packaged one
   user_data_dir: ""       # persistent profile directory; "" = fresh profile per session
   chromium_args: []       # extra Chromium command-line flags, e.g. ["--lang=de-DE"]
-  headed: false           # true = visible window
+  headed: true            # false = 无头模式；Linux 无显示环境时自动使用无头模式
   command_timeout: 30     # Chromium launch timeout floor (seconds)
   inactivity_timeout: 120 # close an idle browser after N seconds
 ```
@@ -112,7 +112,7 @@ browser:
 
 ```yaml
 browser:
-  headed: true  # default: false
+  headed: true  # 默认开启；设为 false 使用无头模式
 ```
 
 有头模式做两件事：
@@ -226,7 +226,7 @@ browser:
 
 开启后，Hermes 会把您默认浏览器的**当前活跃** profile（`Local State → profile.last_used`，包括 Cookie、已保存登录和偏好设置）复制到 `~/.hermes/browser-profile/<browser>/` 下的托管快照中，然后用您**真实的浏览器程序**在该快照上启动并连接。您正在使用的 profile **从不被直接打开**：快照是独立目录，因此不会与运行中的浏览器争抢 profile 锁，也绕开了 Chrome 136+ 对默认 profile 目录远程调试的封锁。每次启动新会话时，认证文件都会从真实 profile 重新同步。只复制活跃 profile。
 
-快照浏览器以**无头**方式在后台运行，不抢占焦点；设置 `browser.headed: true` 可显示窗口。在无显示器的主机上始终为无头模式。如需固定快照来源，可设置 `browser.real_profile_pin: "Profile 2"`（浏览器 user-data 目录下的 profile 目录名）；指向不存在目录的固定值不会回退到其他 profile。关闭开关后，Hermes 会在下一次使用浏览器时删除快照存储（`~/.hermes/browser-profile/`）。
+快照浏览器默认显示窗口；设置 `browser.headed: false` 可在后台以**无头**方式运行。在无显示环境的 Linux 主机上始终为无头模式。如需固定快照来源，可设置 `browser.real_profile_pin: "Profile 2"`（浏览器 user-data 目录下的 profile 目录名）；指向不存在目录的固定值不会回退到其他 profile。关闭开关后，Hermes 会在下一次使用浏览器时删除快照存储（`~/.hermes/browser-profile/`）。
 
 如果无法复制您的 profile（例如 Windows 上运行中的浏览器以独占锁持有 Cookie 数据库、默认浏览器不是受支持的 Chromium，或 Cookie 数据库损坏），Agent 会获得一个**不带登录状态**的全新浏览器，且第一个浏览器结果会说明原因（`real_profile_unavailable`）。设置 `browser.real_profile_autoclose: true` 后，Hermes 会在需要时**询问**是否替您关闭浏览器，获得批准后才运行 `hermes browser close-profile`。
 

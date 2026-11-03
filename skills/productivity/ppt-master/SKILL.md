@@ -1,7 +1,7 @@
 ---
 name: ppt-master
 description: Generate editable PPTX decks with a local design workflow.
-version: 1.2.0
+version: 1.2.1
 author: Tina; Hermes Agent
 license: MIT
 platforms: [linux, macos, windows]
@@ -48,7 +48,11 @@ python "<BRIDGE_DIR>/scripts/ppt_master.py" run project_manager.py init <name> -
 
 First run `doctor` to resolve the managed runtime, then use `read_file` on its
 returned `entrypoint`, retaining its absolute directory as upstream `SKILL_DIR`.
-Doctor checks attribution, dependencies and the independent interpreter.
+Doctor checks attribution, dependencies and the independent interpreter. The entry
+script can bootstrap under Python 3.9+ without Hermes imports: the terminal passes
+the owning profile through `HERMES_HOME`, and every upstream script then runs with
+the recorded independent interpreter. Keep that profile binding; do not search
+for developer checkouts or try other Python installations.
 Follow its absolute `routing` path and the selected runtime. The mandatory
 attribution check has already run for this invocation; never alter or bypass it.
 
@@ -135,8 +139,20 @@ Markdown or a screenshot for the original file. The user's explicit output
 mapping and requested additions are the authorized scope; ask only for missing
 content decisions that materially affect the result.
 
-Read only the selected route and its triggered references. Batch independent
-page work; return compact diagnostic summaries. After repairs, recheck modified
+Read only the selected route and its triggered references, once in a batch.
+For Quick, apply `references/performance.md` before planning: obtain the SVG
+catalog once, select compatible layouts or custom authoring, freeze a concise
+all-page roster, and author pages 1–5 together before the required early gate.
+Then author the remaining pages together. Keep the requested style and all
+mandatory capability/reference decisions; avoid repeating a settled choice
+without new evidence.
+
+Do not read implementation source to anticipate hypothetical checker errors.
+Use the documented commands and their diagnostic reports. Only an actual failure
+unexplained by the report and selected references justifies reading its specific
+implementation; keep that inspection local to the reported error. Never keep
+reading the checker between pages to pre-validate fonts, icons or table choices.
+Return compact diagnostic summaries. After repairs, recheck modified
 pages and the final deck once, then deliver when its gates pass.
 
 ## Pitfalls

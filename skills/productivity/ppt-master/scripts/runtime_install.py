@@ -1,7 +1,10 @@
 """Install the bundled PPT Master into a profile-owned, independent PM environment."""
 
+from __future__ import annotations
+
 import hashlib
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -12,7 +15,17 @@ from pathlib import Path
 
 
 def state_path() -> Path:
-    from hermes_constants import get_hermes_home
+    try:
+        from hermes_constants import get_hermes_home
+    except ModuleNotFoundError as error:
+        if error.name != "hermes_constants":
+            raise
+        # Terminal children deliberately strip Hermes imports. Their owning
+        # profile is passed explicitly, so never guess another profile's home.
+        home = os.environ.get("HERMES_HOME", "").strip()
+        if not home:
+            raise ValueError("Run PPT Master from Hermes or pass the owning profile's HERMES_HOME") from None
+        return Path(os.path.expandvars(home)).expanduser() / "runtimes" / "ppt-master" / "active.json"
     return get_hermes_home() / "runtimes" / "ppt-master" / "active.json"
 
 

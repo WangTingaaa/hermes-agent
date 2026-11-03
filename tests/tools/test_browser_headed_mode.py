@@ -32,6 +32,14 @@ def _clean_headed_cache(monkeypatch, tmp_path):
 
 class TestIsHeadedMode:
 
+    @pytest.mark.parametrize("enabled", [None, False])
+    def test_visible_window_default_and_explicit_opt_out(self, tmp_path, enabled):
+        home = tmp_path / ".hermes"
+        home.mkdir(exist_ok=True)
+        if enabled is False:
+            (home / "config.yaml").write_text("browser:\n  headed: false\n", encoding="utf-8")
+        assert bs_cloud.is_headed_mode() is (enabled is not False)
+
     def test_config_true(self):
         cfg = {"browser": {"headed": True}}
         with patch("hermes_cli.config_effective.load_user_config_effective", return_value=cfg):

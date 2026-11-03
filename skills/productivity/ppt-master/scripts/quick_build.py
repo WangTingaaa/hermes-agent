@@ -1,5 +1,7 @@
 """Batch SVG preparation and verified export for ordinary Quick Generate projects."""
 
+from __future__ import annotations
+
 import json
 import re
 import subprocess
@@ -15,7 +17,7 @@ def _run(skill: Path, python: Path, project: Path, script: str, args: list[str],
          stage: str, timings: dict) -> None:
     started = time.perf_counter()
     result = subprocess.run([str(python), str(skill / "scripts" / script), *args],
-                            capture_output=True, text=True, timeout=3600)
+                            capture_output=True, text=True, check=False, timeout=3600)
     timings[stage] = round(time.perf_counter() - started, 3)
     log = project / "validation" / f"quick-{stage}.log"
     log.write_text(result.stdout + "\n" + result.stderr, encoding="utf-8")

@@ -7,9 +7,9 @@ sidebar_position: 5
 
 # Browser Automation
 
-To watch browser actions with a Mira virtual pointer and click rings, set
-`browser.show_cursor: true`. For a local browser, also set `browser.headed: true`
-so its window is visible. The pointer follows `browser_exec` CDP mouse and keyboard
+Browser actions show a Mira virtual pointer and click rings by default, and local
+browsers open a visible window when a desktop is available. Set `browser.show_cursor: false`
+to hide the pointer or `browser.headed: false` for headless operation. The pointer follows `browser_exec` CDP mouse and keyboard
 input, ignores pointer events, and disappears after 4.5 seconds of inactivity.
 `browser.cursor_color` sets its accent (default Mira teal, `#10b5c8`).
 Desktop-app control uses the separate `computer_use.no_overlay` setting.
@@ -29,7 +29,7 @@ browser over the Chrome DevTools Protocol (CDP) — with three companion tools
 
 Where the browser comes from is a separate choice:
 
-- **Local Chromium (default)** — Hermes launches its own packaged Chromium, headless, one browser per session. No API key, no setup.
+- **Local Chromium (default)** — Hermes launches its own packaged Chromium with a visible window when a desktop is available, one browser per session. No API key, no setup.
 - **Cloud browsers** — the [Nous subscription](tool-gateway.md), [Browserbase](https://browserbase.com), [Browser Use](https://browser-use.com) cloud, [Firecrawl](https://firecrawl.dev), or a browser-provider plugin.
 - **[Lightpanda](https://lightpanda.io)** — a lightweight headless engine for text-first browsing on small machines.
 - **Your own browser** — attach to a running Chrome, Brave, Chromium or Edge with `/browser connect`.
@@ -110,7 +110,7 @@ and it works on headless servers with no desktop browser at all.
 
 - **One browser per session**, with a fresh, throwaway profile by default: the
   agent starts logged into nothing, and nothing persists after the session.
-- **Headless by default.** Set `browser.headed: true` for a visible window (see
+- **Visible by default.** Set `browser.headed: false` for headless operation (see
   [below](#headed-mode-visible-browser-window)).
 - **Automatic cleanup.** The browser is closed after `browser.inactivity_timeout`
   seconds idle (default 120), when Hermes exits, and by an orphan sweep if a
@@ -154,7 +154,7 @@ browser:
   executable_path: ""     # Chromium binary to launch instead of the packaged one
   user_data_dir: ""       # persistent profile directory; "" = fresh profile per session
   chromium_args: []       # extra Chromium command-line flags, e.g. ["--lang=de-DE"]
-  headed: false           # true = visible window
+  headed: true            # false = headless; Linux without a display stays headless
   command_timeout: 30     # Chromium launch timeout floor (seconds)
   inactivity_timeout: 120 # close an idle browser after N seconds
 ```
@@ -167,7 +167,7 @@ browsing.
 
 ```yaml
 browser:
-  headed: true  # default: false
+  headed: true  # default; use false for headless operation
 ```
 
 Headed mode does two things:
@@ -408,7 +408,7 @@ up your profile.
 ### Scheduled and unattended runs
 
 A real-profile session lets a `cronjob` drive a site you're already signed into.
-The snapshot runs headless by default, and the auth files (`Cookies`,
+Set `browser.headed: false` to run the snapshot headless. The auth files (`Cookies`,
 `Login Data`, …) are re-synced from your real profile on every fresh session —
 an already-open session is reused as-is, so the sync happens when a new one is
 launched. Without saved vault credentials, an expired session on that site
