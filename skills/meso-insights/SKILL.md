@@ -1,15 +1,15 @@
 ---
 name: meso-insights
-description: "检索和管理云端文件夹、查询本地连接、导入文档并管理知识卡片."
+description: "创建和管理文镜知识库、云端文件夹、文档及知识卡片."
 ---
 
-# mesoInsights 文档、文件夹与知识卡片 Skill
+# mesoInsights 知识库、文档与知识卡片 Skill
 
 对于已由 mesoInsights 管理的文档和知识卡片，以 mesoInsights MCP 工具返回的信息为准。查询云端文档库时不要用本地文件搜索替代。
 
 ## When to Use
 
-用户要求搜索或管理个人云端文件夹、查看链接过的本地文件夹、导入或读取文档，或管理文件及研究笔记的知识卡片时使用。
+用户要求创建或查询文镜知识库、添加知识库文件、管理个人云端文件夹、查看本地连接、导入或读取文档，或管理知识卡片时使用。
 
 ## Prerequisites
 
@@ -17,10 +17,16 @@ description: "检索和管理云端文件夹、查询本地连接、导入文档
 
 ## How to Run
 
-查找文件夹时优先按名称搜索，再按路径定位；查看本地连接时查询位置记录。处理知识卡片时，按内容是否已有、归属是文件还是研究笔记选择工具。
+先按产品模块选择工具：文镜“知识库”使用 `*_knowledge_base*` 工具；“云端文件夹”使用 `*_user_folder*` 工具；“Wiki 空间”使用 `*_wiki_space*` 工具。它们是不同对象，不能因为都容纳文件而互相替代。查找文件夹时优先按名称搜索，再按路径定位。
+
+工具未出现在当前会话时，先重连 MCP 并在新会话确认工具可用。不能据此声称 MCP 没有知识库功能，也不要把创建知识库降级为创建云端目录，或自行编写携带令牌的直连脚本绕过工具发现。
 
 ## Quick Reference
 
+- 查询知识库列表、详情：`mcp__mesoInsights__get_my_knowledge_bases`、`mcp__mesoInsights__get_knowledge_base_detail`。
+- 创建知识库：`mcp__mesoInsights__create_knowledge_base`，参数 `data={"name":"名称"}`，默认个人私有。
+- 获取、搜索和读取知识库条目：`mcp__mesoInsights__get_knowledge_base_items`、`mcp__mesoInsights__search_knowledge_base_items`、`mcp__mesoInsights__get_knowledge_base_item_detail`。
+- 将个人云端文件添加到知识库：`mcp__mesoInsights__write_knowledge_base_items`，传知识库 `kb_id` 和文件 `sourceId`。
 - 搜索个人云端文件夹：`mcp__mesoInsights__search_user_folders`，按名称、父目录和类型查询。
 - 查看目录详情、全树、路径：`mcp__mesoInsights__get_user_folder_detail`、`mcp__mesoInsights__get_user_folders_tree`、`mcp__mesoInsights__get_user_folder_path`。
 - 查看目录下全部子孙文件或递归文件数：`mcp__mesoInsights__get_user_folder_descendant_files`、`mcp__mesoInsights__get_user_folder_file_count`。
@@ -38,6 +44,14 @@ description: "检索和管理云端文件夹、查询本地连接、导入文档
 - 删除知识卡片（进入 AI 阅读回收站）：`mcp__mesoInsights__delete_knowledge_card`。
 
 ## Procedure
+
+### 知识库创建与文件添加
+
+1. 用户说“我的知识库有哪些”时调用 `get_my_knowledge_bases()`，读取 `result.data` 数组；不能用个人云端目录树冒充知识库列表。重名时按 ID、scope 和详情定位。
+2. 用户要求“新建知识库”时调用 `create_knowledge_base(data={"name":"用户指定名称"})`。未提供名称时只询问名称；默认 `scope="PERSONAL"`、`publishType="PRIVATE"`，不发布。`result.data` 是新知识库数字 ID，不能当作云端文件夹 ID。
+3. 用户还要求把本地文件放入知识库时，先检查目标知识库及现有条目；用 `import_file(file_path=...)` 上传文件到个人云端，取得返回的 `fileId`；再调用 `write_knowledge_base_items(kb_id=知识库ID, items=[{"sourceId":文件ID,"visibility":"PUBLISHER"}])`。已经上传的文件复用其 ID；上传只是中间步骤，不能在此宣称已添加到知识库。不要额外创建同名云端文件夹替代知识库。
+4. 添加结果检查 `requestedCount`、`addedCount`、`skippedCount` 和 `outcome`（`ADDED` / `PARTIAL` / `ALREADY_EXISTS`）；通过 `get_knowledge_base_items(kb_id=...)` 回读关联。条目 `id` 与来源文件 `sourceId` 是不同 ID；详情工具使用条目 ID。
+5. 创建或添加超时后先回读列表确认，避免重复创建或重传文件。只有知识库详情和条目关联核对后，才报告创建及文件添加成功。已有同名云端目录不能证明知识库存在，也不能擅自删除或迁移该目录。
 
 ### 文件夹搜索与管理
 
@@ -81,6 +95,8 @@ description: "检索和管理云端文件夹、查询本地连接、导入文档
 
 ## 示例
 
+- “我的知识库有哪些” → `get_my_knowledge_bases()`，展示真实知识库。
+- “新建个人知识库：测试专用知识库，把桌面的你好.txt 放进去” → 创建个人私有知识库，上传文件，再添加知识库条目并回读；不能只创建云端文件夹。
 - “找一下项目资料文件夹” → 跨目录搜索名称，返回全部匹配；重名时查询完整路径定位。
 - “我链接过哪些本地文件夹” → `parent_id=null`、`is_folder=1` 分页查询全部连接，分别说明是否同步。
 - “把项目资料移到归档目录” → 分别搜索源和目标，确认路径后按云端目录 ID 移动。
