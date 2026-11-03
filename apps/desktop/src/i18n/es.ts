@@ -3720,6 +3720,8 @@ export const esOverrides = {
     markAllRead: 'Marcar todo como leído'
   },
   composer: {
+    uploadCloudFile: 'Subir archivo de la nube',
+    referenceCloudFile: 'Referenciar archivo de la nube',
     workspace: miraWorkspaceCopy['es'],
     introHeadline: 'Tu espacio de trabajo, con una sola petición.',
     introBody:

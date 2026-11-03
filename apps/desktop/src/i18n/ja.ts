@@ -2231,6 +2231,8 @@ export const jaOverrides = {
   },
 
   composer: {
+    uploadCloudFile: 'クラウドファイルをアップロード',
+    referenceCloudFile: 'クラウドファイルを参照',
     workspace: miraWorkspaceCopy['ja'],
     introHeadline: 'ひとことから、作業を始めましょう。',
     introBody:

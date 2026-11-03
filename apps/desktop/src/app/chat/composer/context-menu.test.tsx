@@ -18,30 +18,30 @@ afterEach(() => cleanup())
 
 describe('composer Add context menu', () => {
   it('offers cloud reference and local-upload flows with the other attachment sources', async () => {
-    const onPickCloudFavorite = vi.fn()
-    const onUploadCloudFavorite = vi.fn()
+    const onPickCloudFile = vi.fn()
+    const onUploadCloudFile = vi.fn()
 
     render(
       <I18nProvider configClient={null} initialLocale="en">
         <ContextMenu
           onInsertText={vi.fn()}
           onOpenUrlDialog={vi.fn()}
-          onPickCloudFavorite={onPickCloudFavorite}
-          onUploadCloudFavorite={onUploadCloudFavorite}
+          onPickCloudFile={onPickCloudFile}
+          onUploadCloudFile={onUploadCloudFile}
           state={state}
         />
       </I18nProvider>
     )
 
     fireEvent.pointerDown(screen.getByLabelText('Add context'), { button: 0, ctrlKey: false })
-    fireEvent.click(await screen.findByText('引用收藏文件'))
+    fireEvent.click(await screen.findByText('Reference cloud file'))
 
-    expect(onPickCloudFavorite).toHaveBeenCalledOnce()
+    expect(onPickCloudFile).toHaveBeenCalledOnce()
 
     fireEvent.pointerDown(screen.getByLabelText('Add context'), { button: 0, ctrlKey: false })
-    fireEvent.click(await screen.findByText('上传收藏文件'))
+    fireEvent.click(await screen.findByText('Upload cloud file'))
 
-    expect(onUploadCloudFavorite).toHaveBeenCalledOnce()
+    expect(onUploadCloudFile).toHaveBeenCalledOnce()
   })
 
   it('opens host file generation from the row below prompt snippets', async () => {
@@ -60,6 +60,23 @@ describe('composer Add context menu', () => {
     expect(onGenerateFile).toHaveBeenCalledOnce()
   })
 
+  it('uses the requested Chinese cloud file labels', async () => {
+    render(
+      <I18nProvider configClient={null} initialLocale="zh">
+        <ContextMenu
+          onInsertText={vi.fn()}
+          onOpenUrlDialog={vi.fn()}
+          onPickCloudFile={vi.fn()}
+          onUploadCloudFile={vi.fn()}
+          state={state}
+        />
+      </I18nProvider>
+    )
+    fireEvent.pointerDown(screen.getByLabelText('Add context'), { button: 0, ctrlKey: false })
+    expect(await screen.findByText('上传云端文件')).toBeTruthy()
+    expect(screen.getByText('引用云端文件')).toBeTruthy()
+  })
+
   it('hides the host-only option when the cloud bridge is unavailable', () => {
     render(
       <I18nProvider configClient={null} initialLocale="en">
@@ -69,8 +86,8 @@ describe('composer Add context menu', () => {
 
     fireEvent.pointerDown(screen.getByLabelText('Add context'), { button: 0, ctrlKey: false })
 
-    expect(screen.queryByText('引用收藏文件')).toBeNull()
-    expect(screen.queryByText('上传收藏文件')).toBeNull()
+    expect(screen.queryByText('Reference cloud file')).toBeNull()
+    expect(screen.queryByText('Upload cloud file')).toBeNull()
     expect(screen.queryByText('Generate file…')).toBeNull()
   })
 })

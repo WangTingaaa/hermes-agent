@@ -38,7 +38,7 @@ import { useTheme } from '@/themes'
 import { AttachmentList } from './attachments'
 import { deriveBusySubmitState } from './busy-submit-state'
 import { ComposerDockGlow, QueuedEditBanner } from './chat-bar-parts'
-import { createCloudFavoritePicker, createCloudFavoriteUploader } from './cloud-files'
+import { useCloudFiles } from './cloud-files'
 import {
   acceptsTriggerCompletion,
   COMPOSER_FADE_BACKGROUND,
@@ -352,8 +352,7 @@ export function ChatBar({
 
   const handleGenerateFile = useFileGeneration({ draftRef, editorRef, insertText, scopeRef: activeQueueSessionKeyRef })
 
-  const pickCloudFavorite = createCloudFavoritePicker(insertText)
-  const uploadCloudFavorite = createCloudFavoriteUploader(onAttachDroppedItems)
+  const { pickCloudFile, uploadCloudFile } = useCloudFiles({ insertText, onAttachDroppedItems, scopeRef: activeQueueSessionKeyRef })
 
   // The queue engine — queued turns, in-place editing, the shared drain lock,
   // and bounded auto-drain. Consumes the draft API and writes `queueEditRef`.
@@ -1118,11 +1117,11 @@ export function ChatBar({
       onInsertText={insertText}
       onOpenUrlDialog={openUrlDialog}
       onPasteClipboardImage={onPasteClipboardImage}
-      onPickCloudFavorite={pickCloudFavorite}
+      onPickCloudFile={pickCloudFile}
       onPickFiles={onPickFiles}
       onPickFolders={onPickFolders}
       onPickImages={onPickImages}
-      onUploadCloudFavorite={uploadCloudFavorite}
+      onUploadCloudFile={uploadCloudFile}
       state={state}
     />
   )

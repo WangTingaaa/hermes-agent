@@ -234,6 +234,8 @@ export const zhHantOverrides = {
   artifactPreview: zhHantArtifacts.artifactPreview,
   sidebar: zhHantChrome.sidebar,
   composer: {
+    uploadCloudFile: '上傳雲端檔案',
+    referenceCloudFile: '引用雲端檔案',
     workspace: miraWorkspaceCopy['zh-hant'],
     introHeadline: '你的工作空間，一句話開啟。',
     introBody: '搜尋專案、編輯檔案、執行測試、建立 PR。告訴我目標，具體操作交給我。',

@@ -145,6 +145,8 @@ export const arOverrides = {
   artifactPreview: arArtifacts.artifactPreview,
   sidebar: arChrome.sidebar,
   composer: {
+    uploadCloudFile: 'تحميل ملف سحابي',
+    referenceCloudFile: 'الإشارة إلى ملف سحابي',
     workspace: miraWorkspaceCopy['ar'],
     introHeadline: 'مساحة عملك تبدأ بطلب واحد.',
     introBody:

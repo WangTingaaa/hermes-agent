@@ -2410,6 +2410,8 @@ export const ruOverrides = {
     markAllRead: 'Отметить все как прочитанные'
   },
   composer: {
+    uploadCloudFile: 'Загрузить файл из облака',
+    referenceCloudFile: 'Сослаться на файл из облака',
     workspace: miraWorkspaceCopy['ru'],
     introHeadline: 'Ваше рабочее пространство. Достаточно одного запроса.',
     introBody:

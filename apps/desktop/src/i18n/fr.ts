@@ -3739,6 +3739,8 @@ export const frOverrides = {
     markAllRead: 'Tout marquer comme lu'
   },
   composer: {
+    uploadCloudFile: 'Importer un fichier cloud',
+    referenceCloudFile: 'Référencer un fichier cloud',
     workspace: miraWorkspaceCopy['fr'],
     introHeadline: 'Votre espace de travail, en une demande.',
     introBody:

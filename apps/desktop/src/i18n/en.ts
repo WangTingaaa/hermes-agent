@@ -3438,6 +3438,8 @@ export const en: Translations = {
     markAllRead: 'Mark all as read'
   },
   composer: {
+    uploadCloudFile: 'Upload cloud file',
+    referenceCloudFile: 'Reference cloud file',
     workspace: miraWorkspaceCopy['en'],
     introHeadline: 'Your workspace, one prompt away.',
     introBody:

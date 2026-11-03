@@ -3140,6 +3140,8 @@ const zhBaseOverrides = {
   },
 
   composer: {
+    uploadCloudFile: '上传云端文件',
+    referenceCloudFile: '引用云端文件',
     workspace: miraWorkspaceCopy['zh'],
     introHeadline: '你的工作空间，一句话开启。',
     introBody: '搜索项目、编辑文件、运行测试、创建 PR。告诉我目标，具体操作交给我。',

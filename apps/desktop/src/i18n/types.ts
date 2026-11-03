@@ -3035,6 +3035,8 @@ export interface Translations extends NoticeTranslations {
     noMatchingThemes: string
     themeTryPre: string
     themeTryPost: string
+    uploadCloudFile: string
+    referenceCloudFile: string
     attachLabel: string
     files: string
     folder: string

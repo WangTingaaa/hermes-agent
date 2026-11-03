@@ -3732,6 +3732,8 @@ export const deOverrides = {
     markAllRead: 'Alle als gelesen markieren'
   },
   composer: {
+    uploadCloudFile: 'Cloud-Datei hochladen',
+    referenceCloudFile: 'Cloud-Datei referenzieren',
     workspace: miraWorkspaceCopy['de'],
     introHeadline: 'Dein Arbeitsbereich. Ein Auftrag genügt.',
     introBody:

@@ -30,8 +30,8 @@ export function ContextMenu({
   onGenerateFile,
   onOpenUrlDialog,
   onPasteClipboardImage,
-  onPickCloudFavorite,
-  onUploadCloudFavorite,
+  onPickCloudFile,
+  onUploadCloudFile,
   onPickFiles,
   onPickFolders,
   onPickImages
@@ -68,14 +68,14 @@ export function ContextMenu({
       >
         {c.pasteImage}
       </ContextMenuItem>
-      {onUploadCloudFavorite ? (
-        <ContextMenuItem icon={Upload} onSelect={() => void onUploadCloudFavorite()}>
-          上传收藏文件
+      {onUploadCloudFile ? (
+        <ContextMenuItem icon={Upload} onSelect={() => void onUploadCloudFile()}>
+          {c.uploadCloudFile}
         </ContextMenuItem>
       ) : null}
-      {onPickCloudFavorite ? (
-        <ContextMenuItem icon={Cloud} onSelect={() => void onPickCloudFavorite()}>
-          引用收藏文件
+      {onPickCloudFile ? (
+        <ContextMenuItem icon={Cloud} onSelect={() => void onPickCloudFile()}>
+          {c.referenceCloudFile}
         </ContextMenuItem>
       ) : null}
       <ContextMenuItem icon={Link} onSelect={onOpenUrlDialog}>

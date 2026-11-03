@@ -42,6 +42,12 @@ declare global {
   }
 
   interface WenjingCloudFile {
+    source?: 'online' | 'favorites' | 'kb' | 'team' | 'local'
+    kbId?: number
+    kbItemId?: number
+    orgId?: number
+    locationId?: number
+    localPath?: string
     id: number
     fileName: string
     fileSize?: number
@@ -504,6 +510,7 @@ declare global {
         pickCloudFolder: () => Promise<{ folderId: number } | null>
       }
       cloudFiles?: {
+        pick?: () => Promise<WenjingCloudFile | null>
         pickFavorite: () => Promise<WenjingCloudFile | null>
         pickForUpload: () => Promise<WenjingDownloadedCloudFile | null>
       }
