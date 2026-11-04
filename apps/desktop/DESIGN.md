@@ -483,7 +483,8 @@ from their root base tokens; do not multiply the global tokens or nest CSS zoom.
 
 ### Desktop companion
 
-Mira is the bundled default desktop companion. Its name, outfit, expression and
+Mira is the bundled desktop companion, hidden by default until explicitly enabled.
+Its name, outfit, expression and
 visibility are device-wide presentation preferences, separate from the gateway's
 per-profile pet library. The old Mira remains on disk but is hidden in the picker.
 Settings → Appearance → Pets and the pet palette open the same wardrobe dialog;

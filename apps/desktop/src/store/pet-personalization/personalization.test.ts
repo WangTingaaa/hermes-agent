@@ -4,7 +4,13 @@ import { $displayPetInfo, hasPetArt, setPetInfo } from '@/store/pet'
 import { rankedGalleryPets, setPetScale } from '@/store/pet-gallery'
 import { popInPet, popOutPet } from '@/store/pet-overlay'
 
-import { $petPersonalization, MIRA_DEFAULTS, PET_PERSONALIZATION_KEY, savePetPersonalization } from './index'
+import {
+  $petPersonalization,
+  MIRA_DEFAULTS,
+  normalizePetPersonalization,
+  PET_PERSONALIZATION_KEY,
+  savePetPersonalization
+} from './index'
 
 afterEach(() => {
   popInPet()
@@ -15,9 +21,17 @@ afterEach(() => {
 })
 
 describe('bundled Mira', () => {
-  it('is available offline by default, survives gateway updates and honors explicit hiding', () => {
-    $petPersonalization.set({ ...MIRA_DEFAULTS })
+  it('stays hidden until explicitly enabled, survives gateway updates and honors explicit hiding', () => {
+    $petPersonalization.set(normalizePetPersonalization(null))
     setPetInfo({ enabled: false })
+    expect($displayPetInfo.get().enabled).toBe(false)
+    expect(normalizePetPersonalization({ mode: 'invalid' }).mode).toBe('off')
+    setPetInfo({ enabled: true, displayName: 'Old pet', spritesheetBase64: 'old' })
+    expect($displayPetInfo.get().enabled).toBe(false)
+    savePetPersonalization({ mode: 'mira' })
+    expect(normalizePetPersonalization(JSON.parse(window.localStorage.getItem(PET_PERSONALIZATION_KEY)!)).mode).toBe(
+      'mira'
+    )
     expect($displayPetInfo.get().displayName).toBe('Mira')
     expect(hasPetArt($displayPetInfo.get())).toBe(true)
     setPetInfo({ enabled: true, displayName: 'Old pet', spritesheetBase64: 'old' })
@@ -46,7 +60,7 @@ describe('bundled Mira', () => {
     ;(window as { hermesDesktop?: unknown }).hermesDesktop = {
       petOverlay: { open: vi.fn(async () => ({ ok: true })), close: vi.fn(), pushState }
     }
-    savePetPersonalization({ ...MIRA_DEFAULTS, name: '米拉', outfit: 'starlight', emotion: 'cute' })
+    savePetPersonalization({ ...MIRA_DEFAULTS, mode: 'mira', name: '米拉', outfit: 'starlight', emotion: 'cute' })
     setPetScale(request, 0.9)
     expect(request).not.toHaveBeenCalled()
     expect($petPersonalization.get().scale).toBe(0.9)

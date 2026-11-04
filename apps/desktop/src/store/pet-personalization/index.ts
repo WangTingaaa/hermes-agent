@@ -11,7 +11,7 @@ export const MIRA_OUTFITS = ['classic', 'starlight', 'courier'] as const
 export const MIRA_EMOTIONS = ['smile', 'cute', 'angry', 'bored'] as const
 export const MIRA_DEFAULTS: PetPersonalization = {
   name: 'Mira',
-  mode: 'mira',
+  mode: 'off',
   outfit: 'classic',
   emotion: 'auto',
   scale: 0.75
@@ -22,7 +22,7 @@ export function normalizePetPersonalization(value: unknown): PetPersonalization 
 
   return {
     name: typeof saved.name === 'string' && saved.name.trim() ? saved.name.trim().slice(0, 24) : 'Mira',
-    mode: saved.mode === 'gateway' || saved.mode === 'off' ? saved.mode : 'mira',
+    mode: saved.mode === 'gateway' || saved.mode === 'mira' ? saved.mode : MIRA_DEFAULTS.mode,
     outfit: MIRA_OUTFITS.includes(saved.outfit!) ? saved.outfit! : 'classic',
     emotion: MIRA_EMOTIONS.includes(saved.emotion as MiraEmotion) ? saved.emotion! : 'auto',
     scale:

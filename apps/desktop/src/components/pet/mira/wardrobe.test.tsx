@@ -45,7 +45,7 @@ describe('Mira wardrobe', () => {
     fireEvent.change(screen.getByLabelText('名字'), { target: { value: '小米拉' } })
     fireEvent.click(screen.getByRole('button', { name: '轻旅信使' }))
     fireEvent.click(screen.getByRole('button', { name: '生气' }))
-    expect($displayPetInfo.get().displayName).toBe('Mira')
+    expect($displayPetInfo.get().enabled).toBe(false)
     fireEvent.click(screen.getByRole('button', { name: '完成' }))
 
     expect($displayPetInfo.get()).toMatchObject({
