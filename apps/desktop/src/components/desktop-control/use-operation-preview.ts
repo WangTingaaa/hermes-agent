@@ -44,9 +44,18 @@ export function useOperationPreview(target: DesktopTarget, enabled: boolean, liv
         if (live) {
           timer = setTimeout(() => void refresh(), 500)
         }
-      } catch {
+      } catch (cause) {
         if (!disposed) {
-          setError('permission')
+          const message = cause instanceof Error ? cause.message : String(cause)
+
+          const kind =
+            [
+              { when: message.includes('No handler registered'), value: 'unavailable' },
+              { when: message.includes('SCREEN_CAPTURE_PERMISSION'), value: 'permission' }
+            ].find(rule => rule.when)?.value ?? 'capture-failed'
+
+          console.warn('[desktop-preview]', message)
+          setError(kind)
         }
       }
     }

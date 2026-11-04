@@ -13,10 +13,13 @@ vi.mock('electron', () => ({
     removeHandler: vi.fn(),
     handle: (name: string, fn: (...args: unknown[]) => unknown) => fake.handlers.set(name, fn)
   },
-  webContents: { fromFrame: fake.fromFrame }
+  webContents: { fromFrame: fake.fromFrame },
+  systemPreferences: { getMediaAccessStatus: () => 'granted' }
 }))
 vi.mock('./window-below', () => ({
-  enumerateWindowsFrontToBack: async () => [{ id: 42, app: '备忘录', appId: 'com.apple.Notes', appPath: '/System/Applications/Notes.app', title: 'New note' }],
+  enumerateWindowsFrontToBack: async () => [
+    { id: 42, app: '备忘录', appId: 'com.apple.Notes', appPath: '/System/Applications/Notes.app', title: 'New note' }
+  ],
   enumerationFailed: () => false
 }))
 import { installDesktopPreview } from './desktop-preview'

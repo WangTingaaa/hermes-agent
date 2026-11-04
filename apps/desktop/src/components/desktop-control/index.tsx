@@ -202,13 +202,15 @@ function DesktopControlBody({ messagesStore, busy, onStop }: DesktopControlProps
                 ? {
                     unavailable: '请重启 Mira，加载桌面预览更新。',
                     'window-unavailable': '当前操作窗口暂不可采集。请保持该窗口打开，预览会自动重连。',
-                    permission: '无法获取画面，请检查 Mira 的屏幕录制权限。'
+                    permission: '请为当前宿主应用开启屏幕录制权限，并完全退出后重新打开。',
+                    'capture-failed': '窗口预览发生错误，请重试。'
                   }[capture.error]
                 : {
                     unavailable: 'Restart Mira to load the preview update.',
                     'window-unavailable':
                       'The operation window is unavailable. Keep it open; preview reconnects automatically.',
-                    permission: 'Capture failed. Check screen recording permission for Mira.'
+                    permission: 'Allow screen recording for the host application, then quit and reopen it.',
+                    'capture-failed': 'Window preview failed. Please retry.'
                   }[capture.error]}
             </p>
             <Button onClick={capture.retry} size="sm" variant="secondary">

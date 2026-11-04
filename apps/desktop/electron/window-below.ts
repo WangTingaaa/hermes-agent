@@ -217,7 +217,19 @@ const loadGetWindows = (): Promise<GetWindowsModule | EnumerationFailure> => {
     }
 
     try {
-      return (await import(resolveOutsideAsar(import.meta.resolve('get-windows')))) as GetWindowsModule
+      // The package index eagerly imports Windows' node-pre-gyp dependency even
+      // on macOS. ESM cannot find that dependency inside app.asar from an
+      // unpacked entry point, so load only the provider for this platform.
+      const entry = resolveOutsideAsar(import.meta.resolve('get-windows'))
+      const base = entry.startsWith('file:') ? entry : pathToFileURL(entry).href
+
+      const provider = [
+        ['darwin', 'macos'],
+        ['win32', 'windows'],
+        ['linux', 'linux']
+      ].find(([platform]) => platform === process.platform)?.[1]
+
+      return (await import(provider ? new URL(`./lib/${provider}.js`, base).href : base)) as GetWindowsModule
     } catch (error) {
       return {
         reason:

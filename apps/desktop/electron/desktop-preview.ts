@@ -1,14 +1,17 @@
 import { readdir } from 'node:fs/promises'
 import path from 'node:path'
 
-import { desktopCapturer, ipcMain, type Session, type WebContents, webContents } from 'electron'
+import { desktopCapturer, ipcMain, type Session, systemPreferences, type WebContents, webContents } from 'electron'
 
 import { isMediaCapturePermission } from './media-capture-permission'
 
 const bundleExecutables = new Map<string, Promise<string[]>>()
 
 async function applicationAliases(appPath: string | undefined): Promise<string[]> {
-  if (!appPath?.endsWith('.app')) {return []}
+  if (!appPath?.endsWith('.app')) {
+    return []
+  }
+
   let executables = bundleExecutables.get(appPath)
 
   if (!executables) {
@@ -48,6 +51,13 @@ export function installDesktopPreview(target: Session, trusted: (contents: WebCo
       return null
     }
 
+    if (
+      process.platform === 'darwin' &&
+      ['denied', 'restricted'].includes(systemPreferences.getMediaAccessStatus('screen'))
+    ) {
+      throw new Error('SCREEN_CAPTURE_PERMISSION: Allow screen recording for the host application and restart it')
+    }
+
     // Follow an identified operation window. Never silently fall back to the whole screen.
     const sources = await desktopCapturer.getSources({
       types: ['window'],
@@ -61,12 +71,18 @@ export function installDesktopPreview(target: Session, trusted: (contents: WebCo
 
     const candidates = enumerationFailed(windows) ? [] : windows
 
-    const matches = await Promise.all(candidates.map(async window => {
-      const aliases = [window.app, window.appId, window.appPath && path.basename(window.appPath, '.app'),
-        ...await applicationAliases(window.appPath)]
+    const matches = await Promise.all(
+      candidates.map(async window => {
+        const aliases = [
+          window.app,
+          window.appId,
+          window.appPath && path.basename(window.appPath, '.app'),
+          ...(await applicationAliases(window.appPath))
+        ]
 
-      return aliases.some(alias => alias?.toLocaleLowerCase() === name)
-    }))
+        return aliases.some(alias => alias?.toLocaleLowerCase() === name)
+      })
+    )
 
     const owned = candidates.filter((_window, index) => matches[index])
 

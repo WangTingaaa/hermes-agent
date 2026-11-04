@@ -8,6 +8,22 @@ afterEach(() => {
   vi.unstubAllGlobals()
 })
 
+it.each([
+  ['No handler registered for hermes:desktop-preview:snapshot', 'unavailable'],
+  ['SCREEN_CAPTURE_PERMISSION: denied', 'permission'],
+  ['Failed to get sources', 'capture-failed']
+])('distinguishes preview failures: %s', async (message, expected) => {
+  const warning = vi.spyOn(console, 'warn').mockImplementation(() => {})
+  vi.stubGlobal('hermesDesktop', { desktopPreview: { snapshot: vi.fn().mockRejectedValue(new Error(message)) } })
+  const hook = renderHook(() => useOperationPreview({ app: 'Notes', windowTitle: '' }, true))
+  try {
+    await waitFor(() => expect(hook.result.current.error).toBe(expected))
+  } finally {
+    hook.unmount()
+    warning.mockRestore()
+  }
+})
+
 it('discards delayed frames when the conversation operation target changes', async () => {
   let resolve!: (value: unknown) => void
 
