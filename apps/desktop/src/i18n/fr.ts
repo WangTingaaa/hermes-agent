@@ -3,6 +3,7 @@ import { defineFieldCopy } from '@/app/settings/field-copy'
 
 import { artifactFileActionCopy } from './artifact-files'
 import { defineLocale, type TranslationOverrides } from './define-locale'
+import { desktopControlCopy } from './desktop-control'
 import { frBoot } from './fr_boot'
 import { frClarify } from './fr_clarify'
 import { frConnectorAccounts } from './fr_connector_accounts'
@@ -30,6 +31,7 @@ import { introFr } from './intro-fr'
 import { miraWorkspaceCopy } from './mira-workspace'
 
 export const frOverrides = {
+  desktopControl: desktopControlCopy['fr'],
   sharedMetrics: frSharedMetrics,
   firstRun: frFirstRun,
   intro: introFr,

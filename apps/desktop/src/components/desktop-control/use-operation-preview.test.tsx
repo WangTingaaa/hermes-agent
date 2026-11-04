@@ -65,3 +65,22 @@ it('keeps synchronizing the selected window and reconnects when its capture beco
   expect(hook.result.current.frame?.image).toBe('updated')
   hook.unmount()
 })
+
+it('captures the final task frame once and stops polling after completion', async () => {
+  vi.useFakeTimers()
+  const snapshot = vi.fn().mockResolvedValue({ image: 'final', name: 'Notes', sourceId: '1' })
+  vi.stubGlobal('hermesDesktop', { desktopPreview: { snapshot } })
+
+  const hook = renderHook(({ busy }) => useOperationPreview({ app: 'Notes', windowTitle: '' }, true, busy), {
+    initialProps: { busy: true }
+  })
+
+  await act(async () => {})
+  hook.rerender({ busy: false })
+  await act(async () => {})
+  const calls = snapshot.mock.calls.length
+  await act(() => vi.advanceTimersByTimeAsync(2000))
+  expect(snapshot).toHaveBeenCalledTimes(calls)
+  expect(hook.result.current.frame?.image).toBe('final')
+  hook.unmount()
+})

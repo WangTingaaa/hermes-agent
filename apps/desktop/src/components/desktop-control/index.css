@@ -33,11 +33,22 @@
   gap: 6px;
   padding: 8px 10px;
 }
+.mira-control__mini-heading {
+  display: grid;
+  grid-template-columns: 13px minmax(0, 1fr);
+  gap: 2px 6px;
+}
 .mira-control__mini-heading strong {
-  flex: 1;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   font-size: 11px;
 }
 .mira-control__mini-heading > span {
+  grid-column: 2;
+  white-space: nowrap;
   font-size: 10px;
   color: var(--ui-text-tertiary);
 }
@@ -283,4 +294,43 @@
 .mira-control__thumbnail .mira-control__image,
 .mira-control__thumbnail .mira-control__image img {
   max-height: 124px;
+}
+
+.mira-control__completed {
+  display: flex;
+  min-height: 124px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: var(--ui-accent);
+  background: var(--ui-chat-surface-background);
+}
+.mira-control__dismiss {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+}
+.mira-control:has(.mira-control__dismiss) .mira-control__mini-heading {
+  padding-right: 32px;
+}
+.mira-control__result {
+  margin-top: 20px;
+}
+.mira-control__result p {
+  max-height: 22vh;
+  overflow-y: auto;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  margin: 8px 0 0;
+  color: var(--ui-text-secondary);
+}
+
+.mira-control__completed[data-failed='true'] {
+  color: var(--destructive);
+}
+
+[data-slot='dialog-content'].mira-control__dialog {
+  max-height: calc(100dvh - 48px);
+  overflow-y: auto;
 }

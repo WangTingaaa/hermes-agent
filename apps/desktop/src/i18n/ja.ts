@@ -3,6 +3,7 @@ import { defineFieldCopy } from '@/app/settings/field-copy'
 
 import { artifactFileActionCopy } from './artifact-files'
 import { defineLocale, type TranslationOverrides } from './define-locale'
+import { desktopControlCopy } from './desktop-control'
 import { introJa } from './intro-ja'
 import { jaBoot } from './ja_boot'
 import { jaCatalog, jaSkillDeepLink } from './ja_catalog'
@@ -31,6 +32,7 @@ import { miraWorkspaceCopy } from './mira-workspace'
 import { jaPromptSnippets } from './prompt-snippets'
 
 export const jaOverrides = {
+  desktopControl: desktopControlCopy['ja'],
   catalog: jaCatalog,
   connectors: jaConnectors.connectors,
   externalOpenFailed: {

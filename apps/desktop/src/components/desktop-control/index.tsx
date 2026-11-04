@@ -1,13 +1,14 @@
 import './index.css'
 
 import { useStore } from '@nanostores/react'
-import { ArrowUpRight, Check, Circle, Monitor, MousePointer2 } from 'lucide-react'
+import { ArrowUpRight, Check, Circle, CircleX, Monitor, MousePointer2, X } from 'lucide-react'
 import { useMemo, useState } from 'react'
 
 import { useComposerScope } from '@/app/chat/composer/scope'
 import { usePaneVisible } from '@/components/pane-shell/pane-visibility'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { Tip } from '@/components/ui/tooltip'
 import { useI18n } from '@/i18n'
 import { dialedGatewayModeFor } from '@/store/gateway'
 import { $activeGatewayProfile } from '@/store/profile'
@@ -15,14 +16,18 @@ import { $gatewayState } from '@/store/session'
 
 import { desktopActions } from './actions'
 import { currentDesktopTurn, desktopOperation } from './operation'
+import { desktopCompletion, previewEmpty } from './presentation'
 import { PreviewSurface } from './preview-surface'
-import type { DesktopControlProps } from './type'
+import type { DesktopAction, DesktopControlProps } from './type'
 import { useOperationPreview } from './use-operation-preview'
 
 export function DesktopControl(props: DesktopControlProps) {
   const visible = usePaneVisible()
 
-  return visible && props.busy && !props.hidden ? <DesktopControlBody key={props.sessionId} {...props} /> : null
+  const messages = useStore(props.messagesStore)
+  const turnId = messages.findLast(message => message.role === 'user')?.id || ''
+
+  return visible && !props.hidden ? <DesktopControlBody key={`${props.sessionId}:${turnId}`} {...props} /> : null
 }
 
 function DesktopControlBody({ messagesStore, busy, onStop }: DesktopControlProps) {
@@ -34,37 +39,25 @@ function DesktopControlBody({ messagesStore, busy, onStop }: DesktopControlProps
   const local =
     gatewayState === 'open' && dialedGatewayModeFor(scope.connectionId ?? null, scope.profile || profile) === 'local'
 
-  const { locale } = useI18n()
+  const { locale, t } = useI18n()
+  const copy = t.desktopControl
   const zh = locale.startsWith('zh')
   const [open, setOpen] = useState(false)
+  const [dismissed, setDismissed] = useState(false)
   const operation = useMemo(() => desktopOperation(messages), [messages])
   const actions = useMemo(() => desktopActions(currentDesktopTurn(messages)), [messages])
-  const capture = useOperationPreview(operation.target, local)
+  const capture = useOperationPreview(operation.target, local && !dismissed, busy)
   const frame = capture.frame || operation.frame || null
 
-  if (!operation.target.app && !operation.target.windowTitle && !operation.frame) {
+  if (dismissed || (!operation.target.app && !operation.target.windowTitle && !operation.frame)) {
     return null
   }
 
   const latest = actions.at(-1)
   const name = frame?.name || operation.target.windowTitle || operation.target.app || 'Mira Desktop'
-  const state = busy ? (zh ? '正在操作' : 'Working') : zh ? '待命' : 'Ready'
-
-  const empty = !local
-    ? zh
-      ? '当前连接不支持本地画面'
-      : 'Local preview unavailable for this connection'
-    : capture.error
-      ? zh
-        ? '无法预览 · 点击查看'
-        : 'Preview unavailable · Open for details'
-      : operation.target.app
-        ? zh
-          ? '等待操作窗口就绪'
-          : 'Waiting for the operation window'
-        : zh
-          ? '等待 Mira 操作窗口'
-          : 'Waiting for Mira’s operation window'
+  const { failed, interrupted, state: completedState, result } = desktopCompletion(messages, copy)
+  const state = busy ? (zh ? '正在操作' : 'Working') : completedState
+  const empty = previewEmpty(local, capture.error, operation.target, zh)
 
   const status = {
     running: zh ? '执行中' : 'Running',
@@ -105,7 +98,7 @@ function DesktopControlBody({ messagesStore, busy, onStop }: DesktopControlProps
     return (
       <DialogTrigger asChild>
         <button
-          aria-label={zh ? '展开 Mira 操作画面' : 'Expand Mira operation view'}
+          aria-label={busy ? (zh ? '展开 Mira 操作画面' : 'Expand Mira operation view') : copy.viewResult}
           className="mira-control__thumbnail"
         >
           <div className="mira-control__mini-heading">
@@ -113,13 +106,44 @@ function DesktopControlBody({ messagesStore, busy, onStop }: DesktopControlProps
             <strong>Mira Desktop</strong>
             <span data-busy={busy}>{state}</span>
           </div>
-          {renderPreview()}
+          {busy ? (
+            renderPreview()
+          ) : (
+            <div className="mira-control__completed" data-failed={failed} role="status">
+              {failed ? (
+                <CircleX aria-hidden="true" size={36} />
+              ) : interrupted ? (
+                <Circle aria-hidden="true" size={36} />
+              ) : (
+                <Check aria-hidden="true" size={36} strokeWidth={1.5} />
+              )}
+              <span>{copy.viewResult}</span>
+            </div>
+          )}
           <div className="mira-control__mini-footer">
             <span title={name}>{name}</span>
             <ArrowUpRight size={14} />
           </div>
         </button>
       </DialogTrigger>
+    )
+  }
+
+  function renderAction(action: DesktopAction) {
+    return (
+      <li data-status={action.status} key={action.id}>
+        {action.status === 'success' ? <Check size={14} /> : <Circle size={12} />}
+        <div>
+          <strong title={action.app || action.name}>
+            {action.app ? `${action.app} · ` : ''}
+            {actionName(action.name)}
+          </strong>
+          <span>
+            {!busy && action.status === 'running' ? (zh ? '等待最终回执' : 'Awaiting receipt') : status[action.status]}
+          </span>
+        </div>
+        {action.duration !== undefined && <small>{action.duration.toFixed(1)}s</small>}
+      </li>
     )
   }
 
@@ -136,30 +160,7 @@ function DesktopControlBody({ messagesStore, busy, onStop }: DesktopControlProps
             {zh ? '开始操作后，动态会显示在这里。' : 'Activity appears here when Mira starts working.'}
           </p>
         )}
-        <ol>
-          {actions
-            .slice()
-            .reverse()
-            .map(action => (
-              <li data-status={action.status} key={action.id}>
-                {action.status === 'success' ? <Check size={14} /> : <Circle size={12} />}
-                <div>
-                  <strong title={action.app || action.name}>
-                    {action.app ? `${action.app} · ` : ''}
-                    {actionName(action.name)}
-                  </strong>
-                  <span>
-                    {!busy && action.status === 'running'
-                      ? zh
-                        ? '等待最终回执'
-                        : 'Awaiting receipt'
-                      : status[action.status]}
-                  </span>
-                </div>
-                {action.duration !== undefined && <small>{action.duration.toFixed(1)}s</small>}
-              </li>
-            ))}
-        </ol>
+        <ol>{actions.slice().reverse().map(renderAction)}</ol>
       </aside>
     )
   }
@@ -186,7 +187,9 @@ function DesktopControlBody({ messagesStore, busy, onStop }: DesktopControlProps
       <section className="mira-control__stage">
         <div className="mira-control__section-title">
           <span title={name}>{name}</span>
-          <span>{capture.frame ? 'LIVE' : frame ? (zh ? '最近画面' : 'Latest capture') : state}</span>
+          <span>
+            {capture.frame && busy && !capture.error ? 'LIVE' : frame ? (zh ? '最近画面' : 'Latest capture') : state}
+          </span>
         </div>
         {renderPreview()}
         <p className="mira-control__hint">
@@ -217,6 +220,22 @@ function DesktopControlBody({ messagesStore, busy, onStop }: DesktopControlProps
     )
   }
 
+  function handleDismiss() {
+    setOpen(false)
+    setDismissed(true)
+  }
+
+  function renderResult() {
+    return (
+      !busy && (
+        <section aria-label={copy.resultHeading} className="mira-control__result">
+          <strong>{copy.resultHeading}</strong>
+          <p>{result || copy.noResult}</p>
+        </section>
+      )
+    )
+  }
+
   function renderExpanded() {
     return (
       <DialogContent className="mira-control__dialog" showCloseButton>
@@ -225,13 +244,16 @@ function DesktopControlBody({ messagesStore, busy, onStop }: DesktopControlProps
           {renderStage()}
           {renderTimeline()}
         </div>
+        {renderResult()}
         <footer className="mira-control__footer">
           <span className="mira-control__hint">
             {latest ? `${actionName(latest.name)} · ${status[latest.status]}` : state}
           </span>
-          <Button disabled={!busy} onClick={() => onStop()} size="sm" variant="outline">
-            {zh ? '结束任务' : 'Stop task'}
-          </Button>
+          {busy && (
+            <Button onClick={() => onStop()} size="sm" variant="outline">
+              {zh ? '结束任务' : 'Stop task'}
+            </Button>
+          )}
         </footer>
       </DialogContent>
     )
@@ -243,6 +265,15 @@ function DesktopControlBody({ messagesStore, busy, onStop }: DesktopControlProps
         {renderThumbnail()}
         {renderExpanded()}
       </Dialog>
+      {!busy && (
+        <div className="mira-control__dismiss">
+          <Tip label={copy.dismiss}>
+            <Button aria-label={copy.dismiss} onClick={handleDismiss} size="icon-xs" variant="ghost">
+              <X size={12} />
+            </Button>
+          </Tip>
+        </div>
+      )}
     </div>
   )
 }

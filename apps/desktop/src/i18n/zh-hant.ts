@@ -1,4 +1,5 @@
 import { defineLocale, type TranslationOverrides } from './define-locale'
+import { desktopControlCopy } from './desktop-control'
 import { introZhHant } from './intro-zh-hant'
 import { miraWorkspaceCopy } from './mira-workspace'
 import { zhHantArtifacts } from './zh-hant_artifacts'
@@ -15,6 +16,7 @@ import { zhHantFirstRun } from './zh-hant_first_run'
 import { zhHantSettings } from './zh-hant_settings'
 
 export const zhHantOverrides = {
+  desktopControl: desktopControlCopy['zh-hant'],
   catalog: {
     add: '新增',
     added: '已新增',

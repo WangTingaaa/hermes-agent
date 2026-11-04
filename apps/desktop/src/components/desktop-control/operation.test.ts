@@ -6,7 +6,14 @@ import { desktopOperation } from './operation'
 
 function messages(
   events: Array<{
-    args: { action?: string; app?: string; coordinate?: number[]; element?: number; command?: string }
+    args: {
+      action?: string
+      app?: string
+      coordinate?: number[]
+      element?: number
+      to_element?: number
+      command?: string
+    }
     result?: unknown
     toolName?: string
   }>
@@ -117,4 +124,53 @@ it('follows the most recent explicit application and displays actual browser scr
   const operation = desktopOperation(events)
   expect(operation.target.app).toBe('')
   expect(operation.frame?.image).toBe('data:image/png;base64,real-frame')
+})
+
+it('keeps the last input position through typing and refreshed captures of the same window', () => {
+  const operation = desktopOperation(
+    messages([
+      { args: { action: 'capture', app: 'Notes' }, result: { width: 800, height: 600 } },
+      { args: { action: 'click', coordinate: [400, 300] } },
+      { args: { action: 'type' } },
+      { args: { action: 'capture', app: 'Notes' }, result: { width: 800, height: 600 } }
+    ])
+  )
+
+  expect(operation.pointer).toMatchObject({ x: 0.5, y: 0.5, action: 'click' })
+})
+
+it('resolves element drags and ignores unknown or incomplete bounds', () => {
+  const capture = {
+    width: 800,
+    height: 600,
+    elements: [
+      { index: 7, bounds: [100, 200, 80, 40] },
+      { index: 8, bounds: [0, 0, 0, 0] }
+    ]
+  }
+
+  expect(
+    desktopOperation(
+      messages([
+        { args: { action: 'capture', app: 'Notes' }, result: capture },
+        { args: { action: 'drag', to_element: 7 } }
+      ])
+    ).pointer
+  ).toMatchObject({ x: 140 / 800, y: 220 / 600 })
+  expect(
+    desktopOperation(
+      messages([
+        { args: { action: 'capture', app: 'Notes' }, result: capture },
+        { args: { action: 'click', element: 8 } }
+      ])
+    ).pointer
+  ).toBeUndefined()
+  expect(
+    desktopOperation(
+      messages([
+        { args: { action: 'capture', app: 'Notes' }, result: capture },
+        { args: { action: 'click', coordinate: [20] } }
+      ])
+    ).pointer
+  ).toBeUndefined()
 })

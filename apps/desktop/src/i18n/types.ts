@@ -9,6 +9,7 @@ import type { ErrorCodeKey } from '@/lib/error-surface'
 import type { TipId } from '@/lib/tips/catalog'
 
 import type { ArtifactFileActionCopy } from './artifact-files/type'
+import type { DesktopControlCopy } from './desktop-control/type'
 import type { MiraWorkspaceCopy } from './mira-workspace/type'
 import type { AppTourTranslations } from './types_app_tour'
 import type { BillingTranslations } from './types_billing'
@@ -93,6 +94,7 @@ interface ModeOptionCopy {
 }
 
 export interface Translations extends NoticeTranslations {
+  desktopControl: DesktopControlCopy
   /** Shared-metrics consent: first-run dialog + Settings › Safety toggles. */
   sharedMetrics: SharedMetricsTranslations
   appTour: AppTourTranslations

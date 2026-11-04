@@ -34,6 +34,15 @@ driver-side error mentioning `snapshot_id`, `element_token`, or "no reviewed
 risk classification", you (or a stale description) called the raw driver
 vocabulary — go back to the actions below.
 
+## Preserve the user's mouse and focus
+
+When the user asks to keep their mouse free, use background delivery and the
+agent's virtual cursor. `computer_use.background_only: true` blocks foreground
+input and raising windows even when action approvals permit them. If a control
+cannot be driven in the background, use accessibility, an app API, or browser
+CDP, or explain the limitation. Do not bypass this preference with terminal
+scripts that move the real pointer, synthesize global input, or activate apps.
+
 ## The canonical workflow
 
 **Step 1 — Capture first.** Almost every task starts with:

@@ -185,6 +185,14 @@ def test_background_is_default_no_flag_sent():
     assert "delivery_mode" not in sess.last_args
 
 
+def test_background_is_explicit_when_the_live_driver_supports_delivery_mode():
+    session = _FakeSession({"isError": False, "data": {}}, input_properties={"click": {"delivery_mode"}})
+    backend = _make_backend(session)
+    backend.click(element=1)
+    assert session.last_args["delivery_mode"] == "background"
+    assert [name for name, _ in session.calls] == ["click"]
+
+
 def test_foreground_sent_when_schema_property_present():
     out = {"isError": False, "data": {}, "structuredContent": {"effect": "unverifiable"}}
     sess = _FakeSession(out, input_properties={"click": {"delivery_mode"}})

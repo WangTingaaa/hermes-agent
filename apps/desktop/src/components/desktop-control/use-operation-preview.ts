@@ -2,14 +2,13 @@ import { useEffect, useState } from 'react'
 
 import type { DesktopFrameState, DesktopTarget } from './type'
 
-export function useOperationPreview(target: DesktopTarget, enabled: boolean) {
+export function useOperationPreview(target: DesktopTarget, enabled: boolean, live = true) {
   const [captured, setCaptured] = useState<DesktopFrameState>({ key: '', frame: null })
   const [error, setError] = useState('')
   const [attempt, setAttempt] = useState(0)
   const { app, windowTitle } = target
   const key = JSON.stringify([app, windowTitle])
   useEffect(() => {
-    setCaptured({ key, frame: null })
     setError('')
 
     if (!enabled || (!app && !windowTitle)) {
@@ -35,12 +34,18 @@ export function useOperationPreview(target: DesktopTarget, enabled: boolean) {
           return
         }
 
-        setCaptured({ key, frame: next })
+        if (next) {
+          setCaptured({ key, frame: next })
+        }
+
         setError(next ? '' : 'window-unavailable')
-        timer = setTimeout(() => void refresh(), 500)
+
+        // Capture the final state once, then retain it without background polling.
+        if (live) {
+          timer = setTimeout(() => void refresh(), 500)
+        }
       } catch {
         if (!disposed) {
-          setCaptured({ key, frame: null })
           setError('permission')
         }
       }
@@ -52,7 +57,7 @@ export function useOperationPreview(target: DesktopTarget, enabled: boolean) {
       disposed = true
       clearTimeout(timer)
     }
-  }, [app, windowTitle, key, enabled, attempt])
+  }, [app, windowTitle, key, enabled, live, attempt])
 
   return {
     frame: enabled && captured.key === key ? captured.frame : null,

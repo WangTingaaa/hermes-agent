@@ -2,6 +2,7 @@
 import { FIELD_DESCRIPTIONS, FIELD_LABELS } from '@/app/settings/constants'
 
 import { artifactFileActionCopy } from './artifact-files'
+import { desktopControlCopy } from './desktop-control'
 import { enAppTour } from './en_app_tour'
 import { enBilling } from './en_billing'
 import { enBoot } from './en_boot'
@@ -36,6 +37,7 @@ import { miraWorkspaceCopy } from './mira-workspace'
 import type { Translations } from './types'
 
 export const en: Translations = {
+  desktopControl: desktopControlCopy['en'],
   ...enNotices,
   ...enBilling,
   externalOpenFailed: enExternalOpenFailed,

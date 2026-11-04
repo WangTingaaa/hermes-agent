@@ -1,7 +1,7 @@
 import type { ChatMessage } from '@/lib/chat-messages'
 import { toolResultRecord } from '@/lib/tool-result-metadata'
 
-import type { DesktopFrame, DesktopOperation, DesktopPointer } from './type'
+import type { DesktopFrame, DesktopOperation, DesktopOperationState, DesktopPointer, DesktopToolCall } from './type'
 
 const record = (value: unknown): Record<string, unknown> =>
   value && typeof value === 'object' ? (value as Record<string, unknown>) : {}
@@ -48,6 +48,10 @@ function toolFrame(result: Record<string, unknown>, id: string): DesktopFrame | 
 
 function captureMetadata(result: Record<string, unknown>, summary: string): Record<string, unknown> {
   const capture = { ...result, ...record(result.meta) }
+  const dimensions = summary.match(/capture mode=\S+ (\d+)x(\d+)/)
+
+  capture.width ??= dimensions && Number(dimensions[1])
+  capture.height ??= dimensions && Number(dimensions[2])
 
   if (Array.isArray(capture.elements)) {
     return capture
@@ -62,34 +66,42 @@ function captureMetadata(result: Record<string, unknown>, summary: string): Reco
   return capture
 }
 
+function elementCoordinates(index: unknown, capture: Record<string, unknown>): number[] | undefined {
+  if (typeof index !== 'number' || !Array.isArray(capture.elements)) {
+    return
+  }
+
+  const bounds = capture.elements.map(record).find(item => item.index === index)?.bounds
+
+  if (
+    !Array.isArray(bounds) ||
+    bounds.length !== 4 ||
+    !bounds.every(Number.isFinite) ||
+    bounds[2] <= 0 ||
+    bounds[3] <= 0
+  ) {
+    return
+  }
+
+  return [bounds[0] + bounds[2] / 2, bounds[1] + bounds[3] / 2]
+}
+
 function capturePointer(
   args: Record<string, unknown>,
   capture: Record<string, unknown>,
   id: string
 ): DesktopPointer | undefined {
   const point = args.action === 'drag' ? args.to_coordinate : args.coordinate
-  let coords = Array.isArray(point) ? point : undefined
-
-  if (!coords && typeof args.element === 'number' && Array.isArray(capture.elements)) {
-    const element = capture.elements.map(record).find(item => item.index === args.element)
-    const bounds = element?.bounds
-
-    if (Array.isArray(bounds) && bounds.length === 4 && bounds.every(Number.isFinite)) {
-      coords = [bounds[0] + bounds[2] / 2, bounds[1] + bounds[3] / 2]
-    }
-  }
-
+  const elementIndex = args.action === 'drag' ? args.to_element : args.element
+  const coords = Array.isArray(point) ? point : elementCoordinates(elementIndex, capture)
   const width = Number(capture.width) * Number(capture.bounds_scale || 1)
   const height = Number(capture.height) * Number(capture.bounds_scale || 1)
 
-  if (
-    !coords ||
-    !coords.every(Number.isFinite) ||
-    !Number.isFinite(width) ||
-    !Number.isFinite(height) ||
-    width <= 0 ||
-    height <= 0
-  ) {
+  if (!coords || coords.length !== 2 || !coords.every(Number.isFinite)) {
+    return
+  }
+
+  if (![width, height].every(value => Number.isFinite(value) && value > 0)) {
     return
   }
 
@@ -102,83 +114,78 @@ function capturePointer(
   return { x, y, action: string(args.action), id }
 }
 
+function applyScriptedOperation(state: DesktopOperationState, part: DesktopToolCall) {
+  const app = scriptedApp(string(record(part.args).command))
+
+  if (app && app !== state.target.app) {
+    state.target = { app, windowTitle: '' }
+    state.capture = {}
+    state.pointer = undefined
+    state.frame = undefined
+  }
+}
+
+function applyBrowserOperation(state: DesktopOperationState, part: DesktopToolCall) {
+  const previous = state.target.app ? undefined : state.frame
+  state.target = { app: '', windowTitle: '' }
+  state.capture = {}
+  state.pointer = undefined
+  state.frame = toolFrame(toolResultRecord(part), part.toolCallId || '') || previous
+}
+
+function applyComputerOperation(state: DesktopOperationState, part: DesktopToolCall) {
+  const args = record(part.args)
+  const result = toolResultRecord(part)
+  const summary = string(result.text_summary) || string(result.summary)
+  const title = string(result.window_title) || summary.match(/ window='([^'\n]+)'/)?.[1] || ''
+
+  const app =
+    string(args.app) || string(result.app) || summary.match(/ app=(.+?)(?: window=|\n|$)/)?.[1] || state.target.app
+
+  const changed = app !== state.target.app || Boolean(title && title !== state.target.windowTitle)
+
+  if (changed) {
+    state.capture = {}
+    state.pointer = undefined
+    state.frame = undefined
+  }
+
+  state.frame = toolFrame(result, part.toolCallId || '') || state.frame
+  state.target = { app, windowTitle: title || (changed ? '' : state.target.windowTitle) }
+
+  if (args.action === 'capture') {
+    state.capture = captureMetadata(result, summary)
+
+    return
+  }
+
+  if (part.isError || result.ok === false || result.error) {
+    state.pointer = undefined
+
+    return
+  }
+
+  state.pointer = capturePointer(args, state.capture, part.toolCallId || '') || state.pointer
+}
+
+const operationHandlers: Record<string, (state: DesktopOperationState, part: DesktopToolCall) => void> = {
+  terminal: applyScriptedOperation,
+  browser_exec: applyBrowserOperation,
+  computer_use: applyComputerOperation
+}
+
 // Background input need not move the OS cursor. Resolve a virtual pointer only
 // against the captured window it belongs to, never against an arbitrary screen.
 export function desktopOperation(messages: readonly ChatMessage[]): DesktopOperation {
-  let target = { app: '', windowTitle: '' }
-  let capture: Record<string, unknown> = {}
-  let pointer: DesktopPointer | undefined
-  let frame: DesktopFrame | undefined
+  const state: DesktopOperationState = { target: { app: '', windowTitle: '' }, capture: {} }
 
   for (const message of currentDesktopTurn(messages)) {
     for (const part of message.parts) {
-      if (part.type !== 'tool-call') {
-        continue
+      if (part.type === 'tool-call') {
+        operationHandlers[part.toolName]?.(state, part)
       }
-
-      const args = record(part.args)
-
-      if (part.toolName === 'terminal') {
-        const app = scriptedApp(string(args.command))
-
-        if (app) {
-          target = { app, windowTitle: '' }
-          capture = {}
-          pointer = undefined
-          frame = undefined
-        }
-
-        continue
-      }
-
-      if (part.toolName === 'browser_exec') {
-        const previous = target.app ? undefined : frame
-        target = { app: '', windowTitle: '' }
-        capture = {}
-        pointer = undefined
-        frame = toolFrame(toolResultRecord(part), part.toolCallId || '') || previous
-
-        continue
-      }
-
-      if (part.toolName !== 'computer_use') {
-        continue
-      }
-
-      const result = toolResultRecord(part)
-      const summary = string(result.text_summary) || string(result.summary)
-      const title = string(result.window_title) || summary.match(/ window='([^'\n]+)'/)?.[1] || ''
-
-      const app =
-        string(args.app) || string(result.app) || summary.match(/ app=(.+?)(?: window=|\n|$)/)?.[1] || target.app
-
-      const changed = app !== target.app || Boolean(title && title !== target.windowTitle)
-
-      if (changed) {
-        capture = {}
-        pointer = undefined
-        frame = undefined
-      }
-
-      frame = toolFrame(result, part.toolCallId || '') || frame
-      target = { app, windowTitle: title || (changed ? '' : target.windowTitle) }
-
-      if (args.action === 'capture') {
-        capture = captureMetadata(result, summary)
-        pointer = undefined
-
-        continue
-      }
-
-      if (part.isError || result.ok === false || result.error) {
-        pointer = undefined
-
-        continue
-      }
-
-      pointer = capturePointer(args, capture, part.toolCallId || '')
     }
   }
 
-  return { target, pointer, frame }
+  return { target: state.target, pointer: state.pointer, frame: state.frame }
 }

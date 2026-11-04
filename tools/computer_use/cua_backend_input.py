@@ -43,7 +43,7 @@ class _InputMixin:
         return _refuse(tool, missing_msg) if missing_msg else None
 
     def _apply_delivery(self, action: str, args: dict[str, Any], delivery_mode: Optional[str]) -> Optional[ActionResult]:
-        """Attach delivery_mode to an input-action args dict. Background is the default and needs no flag.
+        """Attach delivery_mode to an input-action args dict. Background is explicit when the live schema supports delivery_mode.
         Foreground is only sent when the live action schema accepts it; on an older driver we refuse with
         ``foreground_unsupported`` instead of silently downgrading to background (which would land input
         where the model didn't expect).
@@ -52,6 +52,8 @@ class _InputMixin:
         NousResearch/hermes-agent#67052 phase B.
         """
         if not delivery_mode or delivery_mode == "background":
+            if self._session.supports_input_property(action, "delivery_mode"):
+                args["delivery_mode"] = "background"
             return None
         if delivery_mode != "foreground":
             return _refuse(action, f"unknown delivery_mode {delivery_mode!r} — use background|foreground.",

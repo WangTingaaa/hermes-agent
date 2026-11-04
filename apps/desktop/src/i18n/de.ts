@@ -26,10 +26,12 @@ import { deSharedMetrics } from './de_shared_metrics'
 import { deThemePicker } from './de_theme_picker'
 import { deUpdateChannel } from './de_update_channel'
 import { defineLocale, type TranslationOverrides } from './define-locale'
+import { desktopControlCopy } from './desktop-control'
 import { introDe } from './intro-de'
 import { miraWorkspaceCopy } from './mira-workspace'
 
 export const deOverrides = {
+  desktopControl: desktopControlCopy['de'],
   sharedMetrics: deSharedMetrics,
   firstRun: deFirstRun,
   intro: introDe,

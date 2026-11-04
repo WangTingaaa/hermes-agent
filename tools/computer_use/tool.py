@@ -59,6 +59,10 @@ def _canon_key_combo(keys: str) -> frozenset:
 
 def _reject_unsafe(action: str, args: dict[str, Any]) -> Optional[str]:
     """JSON error for hard-blocked input, else None. Runs BEFORE the approval prompt."""
+    from tools.computer_use.input_policy import foreground_refusal
+
+    if (refusal := foreground_refusal(action, args)) is not None:
+        return json.dumps(refusal)
     if action == "type" and (pat := next((p.pattern for p in _BLOCKED_TYPE_PATTERNS if p.search(args.get("text", ""))), None)):
         return json.dumps({"error": f"blocked pattern in type text: {pat!r}",
                            "hint": "Dangerous shell patterns cannot be typed via computer_use."})
@@ -563,6 +567,9 @@ def _classify_action_result(res: ActionResult) -> dict[str, Any]:
                     "Re-capture first if the index is stale."
                 ),
             }
+        from tools.computer_use.input_policy import background_alternative, background_only
+        if background_only():
+            return background_alternative(res.escalation)
         return {"decision": "escalate", **({"recommended": res.escalation.get("recommended")}
                                            if isinstance(res.escalation, dict) else {}), "hint": (
             "The input likely did not land. Climb one rung following `recommended`: 'px' → re-issue by coordinate; "

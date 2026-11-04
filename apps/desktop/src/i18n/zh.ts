@@ -5,6 +5,7 @@ import { defineFieldCopy } from '@/app/settings/field-copy'
 
 import { artifactFileActionCopy } from './artifact-files'
 import { defineLocale, type TranslationOverrides } from './define-locale'
+import { desktopControlCopy } from './desktop-control'
 import { introZh } from './intro-zh'
 import { miraWorkspaceCopy } from './mira-workspace'
 import { zhCatalog, zhSkillDeepLink } from './zh_catalog'
@@ -34,6 +35,7 @@ import { zhUpdateChannel } from './zh_update_channel'
 import { zhUpstreamUpdates } from './zh_upstream_updates'
 
 const zhBaseOverrides = {
+  desktopControl: desktopControlCopy['zh'],
   connectorsPage: zhConnectorsPage,
   catalog: zhCatalog,
   externalOpenFailed: {

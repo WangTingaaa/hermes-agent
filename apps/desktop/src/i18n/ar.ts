@@ -11,9 +11,11 @@ import { arDiagnostics } from './ar_diagnostics'
 import { arFirstRun } from './ar_first_run'
 import { arSettings } from './ar_settings'
 import { defineLocale, type TranslationOverrides } from './define-locale'
+import { desktopControlCopy } from './desktop-control'
 import { miraWorkspaceCopy } from './mira-workspace'
 
 export const arOverrides = {
+  desktopControl: desktopControlCopy['ar'],
   catalog: {
     add: 'إضافة',
     added: 'تمت الإضافة',

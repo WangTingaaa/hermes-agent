@@ -234,6 +234,19 @@ stopped, never started), `pass` when the daemon answers. Reinstalling the
 driver does not start a daemon; `systemctl --user status <unit>` does.
 `hermes computer-use status` prints the same dead-daemon line and exits 1.
 
+## Keep automation in the background
+
+Set `computer_use.background_only: true` in your profile's `config.yaml` to
+refuse foreground delivery, `bring_to_front`, and `focus_app(raise_window=true)`.
+Action approval grants do not override this preference. Background clicks,
+typing, scrolling, and the agent's virtual cursor remain available. If a control
+requires foreground input, use an app API, accessibility action, or browser CDP,
+or report the limitation instead of taking over the user's mouse or focus.
+
+The default is `false`, preserving explicitly approved foreground operations.
+Set `computer_use.no_overlay: false` to show the driver's separate virtual cursor;
+this overlay never substitutes for or moves your OS cursor.
+
 ## The agent cursor and sessions
 
 When the agent acts, you'll see a **tinted overlay cursor** glide

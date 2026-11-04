@@ -59,3 +59,15 @@ export interface DesktopFrameState {
   key: string
   frame: DesktopFrame | null
 }
+
+export interface DesktopCompletionCopy {
+  failed: string
+  ended: string
+  completed: string
+}
+
+export interface DesktopOperationState extends DesktopOperation {
+  capture: Record<string, unknown>
+}
+
+export type DesktopToolCall = Extract<ChatMessage['parts'][number], { type: 'tool-call' }>

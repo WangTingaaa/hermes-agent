@@ -1610,23 +1610,20 @@ class TestClickButtonPassthrough:
         # Mock the capability check so x/y are included (they're gated
         # behind the input.scroll.coordinates capability).
         backend._session.supports_capability.return_value = True
+        backend._session.supports_input_property.return_value = True
 
         backend.drag(from_xy=(10, 20), to_xy=(30, 40))
         drag_name, drag_args = backend._session.call_tool.call_args.args
         assert drag_name == "drag"
-        assert drag_args == {
-            "pid": 111,
-            "from_x": 10,
-            "from_y": 20,
-            "to_x": 30,
-            "to_y": 40,
-            "window_id": 222,
-            "session": backend._session_id,
-        }
+        assert drag_args["pid"] == 111 and drag_args["window_id"] == 222
+        assert [drag_args[k] for k in ("from_x", "from_y", "to_x", "to_y")] == [10, 20, 30, 40]
+        assert drag_args["session"] == backend._session_id
+        assert drag_args["delivery_mode"] == "background"
 
         backend.scroll(direction="down", x=50, y=60)
         scroll_name, scroll_args = backend._session.call_tool.call_args.args
         assert scroll_name == "scroll"
+        assert scroll_args["delivery_mode"] == "background"
         assert scroll_args["window_id"] == 222
         assert scroll_args["x"] == 50 and scroll_args["y"] == 60
 

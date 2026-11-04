@@ -3,6 +3,7 @@ import { defineFieldCopy } from '@/app/settings/field-copy'
 
 import { artifactFileActionCopy } from './artifact-files'
 import { defineLocale, type TranslationOverrides } from './define-locale'
+import { desktopControlCopy } from './desktop-control'
 import { esBoot } from './es_boot'
 import { esClarify } from './es_clarify'
 import { esConnectorAccounts } from './es_connector_accounts'
@@ -30,6 +31,7 @@ import { introEs } from './intro-es'
 import { miraWorkspaceCopy } from './mira-workspace'
 
 export const esOverrides = {
+  desktopControl: desktopControlCopy['es'],
   sharedMetrics: esSharedMetrics,
   firstRun: esFirstRun,
   intro: introEs,
