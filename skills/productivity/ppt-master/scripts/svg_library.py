@@ -40,7 +40,9 @@ def render(root: Path, name: str, data: dict, output: Path) -> dict:
         raise ValueError(f"Missing SVG fields: {', '.join(missing)}")
     source = (root / entry["file"]).read_text(encoding="utf-8")
     svg = source
-    palette = data.get("colors", {})
+    from visual_theme import resolve_theme, apply_material
+    style = data.get("visual_style")
+    palette = resolve_theme(data)
     colors = {"#14233B": "primary", "#277C83": "accent", "#F3F6FA": "background",
               "#24324B": "text", "#65748B": "muted", "#FFFFFF": "surface"}
     replacements = {}
@@ -55,6 +57,7 @@ def render(root: Path, name: str, data: dict, output: Path) -> dict:
     font = data.get("font_family")
     if font:
         svg = svg.replace('font-family="Microsoft YaHei"', 'font-family="' + escape(font, {'"': '&quot;'}) + '"')
+    svg = apply_material(svg, style, palette)
     svg = _wrap_body_fields(svg, fields)
     ElementTree.fromstring(svg)
     output.parent.mkdir(parents=True, exist_ok=True)

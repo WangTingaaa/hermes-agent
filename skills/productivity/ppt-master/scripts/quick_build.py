@@ -60,7 +60,9 @@ def _fill_deck(skill: Path, python: Path, project: Path, deck: dict, library: Pa
     started = time.perf_counter()
     for index, (slide, name) in enumerate(zip(slides, names), 1):
         render(library, slide["layout"], {"fields": slide["fields"],
-               "colors": deck.get("colors", {}), "font_family": deck.get("font_family")},
+               "colors": deck.get("colors", {}), "font_family": deck.get("font_family"),
+               "visual_style": deck.get("visual_style"),
+               "visual_reference": deck.get("visual_reference")},
                project / "svg_output" / f"{name}.svg")
         if not existing and len(slides) >= 7 and index == 5:
             _checker(skill, python, project, "early", timings)

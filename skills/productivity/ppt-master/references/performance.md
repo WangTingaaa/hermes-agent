@@ -25,14 +25,21 @@ it means the current agent reviews the preview before export.
    content JSON input, then prepare all pages in one invocation:
 
 ```text
-python "<BRIDGE_DIR>/scripts/ppt_master.py" svg-catalog
-python "<BRIDGE_DIR>/scripts/ppt_master.py" quick-prepare "<project>" --deck "<slides.json>"
+python3 "<BRIDGE_DIR>/scripts/ppt_master.py" svg-catalog
+python3 "<BRIDGE_DIR>/scripts/ppt_master.py" quick-prepare "<project>" --deck "<slides.json>"
 ```
 
 `slides.json` is renderer input, not a strategy/spec/lock or a reasoning log:
 
+Copy `visual_style` and `visual_reference` directly from the user's execution
+contract into the deck JSON. The helper resolves the preview palette itself;
+do not translate or omit those fields. Common layouts support `glassmorphism`,
+`swiss-minimal`, `soft-rounded`, `dark-tech`, `editorial` and `data-journalism`.
+Other selected styles require custom/template authoring; an unsupported style
+is rejected instead of silently producing the default light theme.
+
 ```json
-{"font_family":"Microsoft YaHei","colors":{"accent":"#277C83"},"slides":[
+{"visual_style":"glassmorphism","font_family":"Microsoft YaHei","colors":{"accent":"#8875FF"},"slides":[
   {"layout":"three-pillars","fields":{"TITLE":"Three priorities","SUBTITLE":"Based on the supplied material","ITEM_1_TITLE":"Product","ITEM_1_BODY":"First source-backed point.","ITEM_2_TITLE":"Users","ITEM_2_BODY":"Second source-backed point.","ITEM_3_TITLE":"Delivery","ITEM_3_BODY":"Third source-backed point.","SOURCE":"Source document"},"notes":"Speaker notes for this page."}
 ]}
 ```
@@ -68,7 +75,7 @@ discovery; do not replace them with code tours.
    Export once when the current final gate and review pass:
 
 ```text
-python "<BRIDGE_DIR>/scripts/ppt_master.py" quick-export "<project>" --with-notes --output "<new-file.pptx>"
+python3 "<BRIDGE_DIR>/scripts/ppt_master.py" quick-export "<project>" --with-notes --output "<new-file.pptx>"
 ```
 
 Use `--no-notes` when disabled. Add `--native-charts-and-tables` when the route
@@ -84,9 +91,21 @@ Timing reports and detailed failure logs are in `validation/quick-*.json` and
 reasoning and external model/vision latency; do not promise an end-to-end time
 from the script-only timings.
 
+For a supplied planning template, preserve its placeholders and use its headings
+as the content roster. Do not research missing project facts. Spend the generation
+budget on writing one compact content JSON, not a long bespoke rendering program.
+If `doctor` fails, stop with its concrete setup diagnostic; environment repair
+belongs to app setup, not to the generation agent. A 360-second target includes
+model and tool latency and is not a timeout or permission to skip validation.
+
 ## Existing PPTX
 
 Retain Edit Native PPTX for native-design preservation. Do not use the Quick
 helpers on a roundtrip workspace. Read `authoring_summary.json`, inspect the
 selected reference pages, copy their geometry and edit only affected content.
 Keep the native route's checks, review additions together and export once.
+
+Use the selected preview palette and material consistently on every page. The common
+SVG renderer supports `visual_style: "glassmorphism"` with native gradient light
+and translucent panels; do not use plain light cards for the dark glass preview.
+For unsupported materials or a binding template, keep the custom/template route.

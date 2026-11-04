@@ -30,7 +30,11 @@ def state_path() -> Path:
 
 
 def managed_runtime() -> tuple[Path, Path]:
-    state = json.loads(state_path().read_text(encoding="utf-8"))
+    marker = state_path()
+    if not marker.is_file():
+        raise ValueError("PPT Master setup incomplete: missing " + str(marker)
+                         + "; repair the app's PPT runtime before generating. Do not search for another checkout.")
+    state = json.loads(marker.read_text(encoding="utf-8"))
     return Path(state["root"]), Path(state["python"])
 
 

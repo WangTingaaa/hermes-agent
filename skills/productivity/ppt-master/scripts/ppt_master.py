@@ -9,7 +9,7 @@ import sys
 from pathlib import Path
 
 
-REQUIRED_MODULES = ("pptx", "PIL", "lxml", "yaml", "xlsxwriter")
+REQUIRED_MODULES = ("pptx", "PIL", "lxml", "yaml", "xlsxwriter", "pathops", "uharfbuzz", "resvg_py")
 
 
 def resolve_runtime(root: str | None) -> tuple[Path, Path]:
@@ -36,14 +36,22 @@ def run_script(skill: Path, python: Path, script: str, arguments: list[str]) -> 
     return subprocess.run([str(python), str(target), *arguments], check=False, timeout=3600).returncode
 
 
-def doctor(skill: Path, python: Path) -> int:
+def doctor(skill: Path, python: Path, *, check_library: bool = False) -> int:
     attribution = run_script(skill, python, "attribution_guard.py", [])
     if attribution:
         return attribution
     probe = "import importlib.util,json; print(json.dumps({n:bool(importlib.util.find_spec(n)) for n in " + repr(REQUIRED_MODULES) + "}))"
     result = subprocess.run([str(python), "-c", probe], capture_output=True, text=True, check=True, timeout=30)
     modules = json.loads(result.stdout)
+    from visual_theme import PALETTES
     ready = all(modules.values())
+    library = None
+    if check_library:
+        from svg_library import library_root
+        library = library_root()
+        catalog = json.loads((library / "catalog.json").read_text(encoding="utf-8"))
+        ready = ready and bool(catalog.get("entries")) and all(
+            (library / entry["file"]).is_file() for entry in catalog.get("entries", []))
     print(json.dumps({
         "ready": ready,
         "skill_dir": str(skill),
@@ -51,6 +59,8 @@ def doctor(skill: Path, python: Path) -> int:
         "entrypoint": str(skill / "SKILL.md"),
         "routing": str(skill / "workflows" / "routing.md"),
         "modules": modules,
+        "svg_library": str(library) if library else None,
+        "common_layout_styles": list(PALETTES),
     }, ensure_ascii=False, indent=2))
     return 0 if ready else 1
 
@@ -125,7 +135,7 @@ def main() -> int:
             return 0
         skill, python = resolve_runtime(args.root)
         if args.command == "doctor":
-            return doctor(skill, python)
+            return doctor(skill, python, check_library=args.root is None)
         return run_script(skill, python, args.script, args.arguments)
     except (ValueError, OSError, subprocess.SubprocessError) as error:
         print(str(error), file=sys.stderr)

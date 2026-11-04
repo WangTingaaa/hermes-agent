@@ -1,7 +1,7 @@
 ---
 name: ppt-master
 description: Generate editable PPTX decks with a local design workflow.
-version: 1.2.1
+version: 1.2.2
 author: Tina; Hermes Agent
 license: MIT
 platforms: [linux, macos, windows]
@@ -42,8 +42,8 @@ root from `doctor` as `PPT_ROOT`. Expand these placeholders to actual paths in
 each `terminal` call; never infer them from the current directory.
 
 ```text
-python "<BRIDGE_DIR>/scripts/ppt_master.py" doctor
-python "<BRIDGE_DIR>/scripts/ppt_master.py" run project_manager.py init <name> --dir "<output-parent>"
+python3 "<BRIDGE_DIR>/scripts/ppt_master.py" doctor
+python3 "<BRIDGE_DIR>/scripts/ppt_master.py" run project_manager.py init <name> --dir "<output-parent>"
 ```
 
 First run `doctor` to resolve the managed runtime, then use `read_file` on its
@@ -120,14 +120,19 @@ For new SVG pages, search the installed common layout library before drawing a
 familiar layout from scratch:
 
 ```text
-python "<BRIDGE_DIR>/scripts/ppt_master.py" svg-search "process three stages"
-python "<BRIDGE_DIR>/scripts/ppt_master.py" svg-render process-three-steps --data "<fields.json>" --output "<project>/svg_output/03_process.svg"
+python3 "<BRIDGE_DIR>/scripts/ppt_master.py" svg-search "process three stages"
+python3 "<BRIDGE_DIR>/scripts/ppt_master.py" svg-render process-three-steps --data "<fields.json>" --output "<project>/svg_output/03_process.svg"
 ```
 
 Search returns matching names, scenarios and required fields. For several
 pages, use `svg-render-batch --jobs "<jobs.json>"`; each job contains `layout`,
 `data` and an absolute `output` path. Supply every field
-in JSON; `colors` and `font_family` may align the result with the selected theme.
+in JSON; pass `visual_style: "glassmorphism"` in the deck JSON for the dark
+glass material shown by Mira (gradient light, translucent panels and bright edges).
+Do not replace the selected preview with the library's default light palette; `colors` and `font_family` may align the result with the selected theme.
+Copy the execution contract's `visual_reference` into the same deck JSON so the
+renderer applies the preview colors automatically. Supported common materials
+and the custom-route fallback are listed in `references/performance.md`.
 Use the generated SVG as editable page source, not a full-slide image. Preserve
 source facts and do not invent numbers to fill a layout. Follow the selected
 upstream route's final checker and export gates.
