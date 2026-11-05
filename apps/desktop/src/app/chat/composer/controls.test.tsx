@@ -78,7 +78,7 @@ describe('HUD mode', () => {
     fireEvent.pointerEnter(mic.parentElement!)
 
     expect(await screen.findByLabelText('Read replies aloud')).toBeTruthy()
-    expect(screen.getByLabelText('Wake word "hey hermes"')).toBeTruthy()
+    expect(screen.getByLabelText('Wake word "hey mira"')).toBeTruthy()
     expect(screen.queryByLabelText('Exit HUD mode')).toBeNull()
     expect(screen.queryByLabelText('Reset HUD size and position')).toBeNull()
     // No folded menu trigger — the fan's group shares the "Voice" name.
@@ -190,7 +190,7 @@ describe('wake-word ear visibility', () => {
   const findEar = async () => {
     fireEvent.pointerEnter(screen.getByLabelText('Voice dictation').parentElement!)
 
-    return screen.findByLabelText('Wake word "hey hermes"')
+    return screen.findByLabelText('Wake word "hey mira"')
   }
 
   it('stays reachable during a busy agent turn', async () => {
@@ -234,7 +234,7 @@ describe('wake-word ear visibility', () => {
       }
     })
 
-    const ear = screen.getByLabelText('Wake word: "hey hermes" — paused during voice chat')
+    const ear = screen.getByLabelText('Wake word: "hey mira" — paused during voice chat')
     expect((ear as HTMLButtonElement).disabled).toBe(true)
   })
 })

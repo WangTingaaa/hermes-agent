@@ -7,6 +7,7 @@ import { useI18n } from '@/i18n'
 import { triggerHaptic } from '@/lib/haptics'
 import { Ear, EarOff, iconSize, Loader2, Square, Volume2, VolumeX } from '@/lib/icons'
 import { cn } from '@/lib/utils'
+import { wakeWordDisplayPhrase } from '@/lib/wake-word-label'
 import { $wakeWord, toggleWakeWord } from '@/store/wake-word'
 
 import { ACTIVE_ICON_BTN, GHOST_ICON_BTN } from './control-classes'
@@ -37,7 +38,7 @@ export function VoiceFan({ autoSpeak, disabled, state, voiceStatus, onDictate, o
   const c = t.composer
   const wake = useStore($wakeWord)
 
-  const phrase = wake.phrase || 'hey hermes'
+  const phrase = wakeWordDisplayPhrase(wake.phrase)
   const dictating = state.voice.active || voiceStatus !== 'idle'
   const wakeListening = wake.listening
   const wakePending = wake.pending
