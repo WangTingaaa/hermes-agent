@@ -136,6 +136,8 @@ def prepare(skill: Path, python: Path, project: Path, *, deck_file: Path | None 
             if library is None:
                 raise ValueError("The SVG library is required for a deck input")
             _fill_deck(skill, python, project, json.loads(deck_file.read_text(encoding="utf-8")), library, timings)
+            _run(skill, python, project, "compact_svg_styles.py",
+                 [str(project / "svg_output"), "--inplace"], "compact", timings)
         _checker(skill, python, project, "final", timings)
         preview_start = time.perf_counter()
         # Keep rendering dependencies in the independent runtime, never Hermes's Python.

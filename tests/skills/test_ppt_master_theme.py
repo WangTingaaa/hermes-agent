@@ -60,3 +60,32 @@ def test_custom_material_is_not_silently_replaced_with_light_cards(monkeypatch):
     theme = importlib.import_module('visual_theme')
     with pytest.raises(ValueError, match='custom/template route'):
         theme.resolve_theme({'visual_style': 'blueprint'})
+
+
+def test_chalkboard_batch_keeps_native_text_and_chalk_outlines(tmp_path, monkeypatch):
+    monkeypatch.syspath_prepend(str(SCRIPTS))
+    library = importlib.import_module('svg_library')
+    (tmp_path / 'catalog.json').write_text(json.dumps({'entries': [
+        {'id': 'body', 'file': 'body.svg', 'placeholders': ['TITLE']}]}))
+    (tmp_path / 'body.svg').write_text(
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">'
+        '<rect width="1280" height="720" fill="#F3F6FA"/>'
+        '<rect x="60" y="100" width="1100" height="500" rx="18" fill="#FFFFFF"/>'
+        '<rect x="60" y="200" width="1100" height="80" fill="#EBF0F6"/>'
+        '<path d="M0 300 H100 V400 H0 Z" fill="#277C83"/>'
+        '<text x="80" y="160" fill="#24324B">{{TITLE}}</text></svg>')
+    target = tmp_path / 'slide.svg'
+    library.render(tmp_path, 'body', {'fields': {'TITLE': '非洲象：数据未量化'},
+                   'visual_style': 'chalkboard'}, target)
+    root = ET.fromstring(target.read_text())
+    ns = {'s': 'http://www.w3.org/2000/svg'}
+    assert root.find('s:rect', ns).get('fill') == '#1E2B27'
+    panel = root.findall('s:rect', ns)[1]
+    assert panel.get('fill') == '#1E2B27'
+    assert panel.get('stroke') == '#F4F1E8'
+    assert root.findall('s:rect', ns)[2].get('fill') == '#1E2B27'
+    assert root.find('s:path', ns).get('fill') == '#1E2B27'
+    assert root.find('s:path', ns).get('stroke') == '#E7BB86'
+    assert root.find('s:text', ns).get('fill') == '#F4F1E8'
+    assert ''.join(root.itertext()) == '非洲象：数据未量化'
+    assert not root.findall('.//s:image', ns)

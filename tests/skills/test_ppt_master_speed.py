@@ -37,6 +37,41 @@ def test_body_wrap_preserves_complete_text_and_unchanged_svg_mtime(tmp_path, mon
     assert output.stat().st_mtime_ns == before
 
 
+def test_mixed_labels_fill_and_long_titles_fail_before_overwriting(tmp_path, monkeypatch):
+    _, library = modules(monkeypatch)
+    (tmp_path / 'catalog.json').write_text(json.dumps({'entries': [
+        {'id': 'title', 'file': 'title.svg', 'placeholders': ['TITLE']}]}))
+    (tmp_path / 'title.svg').write_text(
+        '<svg xmlns="http://www.w3.org/2000/svg"><g data-pptx-bounds="0 0 240 70">'
+        '<text x="20" y="40" font-size="24">S · {{TITLE}}</text></g></svg>')
+    target = tmp_path / 'filled.svg'
+    library.render(tmp_path, 'title', {'TITLE': '来源事实'}, target)
+    assert ''.join(ElementTree.fromstring(target.read_text()).itertext()) == 'S · 来源事实'
+    before = target.read_bytes()
+    with pytest.raises(ValueError, match='exceeds its layout zone'):
+        library.render(tmp_path, 'title', {'TITLE': '过长标题' * 20}, target)
+    assert target.read_bytes() == before
+
+
+def test_diagram_links_stay_with_their_nodes_in_one_layout_zone(tmp_path, monkeypatch):
+    _, library = modules(monkeypatch)
+    (tmp_path / 'catalog.json').write_text(json.dumps({'entries': [
+        {'id': 'hub', 'file': 'hub.svg', 'placeholders': ['TITLE']}]}))
+    (tmp_path / 'hub.svg').write_text(
+        '<svg xmlns="http://www.w3.org/2000/svg"><line x1="10" y1="20" x2="200" y2="80"/>'
+        '<g id="hub" data-pptx-bounds="0 0 220 100">'
+        '<text x="20" y="50" font-size="24">{{TITLE}}</text></g></svg>')
+    target = tmp_path / 'filled.svg'
+    library.render(tmp_path, 'hub', {'TITLE': '保护与共存'}, target)
+    root = ElementTree.fromstring(target.read_text())
+    ns = {'s': 'http://www.w3.org/2000/svg'}
+    assert len(root) == 1
+    assert root[0].get('data-pptx-bounds') == '0 0 220 100'
+    assert root[0].find('s:line', ns) is not None
+    assert root[0].find('s:g[@id="hub"]', ns) is not None
+    assert ''.join(root.itertext()) == '保护与共存'
+
+
 def test_early_gate_precedes_page_six_and_failure_prevents_later_authoring(tmp_path, monkeypatch):
     build, library = modules(monkeypatch)
     project = tmp_path / "project"

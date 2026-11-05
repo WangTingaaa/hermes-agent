@@ -58,7 +58,7 @@ def render(root: Path, name: str, data: dict, output: Path) -> dict:
     if font:
         svg = svg.replace('font-family="Microsoft YaHei"', 'font-family="' + escape(font, {'"': '&quot;'}) + '"')
     svg = apply_material(svg, style, palette)
-    svg = _wrap_body_fields(svg, fields)
+    svg = _fill_text_fields(svg, fields)
     ElementTree.fromstring(svg)
     output.parent.mkdir(parents=True, exist_ok=True)
     if not output.exists() or output.read_text(encoding="utf-8") != svg:
@@ -66,47 +66,96 @@ def render(root: Path, name: str, data: dict, output: Path) -> dict:
     return {"ok": True, "layout": entry["id"], "output": str(output), "editable": True}
 
 
-def _wrap_body_fields(source: str, fields: dict) -> str:
-    """Flow paragraphs inside their existing layout zone without shortening facts."""
+def _fill_text_fields(source: str, fields: dict) -> str:
+    """Fill complete and mixed labels; reject overflow before writing any SVG."""
     namespace = "http://www.w3.org/2000/svg"
     ElementTree.register_namespace("", namespace)
     root = ElementTree.fromstring(source)
+    _group_connectors(root, namespace)
     parents = {child: parent for parent in root.iter() for child in parent}
     for node in root.iter(f"{{{namespace}}}text"):
-        match = re.fullmatch(r"\{\{([A-Z0-9_]+)\}\}", node.text or "")
-        if not match:
+        original = node.text or ""
+        keys = re.findall(r"\{\{([A-Z0-9_]+)\}\}", original)
+        if not keys:
             continue
-        text = fields[match[1]]
-        node.text = str(text)
-        if not re.search(r"BODY|SUMMARY|QUOTE|MESSAGE|INSIGHT|CTA", match[1]):
-            continue
-        if not isinstance(text, str):
-            raise ValueError(f"SVG field {match[1]} must be text")
+        text = re.sub(r"\{\{([A-Z0-9_]+)\}\}", lambda match: str(fields[match[1]]), original)
+        node.text = text
         parent = parents.get(node)
         while parent is not None and "data-pptx-bounds" not in parent.attrib:
             parent = parents.get(parent)
-        if parent is None or node.get("text-anchor", "start") != "start":
+        if parent is None:
             continue
-        bx, by, width, height = map(float, parent.attrib["data-pptx-bounds"].split())
+        _bx, by, _width, height = map(float, parent.attrib["data-pptx-bounds"].split())
         x, y = float(node.get("x", "0")), float(node.get("y", "0"))
         size = float(node.get("font-size", "20"))
-        inset = max(12, x - bx)
-        available = bx + width - x - inset
+        available = _text_width(node, parent)
         if available <= 0:
             continue
         lines = _lines(text, available / size / 1.08)
-        bottom = by + height - 12 - size * 0.35
-        following = [float(other.get("y", "0")) - size * 1.4
+        flow = any(re.search(r"BODY|SUMMARY|QUOTE|MESSAGE|INSIGHT|CTA|DETAIL|ACCEPTANCE|NOTE", key) for key in keys)
+        if flow and any(not isinstance(fields[key], str) for key in keys):
+            raise ValueError(f"SVG field {', '.join(keys)} must be text")
+        if not flow:
+            if len(lines) > 1:
+                raise ValueError(f"SVG field {', '.join(keys)} exceeds its layout zone; use a shorter heading or a roomier layout")
+            continue
+        bottom = by + height - size * 0.25
+        following = [float(other.get("y", "0")) - float(other.get("font-size", "20")) * 0.85 - size * 0.2
                      for other in parent.iter(f"{{{namespace}}}text") if float(other.get("y", "0")) > y]
         if following:
             bottom = min(bottom, min(following))
         if y + (len(lines) - 1) * size * 1.45 > bottom:
-            raise ValueError(f"SVG field {match[1]} exceeds its layout zone; choose a roomier layout or distribute the content across pages")
+            raise ValueError(f"SVG field {', '.join(keys)} exceeds its layout zone; choose a roomier layout or distribute the content across pages")
         node.text = None
         for index, line in enumerate(lines):
             span = ElementTree.SubElement(node, f"{{{namespace}}}tspan", {"x": str(x), "y": str(y + index * size * 1.45)})
             span.text = line
     return ElementTree.tostring(root, encoding="unicode")
+
+
+def _group_connectors(root, namespace: str) -> None:
+    connectors = [node for node in root if node.tag == f"{{{namespace}}}line"
+                  and node.get("data-pptx-role") is None]
+    if not connectors:
+        return
+    content = [node for node in root if node in connectors or
+               (node.tag == f"{{{namespace}}}g" and node.get("id") not in
+                {"slide-heading", "slide-footer"})]
+    xs = [float(node.get(key, "0")) for node in connectors for key in ("x1", "x2")]
+    ys = [float(node.get(key, "0")) for node in connectors for key in ("y1", "y2")]
+    for node in content:
+        if "data-pptx-bounds" in node.attrib:
+            x, y, width, height = map(float, node.attrib["data-pptx-bounds"].split())
+            xs.extend((x, x + width))
+            ys.extend((y, y + height))
+    x, y = min(xs), min(ys)
+    bounds = f"{x:g} {y:g} {max(max(xs) - x, 1):g} {max(max(ys) - y, 1):g}"
+    group = ElementTree.Element(f"{{{namespace}}}g", {
+        "id": "common-layout-diagram", "data-pptx-bounds": bounds})
+    root.insert(list(root).index(content[0]), group)
+    for node in content:
+        root.remove(node)
+        group.append(node)
+
+
+def _text_width(node, parent) -> float:
+    """Keep same-row labels out of their neighbors, including centered text."""
+    namespace = "http://www.w3.org/2000/svg"
+    bx, _, width, _ = map(float, parent.attrib["data-pptx-bounds"].split())
+    x, y = float(node.get("x", "0")), float(node.get("y", "0"))
+    size = float(node.get("font-size", "20"))
+    anchor = node.get("text-anchor", "start")
+    if anchor == "middle":
+        return 2 * min(x - bx, bx + width - x) - 24
+    if anchor == "end":
+        return x - bx - 12
+    right = bx + width - 12
+    for other in parent.iter(f"{{{namespace}}}text"):
+        ox, oy = float(other.get("x", "0")), float(other.get("y", "0"))
+        osize = float(other.get("font-size", "20"))
+        if ox > x and max(y - size, oy - osize) < min(y, oy):
+            right = min(right, ox - 12)
+    return right - x
 
 
 def _lines(text: str, capacity: float) -> list[str]:

@@ -34,7 +34,8 @@ python3 "<BRIDGE_DIR>/scripts/ppt_master.py" quick-prepare "<project>" --deck "<
 Copy `visual_style` and `visual_reference` directly from the user's execution
 contract into the deck JSON. The helper resolves the preview palette itself;
 do not translate or omit those fields. Common layouts support `glassmorphism`,
-`swiss-minimal`, `soft-rounded`, `dark-tech`, `editorial` and `data-journalism`.
+`swiss-minimal`, `soft-rounded`, `dark-tech`, `editorial`, `data-journalism` and
+`chalkboard` (dark slate, chalk outlines and pastel accents, all native/editable).
 Other selected styles require custom/template authoring; an unsupported style
 is rejected instead of silently producing the default light theme.
 
@@ -49,6 +50,11 @@ cannot fit is rejected, never shortened or rasterized. Notes, when present,
 must cover every slide. The helper retains the early gate after page 5 for a
 new roster of 7+ slides, then runs the final gate and renders contact sheets.
 It replaces a separate `svg-render-batch` pass; do not run both on the same input.
+Common-layout preparation also compacts inherited styles before the final gate.
+Headings and same-row labels are checked against their available slot before
+writing; keep headings short and retain the full explanation in body text/notes.
+Do not add pages or drop facts to repair a slot; choose compatible geometry or
+redistribute content within the requested roster.
 Do not apply common geometry over a binding Layout/Deck/Master or an incompatible
 canvas/style. For custom pages, write one project-local authoring script that
 reuses the deck's geometry, typography and icon setup. Write pages 1–5 in one

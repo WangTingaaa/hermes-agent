@@ -23,6 +23,8 @@ PALETTES = {
                       text='#302D29', muted='#736A61', surface='#FAF7F1'),
     'data-journalism': dict(background='#F6F8F9', primary='#20333B', accent='#1B7385',
                             text='#20333B', muted='#576C76', surface='#FFFFFF'),
+    'chalkboard': dict(background='#1E2B27', primary='#F4F1E8', accent='#E7BB86',
+                       text='#F4F1E8', muted='#C3CEC4', surface='#2D3D35'),
 }
 
 
@@ -42,6 +44,8 @@ def resolve_theme(data: dict) -> dict:
 
 
 def apply_material(svg: str, style: str | None, palette: dict) -> str:
+    if style == 'chalkboard':
+        return _chalkboard(svg, palette)
     if style not in ('glassmorphism', 'soft-rounded', 'swiss-minimal', 'editorial'):
         return svg
     ET.register_namespace('', NS)
@@ -80,4 +84,34 @@ def apply_material(svg: str, style: str | None, palette: dict) -> str:
         root.insert(position, ET.Element(f'{{{NS}}}circle', cx=str(cx), cy=str(cy),
                     r=str(radius), fill='url(#mira-glass-glow)',
                     attrib={'data-pptx-role': 'decoration', 'id': f'mira-glass-light-{index}'}))
+    return ET.tostring(root, encoding='unicode')
+
+
+def _chalkboard(svg: str, palette: dict) -> str:
+    """Use native chalk outlines instead of filled business cards on the board."""
+    ET.register_namespace('', NS)
+    root = ET.fromstring(svg)
+    panel_colors = {palette['surface'].upper(), palette['primary'].upper(),
+                    '#EBF0F6', '#216171', '#4B999D'}
+    for node in root.iter():
+        if node.tag == f'{{{NS}}}text':
+            # Labels originally knocked out of a dark badge must remain legible
+            # when that badge becomes an outline on the dark board.
+            if node.get('fill', '').upper() in {palette['background'].upper(), palette['surface'].upper()}:
+                node.set('fill', palette['text'])
+            continue
+        if node.get('fill', '').upper() in panel_colors:
+            # Opaque board-colored panels mask connectors behind the text.
+            node.set('fill', palette['background'])
+            node.set('stroke', palette['text'])
+            node.set('stroke-width', '2')
+            node.set('stroke-linejoin', 'round')
+            if node.tag == f'{{{NS}}}rect':
+                node.set('rx', '3')
+        if node.tag == f'{{{NS}}}path' and node.get('fill', '').upper() == palette['accent'].upper():
+            node.set('fill', palette['background'])
+            node.set('stroke', palette['accent'])
+            node.set('stroke-width', '2')
+        if node.get('stroke', '').upper() == '#CFD9E6':
+            node.set('stroke', palette['muted'])
     return ET.tostring(root, encoding='unicode')
