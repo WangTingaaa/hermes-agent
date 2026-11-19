@@ -1,4 +1,4 @@
 interface:
   display_name: "mesoInsights 知识库、文档与知识卡片"
-  short_description: "创建和管理文镜知识库、云端文件夹、文档及知识卡片。"
+  short_description: "管理文镜知识库、知识卡片和云端文件，归档交付产物。"
   default_prompt: "使用 $meso-insights 查看我的文镜知识库，并按需要创建知识库和添加文件。"

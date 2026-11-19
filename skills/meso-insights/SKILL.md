@@ -1,6 +1,14 @@
 ---
 name: meso-insights
-description: "创建和管理文镜知识库、云端文件夹、文档及知识卡片."
+description: "管理文镜知识库、云端文件和知识卡片，归档本轮交付的 HTML、文档、表格、图片等文件."
+version: 1.0.0
+author: Tina
+license: MIT
+platforms: [linux, macos, windows]
+metadata:
+  hermes:
+    tags: [meso-insights, cloud-files, knowledge-base]
+    category: productivity
 ---
 
 # mesoInsights 知识库、文档与知识卡片 Skill
@@ -10,6 +18,8 @@ description: "创建和管理文镜知识库、云端文件夹、文档及知识
 ## When to Use
 
 用户要求创建或查询文镜知识库、添加知识库文件、管理个人云端文件夹、查看本地连接、导入或读取文档，或管理知识卡片时使用。
+
+已启用文镜默认归档的宿主在交付本轮新生成的文件时也使用本 Skill，即使用户只说“生成一份 HTML 报告”。
 
 ## Prerequisites
 
@@ -34,6 +44,7 @@ description: "创建和管理文镜知识库、云端文件夹、文档及知识
 - 递归删除单个/多个目录及其子目录和文件：`mcp__mesoInsights__delete_user_folder`、`mcp__mesoInsights__batch_delete_user_folders`。
 - 查询链接过的本地文件夹及同步状态：`mcp__mesoInsights__get_local_file_locations_page`。
 - 导入本地文件：`mcp__mesoInsights__import_file`。 指定个人云端目录时传 `folder_id`（默认 0 为根目录）；此 ID 不是研究笔记 ID，也不是本地目录连接 ID。调用前检查当前工具 schema，不支持目标目录时明确报错，不要改传到其他目录。
+- 归档最终交付文件：调用 `mesoInsights` MCP 的 `archive_artifact(file_path, folder_id?)`。省略云端目标目录 ID 时，由 MCP 使用宿主配置的智能体名称定位或创建产物目录，如 `/Mira产物`、`/Codex产物`。
 - 搜索云端文件：`mcp__mesoInsights__search_user_files`。
 - 查看文件解析、分类或同步状态：`mcp__mesoInsights__get_file_detail`。
 - 读取已解析文件正文：`mcp__mesoInsights__get_file_parse_content`。
@@ -44,6 +55,12 @@ description: "创建和管理文镜知识库、云端文件夹、文档及知识
 - 删除知识卡片（进入 AI 阅读回收站）：`mcp__mesoInsights__delete_knowledge_card`。
 
 ## Procedure
+
+### 交付文件时归档到个人云端
+
+1. 使用最终回复中准备交付的本轮生成文件。交付 HTML、PDF、Word、表格、图片等文件时默认归档。若用户说“只保存本地”“不要上传文镜”或表达同样的意思，直接交付本地文件并跳过文镜工具。普通仓库改动、输入文件、临时文件和仅在聊天里展示的内容不触发归档。
+2. 文件生成并验证后、最终回复前，对每份交付文件用其绝对路径调用 `archive_artifact`。多文件网页如果本身以 ZIP 交付，归档含依赖的最终 ZIP。用户指定个人云端目录时传已确认的 `folder_id`，并且只传到该目录。成功上传到用户指定的知识库、Wiki 或其他云端目标后，无需额外归档同一份文件。
+3. 以工具返回的 `fileName`、`folderPath`、`fileId` 回复实际保存位置，同时提供本地交付。发生同名时 MCP 会在云端文件名加秒级时间，必要时再加序号。若工具不可用、文件对 MCP 不可读或上传失败，仍交付本地文件并说明状态。`upload_status_unknown` 时先检查目标目录与返回的文件 ID，避免盲目重传。
 
 ### 知识库创建与文件添加
 
