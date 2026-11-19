@@ -78,6 +78,13 @@
   --font-family-mono:
     "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
 
+  // 长文正文独立于工具栏字号，随阅读页的字号档位缩放。
+  --ai-reading-font: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Microsoft YaHei UI", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  --ai-reading-size: calc(var(--ai-font-size-lg, 14px) + 1px);
+  --ai-reading-leading: 1.82;
+  --ai-reading-ink: #30363d;
+
   --font-size-xs: 12px;
   --font-size-sm: 12px;
   --font-size-base: 14px;
@@ -199,26 +206,18 @@
   --color-purple-base: #722ed1;
   --color-green-base: #52c41a;
 
-  --bg-gradient-blue: color-mix(
-    in srgb,
-    var(--color-blue-base),
-    var(--mix-target) 65%
-  );
-  --bg-gradient-purple: color-mix(
-    in srgb,
-    var(--color-purple-base),
-    var(--mix-target) 65%
-  );
-  --bg-gradient-green: color-mix(
-    in srgb,
-    var(--color-green-base),
-    var(--mix-target) 65%
-  );
-  --bg-gradient-gray: color-mix(
-    in srgb,
-    var(--primary-color),
-    var(--mix-target) 65%
-  );
+  --bg-gradient-blue: color-mix(in srgb,
+      var(--color-blue-base),
+      var(--mix-target) 65%);
+  --bg-gradient-purple: color-mix(in srgb,
+      var(--color-purple-base),
+      var(--mix-target) 65%);
+  --bg-gradient-green: color-mix(in srgb,
+      var(--color-green-base),
+      var(--mix-target) 65%);
+  --bg-gradient-gray: color-mix(in srgb,
+      var(--primary-color),
+      var(--mix-target) 65%);
 
   // 全局常用颜色扩展
   --text-title-tertiary: #1e293b;
@@ -233,7 +232,7 @@
 // 笔记本电脑常见视口宽度：1280、1366、1440、1536，导航栏使用紧凑高度
 @media (max-width: 1599px) {
   :root {
-    --nav-height: 55px; 
+    --nav-height: 55px;
   }
 }
 
@@ -258,33 +257,40 @@ html[data-theme="dark"] {
   --primary-color: #10b5c8;
   --primary-color-rgb: 16, 181, 200;
 
-  // 主题相关颜色（深色主题）
-  --bg-color: #141414;
-  --bg-color-secondary: #2b2b2b;
-  --bg-color-tertiary: #262626;
-  --bg-color-elevated: #1f1f1f;
+  // 灰阶决定表面亮度，当前主色提供色相。正文只轻微着色，保持长文可读性。
+  --bg-color: color-mix(in srgb, var(--primary-color) 4%, #101010);
+  --bg-color-secondary: color-mix(in srgb, var(--primary-color) 5%, #181818);
+  --bg-color-tertiary: color-mix(in srgb, var(--primary-color) 6%, #292929);
+  --bg-color-elevated: color-mix(in srgb, var(--primary-color) 6%, #333333);
 
-  --text-color: #ffffff;
-  --text-color-primary: #e0e0e0;
-  // 如需改回“暗色 secondary 为灰色”：把下一行改回 #a0a0a0
-  --text-color-secondary: var(--text-color);
-  --text-color-tertiary: #737373;
-  --text-color-quaternary: #525252;
-  --text-color-inverse: #000000;
+  --text-color: color-mix(in srgb, var(--primary-color) 3%, #dedede);
+  --text-color-primary: color-mix(in srgb, var(--primary-color) 2%, #f2f2f2);
+  --text-color-secondary: color-mix(in srgb, var(--primary-color) 5%, #cacaca);
+  --text-color-tertiary: color-mix(in srgb, var(--primary-color) 6%, #bcbcbc);
+  --text-color-quaternary: color-mix(in srgb, var(--primary-color) 6%, #898989);
+  --ai-reading-ink: var(--text-color);
+  --text-color-inverse: #111111;
 
-  --border-color: #3f3f3f;
-  --border-color-light: #262626;
-  --border-color-dark: #595959;
+  --border-color: color-mix(in srgb, var(--primary-color) 8%, #424242);
+  --border-color-light: color-mix(in srgb, var(--primary-color) 7%, #303030);
+  --border-color-dark: color-mix(in srgb, var(--primary-color) 10%, #606060);
 
   --shadow-color: rgba(0, 0, 0, 0.5);
   --shadow-color-dark: rgba(0, 0, 0, 0.8);
+
+  // 浮层底色随主色变化，外缘用中性白光勾勒。
+  --dialog-surface: color-mix(in srgb, var(--bg-color-elevated) 58%, var(--bg-secondary-alt));
+  --dialog-edge: rgba(255, 255, 255, 0.18);
+  --dialog-glow: rgba(255, 255, 255, 0.12);
+  --dialog-shadow: 0 0 5px var(--dialog-glow), 0 0 18px var(--dialog-glow), 0 14px 42px rgba(0, 0, 0, 0.36);
+  --dialog-mask: rgba(0, 0, 0, 0.46);
 
   // 侧栏打开时左侧遮罩（暗色需更高不透明度才能看清压暗效果）
   --panel-dim-overlay: rgba(0, 0, 0, 0.52);
 
   // 玻璃态效果（深色）
-  --glass-bg: rgba(20, 20, 20, 0.8);
-  --glass-border: rgba(141, 141, 141, 0.8);
+  --glass-bg: color-mix(in srgb, var(--bg-color-secondary) 90%, transparent);
+  --glass-border: var(--border-color);
   --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
 
   // 重新定义阴影（深色主题需要更强的阴影）
@@ -298,16 +304,16 @@ html[data-theme="dark"] {
     0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
   --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
 
-  --mix-target: #000000;
+  --mix-target: var(--bg-color);
 
   // 全局常用颜色扩展
-  --text-title-tertiary: #d9dee6;
-  --text-title-quaternary: #bdc7d3;
-  --text-body-primary: #a3a3a3;
-  --text-body-secondary: #737373;
-  --bg-secondary-alt: #2b2828;
-  --icon-color-primary: #94a3b8; 
-  --border-light-alt: 1px solid #524c4c;
+  --text-title-tertiary: var(--text-color-primary);
+  --text-title-quaternary: var(--text-color);
+  --text-body-primary: var(--text-color-secondary);
+  --text-body-secondary: var(--text-color-tertiary);
+  --bg-secondary-alt: color-mix(in srgb, var(--primary-color) 7%, #212121);
+  --icon-color-primary: color-mix(in srgb, var(--primary-color) 10%, #c7c7c7);
+  --border-light-alt: 1px solid var(--border-color-light);
 }
 
 // ========================
@@ -435,7 +441,7 @@ html[data-theme="dark"] {
   &:focus {
     outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px rgba(16, 181, 200, 0.2);
+    box-shadow: 0 0 0 2px rgba(var(--primary-color-rgb), 0.2);
   }
 
   &::placeholder {
@@ -470,27 +476,31 @@ html[data-theme="dark"] {
 
 // 响应式媒体查询
 .respond-to(@device, @rules) {
-  & when (@device = xs) {
+  & when (@device =xs) {
     @media (max-width: 479px) {
       @rules();
     }
   }
-  & when (@device = sm) {
+
+  & when (@device =sm) {
     @media (min-width: 576px) {
       @rules();
     }
   }
-  & when (@device = md) {
+
+  & when (@device =md) {
     @media (min-width: 768px) {
       @rules();
     }
   }
-  & when (@device = lg) {
+
+  & when (@device =lg) {
     @media (min-width: 992px) {
       @rules();
     }
   }
-  & when (@device = xl) {
+
+  & when (@device =xl) {
     @media (min-width: 1200px) {
       @rules();
     }
@@ -502,6 +512,7 @@ html[data-theme="dark"] {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -512,6 +523,7 @@ html[data-theme="dark"] {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -523,6 +535,7 @@ html[data-theme="dark"] {
     opacity: 0;
     transform: translateY(-20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -530,10 +543,12 @@ html[data-theme="dark"] {
 }
 
 @keyframes pulse {
+
   0%,
   100% {
     opacity: 1;
   }
+
   50% {
     opacity: 0.5;
   }
@@ -543,6 +558,7 @@ html[data-theme="dark"] {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -564,7 +580,9 @@ html[data-theme="dark"] {
 .force-dark {
   --bg-color: #141414;
   --text-color: #ffffff;
-  --border-color: #434343;
+  --border-color: #3A3A3A;
+  --border-color-light: #505050;
+  --border-color-dark: #707070;
 }
 
 // 强制浅色主题
