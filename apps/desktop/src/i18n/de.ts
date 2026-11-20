@@ -2889,7 +2889,7 @@ export const deOverrides = {
         'Eine Zusammenfassung hochladen (Versionen, Konfigurationsschlüssel, Fehlerzähler; kein Logtext), teilbaren Link erhalten (wird nach 6h automatisch gelöscht)',
       debugShareConfirm: 'Debug-Bericht in ein öffentliches Paste hochladen?',
       debugShareConfirmDesc:
-        'Lädt eine Zusammenfassung zu einem öffentlichen Paste-Dienst hoch: Hermes-, Python- und OS-Versionen, Namen verbundener Plattformen und Toolsets, Konfigurationsschlüssel (ohne Werte) und Warnungs-/Fehlerzähler. Sie enthält keine Logzeilen und keinen Nachrichtentext. Pastes werden nach 6 Stunden automatisch gelöscht; ist paste.rs nicht erreichbar, bleiben sie beim Ausweichdienst dpaste.com 1 Tag öffentlich und lassen sich nicht vorzeitig löschen.',
+        'Lädt eine Zusammenfassung zu einem öffentlichen Paste-Dienst hoch: Mira-, Python- und OS-Versionen, Namen verbundener Plattformen und Toolsets, Konfigurationsschlüssel (ohne Werte) und Warnungs-/Fehlerzähler. Sie enthält keine Logzeilen und keinen Nachrichtentext. Pastes werden nach 6 Stunden automatisch gelöscht; ist paste.rs nicht erreichbar, bleiben sie beim Ausweichdienst dpaste.com 1 Tag öffentlich und lassen sich nicht vorzeitig löschen.',
       debugShareRunning: 'Debug-Bericht wird hochgeladen...',
       debugShareLinks: 'Freigabelinks',
       debugShareFailed: 'Debug-Freigabe fehlgeschlagen',
@@ -3015,7 +3015,7 @@ export const deOverrides = {
     relayLink: {
       title: 'Team Gateway',
       badge: 'Kein Bot-Token nötig',
-      intro: (platform: string) => `${platform} erreicht diesen Agenten über den gemeinsamen Hermes-Bot. Verknüpfe dein ${platform}-Konto damit und schreib dem Bot, um mit deinem Agenten zu sprechen.`,
+      intro: (platform: string) => `${platform} erreicht diesen Agenten über den gemeinsamen Mira-Bot. Verknüpfe dein ${platform}-Konto damit und schreib dem Bot, um mit deinem Agenten zu sprechen.`,
       link: (platform: string) => `${platform} verknüpfen`,
       linkAnother: (platform: string) => `Weiteres ${platform}-Konto verknüpfen`,
       linkedAccounts: 'Verknüpfte Konten',

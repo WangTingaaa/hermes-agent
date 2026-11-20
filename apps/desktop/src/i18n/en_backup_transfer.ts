@@ -2,9 +2,9 @@ import type { BackupTransferTranslations } from './types_backup_transfer'
 
 // Settings ▸ Backup & Transfer, composed by en.ts as `settings.backup`.
 export const enBackupTransfer: BackupTransferTranslations = {
-  intro: 'Save this agent to a file, or carry it over to a Hermes Cloud agent.',
+  intro: 'Save this agent to a file, or carry it over to a Mira Cloud agent.',
   backupCommand: 'Back up this agent',
-  transferCommand: 'Transfer to Hermes Cloud',
+  transferCommand: 'Transfer to Mira Cloud',
   backupTitle: 'Back up this agent',
   backupHelp:
     'One file with everything: every profile, settings, memory, skills, schedules, chat history and keys. Keep it private.',
@@ -13,9 +13,9 @@ export const enBackupTransfer: BackupTransferTranslations = {
   backupSaved: 'Saved.',
   backupKept: path => `Kept on the agent at ${path}`,
   backupFailed: 'The backup did not finish',
-  transferTitle: 'Transfer to Hermes Cloud',
-  transferHelp: 'Replace a Hermes Cloud agent with this one. Nothing on this computer changes.',
-  signInTitle: 'Sign in to Hermes Cloud',
+  transferTitle: 'Transfer to Mira Cloud',
+  transferHelp: 'Replace a Mira Cloud agent with this one. Nothing on this computer changes.',
+  signInTitle: 'Sign in to Mira Cloud',
   signInHelp: 'Use the Nous account your cloud agents belong to.',
   signIn: 'Sign in',
   signInWebappHelp: 'Sign in to Nous Portal under Settings ▸ Providers, then come back here.',
@@ -33,7 +33,7 @@ export const enBackupTransfer: BackupTransferTranslations = {
   replacesTitle: 'Replaced on the cloud agent',
   replaces: ['Memory', 'Persona', 'Skills', 'Conversations', 'Scheduled jobs', 'Settings', 'API keys and logins'],
   keepsTitle: 'The cloud agent keeps',
-  keeps: ['Its Nous Portal sign-in', 'Its model and provider', 'Hermes Cloud tools', 'Its scheduler settings'],
+  keeps: ['Its Nous Portal sign-in', 'Its model and provider', 'Mira Cloud tools', 'Its scheduler settings'],
   botNote: agent =>
     `Messaging bots (Telegram, Discord…) come over switched off on ${agent}, so this computer keeps answering. Switch them over on the Messaging page when you're ready.`,
   undoNote: agent => `A backup of ${agent} is taken first, so you can undo.`,
@@ -48,7 +48,7 @@ export const enBackupTransfer: BackupTransferTranslations = {
   botsOff: (bots, agent) =>
     `${bots} came over switched off on ${agent}. When you're ready, switch them over on the Messaging page: off here, on there.`,
   gatewayDown: agent =>
-    `The files arrived, but ${agent} did not start again, so its bots and scheduled jobs are not running. Restart it from the Hermes Cloud portal, or run \`hermes gateway start\` on it.`,
+    `The files arrived, but ${agent} did not start again, so its bots and scheduled jobs are not running. Restart it from the Mira Cloud portal, or run \`hermes gateway start\` on it.`,
   undo: 'Undo',
   undoing: 'Undoing…',
   openAgent: 'Open agent',

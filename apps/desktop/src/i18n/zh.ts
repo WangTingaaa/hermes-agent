@@ -8,6 +8,7 @@ import { defineLocale, type TranslationOverrides } from './define-locale'
 import { desktopControlCopy } from './desktop-control'
 import { introZh } from './intro-zh'
 import { miraWorkspaceCopy } from './mira-workspace'
+import { zhBackupTransfer } from './zh_backup_transfer'
 import { zhCatalog, zhSkillDeepLink } from './zh_catalog'
 import { zhClarify } from './zh_clarify'
 import { zhConnectorCard } from './zh_connector_card'
@@ -465,6 +466,7 @@ const zhBaseOverrides = {
     noResults: '未找到语言'
   },
   settings: {
+    backup: zhBackupTransfer,
     memoryLayers: zhMemoryLayers,
     subpages: {
       appearanceTheme: '主题',
@@ -1053,6 +1055,10 @@ const zhBaseOverrides = {
       runtimeUpdating: (target, progress) => `正在更新至 Mira Agent ${target || '最新版本'}（${progress || 0}%）`,
       runtimeReleaseNotes: {
         '0.21.5': [
+          '可将所有配置档备份到一个文件，也可将智能体迁移到 Mira Cloud。迁移前可查看将被替换的内容，迁移后支持撤销。',
+          '插件页支持一键更新和自动更新，需要单独审核的插件会标出。',
+          '修复上一条回复的完成通知延迟到达时，下一条回复被提前标记为已完成的问题。',
+          '公开调试报告仅分享版本、配置键名和错误计数等摘要，分享前可查看隐私说明。',
           '所有网关保持连接，可即时切换并同时查看各配置档的会话与后台任务。',
           '终端标签页绑定各自的网关和配置档，重启应用后保留布局；远程断开时可按 Enter 重连。',
           '技能支持内容锁定，防止智能体自动改写；你仍可手动编辑。',
@@ -2316,7 +2322,7 @@ const zhBaseOverrides = {
       debugShareDesc: '上传摘要（版本、配置键名、错误计数；不含日志文本），获取可分享链接（6 小时后自动删除）',
       debugShareConfirm: '将调试报告上传到公开粘贴服务？',
       debugShareConfirmDesc:
-        '将摘要上传到公开粘贴服务：Hermes、Python 和操作系统版本，已连接平台与工具集名称，配置键名（不含值），以及警告/错误计数。不包含任何日志行或消息文本。粘贴内容 6 小时后自动删除；若 paste.rs 不可用，备用的 dpaste.com 会将其公开保留 1 天，且无法提前删除。',
+        '将摘要上传到公开粘贴服务：Mira、Python 和操作系统版本，已连接平台与工具集名称，配置键名（不含值），以及警告/错误计数。不包含任何日志行或消息文本。粘贴内容 6 小时后自动删除；若 paste.rs 不可用，备用的 dpaste.com 会将其公开保留 1 天，且无法提前删除。',
       debugShareRunning: '正在上传调试报告…',
       debugShareLinks: '分享链接',
       debugShareFailed: '调试分享失败',
@@ -2434,7 +2440,7 @@ const zhBaseOverrides = {
     relayLink: {
       title: 'Team Gateway',
       badge: '无需机器人令牌',
-      intro: (platform: string) => `${platform} 通过共享的 Hermes 机器人连接到此智能体。关联你的 ${platform} 账号，然后给机器人发消息即可与智能体对话。`,
+      intro: (platform: string) => `${platform} 通过共享的 Mira 机器人连接到此智能体。关联你的 ${platform} 账号，然后给机器人发消息即可与智能体对话。`,
       link: (platform: string) => `关联 ${platform}`,
       linkAnother: (platform: string) => `关联另一个 ${platform} 账号`,
       linkedAccounts: '已关联账号',

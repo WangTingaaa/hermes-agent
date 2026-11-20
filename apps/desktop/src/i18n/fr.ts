@@ -2898,7 +2898,7 @@ export const frOverrides = {
         'Téléverser un résumé (versions, clés de configuration, compteurs d’erreurs ; aucun texte de journal), obtenir un lien partageable (auto-suppression après 6h)',
       debugShareConfirm: 'Téléverser le rapport de débogage vers un paste public ?',
       debugShareConfirmDesc:
-        'Téléverse un résumé vers un service de paste public : versions de Hermes, de Python et du système, noms des plateformes connectées et des toolsets, clés de configuration (sans valeurs) et compteurs d’avertissements/erreurs. Il ne contient aucune ligne de journal ni texte de message. Les pastes sont supprimés automatiquement après 6 heures ; si paste.rs est injoignable, le service de secours dpaste.com les garde publics 1 jour et ils ne peuvent pas être supprimés plus tôt.',
+        'Téléverse un résumé vers un service de paste public : versions de Mira, de Python et du système, noms des plateformes connectées et des toolsets, clés de configuration (sans valeurs) et compteurs d’avertissements/erreurs. Il ne contient aucune ligne de journal ni texte de message. Les pastes sont supprimés automatiquement après 6 heures ; si paste.rs est injoignable, le service de secours dpaste.com les garde publics 1 jour et ils ne peuvent pas être supprimés plus tôt.',
       debugShareRunning: 'Téléversement du rapport de débogage...',
       debugShareLinks: 'Liens de partage',
       debugShareFailed: 'Échec du partage de débogage',
@@ -3023,7 +3023,7 @@ export const frOverrides = {
     relayLink: {
       title: 'Team Gateway',
       badge: 'Aucun jeton de bot requis',
-      intro: (platform: string) => `${platform} atteint cet agent via le bot Hermes partagé. Associez votre compte ${platform} et écrivez au bot pour parler à votre agent.`,
+      intro: (platform: string) => `${platform} atteint cet agent via le bot Mira partagé. Associez votre compte ${platform} et écrivez au bot pour parler à votre agent.`,
       link: (platform: string) => `Associer ${platform}`,
       linkAnother: (platform: string) => `Associer un autre compte ${platform}`,
       linkedAccounts: 'Comptes associés',

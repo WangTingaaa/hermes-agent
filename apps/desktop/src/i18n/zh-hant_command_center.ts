@@ -139,7 +139,7 @@ export const zhHantCommandCenter = {
     maintenance: {
       debugShareConfirm: '要將偵錯報告上傳到公開貼上服務嗎？',
       debugShareConfirmDesc:
-        '將摘要上傳到公開貼上服務：Hermes、Python 與作業系統版本，已連線平台與工具集名稱，設定鍵名（不含值），以及警告/錯誤計數。不包含任何日誌行或訊息文字。貼上內容會在 6 小時後自動刪除；若 paste.rs 無法連線，備援的 dpaste.com 會將其公開保留 1 天，且無法提前刪除。'
+        '將摘要上傳到公開貼上服務：Mira、Python 與作業系統版本，已連線平台與工具集名稱，設定鍵名（不含值），以及警告/錯誤計數。不包含任何日誌行或訊息文字。貼上內容會在 6 小時後自動刪除；若 paste.rs 無法連線，備援的 dpaste.com 會將其公開保留 1 天，且無法提前刪除。'
     }
   },
 
@@ -176,7 +176,7 @@ export const zhHantCommandCenter = {
     relayLink: {
       title: 'Team Gateway',
       badge: '不需要機器人權杖',
-      intro: (platform: string) => `${platform} 透過共用的 Hermes 機器人連到這個代理。連結你的 ${platform} 帳號，再傳訊息給機器人就能和代理對話。`,
+      intro: (platform: string) => `${platform} 透過共用的 Mira 機器人連到這個代理。連結你的 ${platform} 帳號，再傳訊息給機器人就能和代理對話。`,
       link: (platform: string) => `連結 ${platform}`,
       linkAnother: (platform: string) => `連結另一個 ${platform} 帳號`,
       linkedAccounts: '已連結的帳號',

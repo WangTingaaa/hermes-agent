@@ -2882,7 +2882,7 @@ export const esOverrides = {
         'Sube un resumen (versiones, claves de configuración, recuentos de errores; sin texto de registros) y obtén un enlace para compartir (se elimina automáticamente en 6 h)',
       debugShareConfirm: '¿Subir el informe de depuración a un paste público?',
       debugShareConfirmDesc:
-        'Sube un resumen a un servicio de paste público: versiones de Hermes, Python y del sistema operativo, nombres de las plataformas conectadas y de los toolsets, claves de configuración (sin valores) y recuentos de advertencias/errores. No contiene líneas de registro ni texto de mensajes. Los pastes se eliminan automáticamente a las 6 horas; si paste.rs no está disponible, la alternativa dpaste.com los mantiene públicos 1 día y no se pueden eliminar antes.',
+        'Sube un resumen a un servicio de paste público: versiones de Mira, Python y del sistema operativo, nombres de las plataformas conectadas y de los toolsets, claves de configuración (sin valores) y recuentos de advertencias/errores. No contiene líneas de registro ni texto de mensajes. Los pastes se eliminan automáticamente a las 6 horas; si paste.rs no está disponible, la alternativa dpaste.com los mantiene públicos 1 día y no se pueden eliminar antes.',
       debugShareRunning: 'Subiendo informe de depuración…',
       debugShareLinks: 'Enlaces para compartir',
       debugShareFailed: 'No se pudieron compartir los datos de depuración',
@@ -3006,7 +3006,7 @@ export const esOverrides = {
     relayLink: {
       title: 'Team Gateway',
       badge: 'Sin token de bot',
-      intro: (platform: string) => `${platform} llega a este agente a través del bot compartido de Hermes. Vincula tu cuenta de ${platform} y escribe al bot para hablar con tu agente.`,
+      intro: (platform: string) => `${platform} llega a este agente a través del bot compartido de Mira. Vincula tu cuenta de ${platform} y escribe al bot para hablar con tu agente.`,
       link: (platform: string) => `Vincular ${platform}`,
       linkAnother: (platform: string) => `Vincular otra cuenta de ${platform}`,
       linkedAccounts: 'Cuentas vinculadas',

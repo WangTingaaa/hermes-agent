@@ -1215,6 +1215,10 @@ export const en: Translations = {
       runtimeUpdating: (target, progress) => `Updating to Mira Agent ${target || 'latest'} (${progress || 0}%)`,
       runtimeReleaseNotes: {
         '0.21.5': [
+          'Back up all profiles to a file or transfer an agent to Mira Cloud. Review what will be replaced before transfer and undo it if needed.',
+          'Update installed plugins together or enable automatic updates. Updates that need review are flagged separately.',
+          'A delayed completion report from an earlier reply no longer marks the next reply as finished.',
+          'Public debug reports now summarize versions, configuration key names and error counts. You can review the privacy notice before sharing.',
           'All gateways stay connected, with instant switching and a shared view of each profile’s chats and background work.',
           'Terminal tabs keep their own gateway and profile, restore their layout after app restart, and support Enter to reconnect after a remote disconnect.',
           'Skill content can be locked against automatic agent edits while remaining editable by you.',
@@ -2606,7 +2610,7 @@ export const en: Translations = {
       debugShareDesc: 'Upload a summary (versions, config keys, error counts; no log text), get a shareable link (auto-deletes in 6h)',
       debugShareConfirm: 'Upload debug report to a public paste?',
       debugShareConfirmDesc:
-        'Uploads a summary to a public paste service: Hermes, Python and OS versions, connected platform and toolset names, config key names (no values) and warning/error counts. It contains no log lines or message text. Pastes auto-delete after 6 hours; if paste.rs is unreachable, the dpaste.com fallback keeps them public for 1 day and they cannot be deleted early.',
+        'Uploads a summary to a public paste service: Mira, Python and OS versions, connected platform and toolset names, config key names (no values) and warning/error counts. It contains no log lines or message text. Pastes auto-delete after 6 hours; if paste.rs is unreachable, the dpaste.com fallback keeps them public for 1 day and they cannot be deleted early.',
       debugShareRunning: 'Uploading debug report...',
       debugShareLinks: 'Share links',
       debugShareFailed: 'Debug share failed',
@@ -2727,7 +2731,7 @@ export const en: Translations = {
     relayLink: {
       title: 'Team Gateway',
       badge: 'No bot token needed',
-      intro: (platform: string) => `${platform} reaches this agent through the shared Hermes bot. Link your ${platform} account to it and message the bot to talk to your agent.`,
+      intro: (platform: string) => `${platform} reaches this agent through the shared Mira bot. Link your ${platform} account to it and message the bot to talk to your agent.`,
       link: (platform: string) => `Link ${platform}`,
       linkAnother: (platform: string) => `Link another ${platform} account`,
       linkedAccounts: 'Linked accounts',

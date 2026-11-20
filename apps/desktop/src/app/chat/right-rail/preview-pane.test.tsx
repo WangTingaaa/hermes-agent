@@ -1,9 +1,11 @@
-import { act, cleanup, fireEvent, render, waitFor } from '@testing-library/react'
+import { act, cleanup, fireEvent, render as renderUi, waitFor } from '@testing-library/react'
+import type { ReactNode } from 'react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { onComposerAttachImagesRequest } from '@/app/chat/composer/focus'
 import { PANE_HIDDEN_ATTR, PaneVisibleContext } from '@/components/pane-shell/pane-visibility'
 import { setTreePaneParked } from '@/components/pane-shell/tree/parked-panes'
+import { I18nProvider } from '@/i18n'
 import { $rightRailActiveTabId } from '@/store/layout'
 import { $previewTabs, closeRightRail, openPreview, previewTabId } from '@/store/preview'
 import { $connection, $selectedStoredSessionId } from '@/store/session'
@@ -15,6 +17,15 @@ import { activePreviewNav } from './preview-nav'
 import { PreviewPane } from './preview-pane'
 import { readActivePreview } from './preview-reader'
 import { activePreviewScriptRunner } from './preview-script-runner'
+
+const render = (ui: ReactNode) =>
+  renderUi(ui, {
+    wrapper: ({ children }) => (
+      <I18nProvider configClient={null} initialLocale="en">
+        {children}
+      </I18nProvider>
+    )
+  })
 
 // The consent dialog has its own test file and needs a QueryClientProvider;
 // these tests exercise the pane's console/watch/webview wiring, not the
