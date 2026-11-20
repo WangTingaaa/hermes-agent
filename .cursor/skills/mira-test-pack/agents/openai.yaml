@@ -1,0 +1,3 @@
+interface:
+  display_name: "mira测试打包"
+  short_description: "构建双平台文镜内置资源安装包，验包并检查桌面测试工具"
