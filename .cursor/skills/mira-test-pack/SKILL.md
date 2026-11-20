@@ -20,7 +20,7 @@ description: 用户说「mira测试打包」、要求给文镜打 Mac 和 Window
 
 1. 在宿主执行 `npm run build:electron:mac:prod:vendor`。等待脚本退出成功、DMG 与更新 ZIP 写入 `release/`。用 `hdiutil verify` 检查本轮 DMG。
 2. 在启动 Windows 构建前，检查本轮 `release-build/mac-arm64/MesoInsights.app/Contents/Resources`。核对 ASAR 内的 `package.json` 的 `hermesResources.mode` 为 `bundled`，`hermes-agent/manifest.json` 与 `hermes-renderer/.runtime-pair.json` 同指目标提交。检查前端入口、后端归档、bootstrap、wheels 和 MCP。此时即可用下节的 Mac 实机入口对解包的 .app 做离线盘点。
-3. 在宿主执行 `npm run build:electron:win:prod:vendor`。两平台共用 dist、release-staging 和 release-build；后一个命令会清理前一个的暂存文件。在 `release-build/win-unpacked/resources` 重复核对资源身份，核验 SQLite 等原生模块的 Windows x64 架构与目标 Electron ABI。跨平台构建使用目标预编译件，保留宿主开发环境中的原生模块。
+3. 在 Mac 构建 Windows 前，用 `command -v pwsh` 确认 PowerShell 可用，以便宿主校验 `install.ps1`。若宿主已有可执行的 `.tmp/powershell-build/pwsh`，将其所在目录加入本次命令的 PATH。在宿主执行 `npm run build:electron:win:prod:vendor`。两平台共用 dist、release-staging 和 release-build；后一个命令会清理前一个的暂存文件。在 `release-build/win-unpacked/resources` 重复核对资源身份，核验 SQLite 等原生模块的 Windows x64 架构与目标 Electron ABI。跨平台构建使用目标预编译件，保留宿主开发环境中的原生模块。
 4. 两个脚本均成功后执行 `node scripts/verify-update-release.js release`。确认输出包括本轮 DMG、ZIP 和 EXE，版本、提交、文件大小、SHA-512 与 blockmap 齐全。以 `release/` 下校验通过的 DMG 和 EXE 作为交付件。同名旧包可能仍在该目录，以更新清单与本轮提交核对。
 
 ## 检查桌面「mira测试」
