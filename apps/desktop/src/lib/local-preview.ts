@@ -296,6 +296,20 @@ export function localPreviewTarget(rawTarget: string, cwd?: string | null): Prev
   }
 }
 
+export async function loadHtmlPreview(target: PreviewTarget, scope?: DesktopFsSessionScope): Promise<PreviewTarget> {
+  try {
+    const dataUrl = validatedRemoteHtmlDataUrl(await readDesktopFileDataUrl(target.path || target.source, scope))
+
+    if (dataUrl) {
+      return { ...target, dataUrl }
+    }
+  } catch {
+    // Fall back to the text reader, which can report a file error or show truncated source.
+  }
+
+  return { ...target, renderMode: 'source', transient: true }
+}
+
 async function enrichPreviewTarget(target: PreviewTarget | null, scope?: DesktopFsSessionScope): Promise<PreviewTarget | null> {
   if (
     !target ||
@@ -313,13 +327,7 @@ async function enrichPreviewTarget(target: PreviewTarget | null, scope?: Desktop
   }
 
   if (target.previewKind === 'html') {
-    try {
-      const dataUrl = validatedRemoteHtmlDataUrl(await readDesktopFileDataUrl(target.path || target.source, scope))
-
-      return dataUrl ? { ...target, dataUrl } : { ...target, renderMode: 'source', transient: true }
-    } catch {
-      return { ...target, renderMode: 'source', transient: true }
-    }
+    return loadHtmlPreview(target, scope)
   }
 
   try {

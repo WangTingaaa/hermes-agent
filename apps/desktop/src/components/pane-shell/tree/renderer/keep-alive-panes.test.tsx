@@ -145,6 +145,17 @@ afterEach(() => {
   vi.unstubAllGlobals()
 })
 
+it('places a Wenjing preview inside its split on hosts without CSS anchor sizing', () => {
+  vi.stubGlobal('hermesDesktop', { hostAppearance: {} })
+  vi.stubGlobal('CSS', { ...globalThis.CSS, supports: () => false })
+  registerPane('chat', false)
+  registerPane('live')
+  setTree(split('row', [group(['chat'], { id: 'chat' }), group(['live'], { id: 'preview' })]))
+  const { container } = render(<LayoutTreeRoot />)
+  expect(container.querySelector('[data-tree-group="preview"] [data-guest="live"]')).toBeTruthy()
+  expect(guest()?.closest('[data-pane-host]')).toBeNull()
+})
+
 it('keeps a live body continuously connected across replacement IDs, ancestry and missing placement', () => {
   registerPane('live')
   registerPane('plain', false)

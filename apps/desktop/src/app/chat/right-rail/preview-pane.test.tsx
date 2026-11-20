@@ -771,6 +771,19 @@ describe('PreviewPane console state', () => {
     expect(reloadIgnoringCache).toHaveBeenCalledOnce()
   })
 
+  it('rehydrates a restored Wenjing file URL into a visible sandbox document', async () => {
+    const html = '<h1>大家好</h1>'
+    const dataUrl = 'data:text/html;base64,' + btoa(String.fromCharCode(...new TextEncoder().encode(html)))
+    vi.stubGlobal('hermesDesktop', { hostAppearance: {}, api: async () => ({ dataUrl }) })
+    const path = '/work/大家好.html'
+    const target = { kind: 'file' as const, label: '大家好.html', path, previewKind: 'html' as const, source: path, url: 'file://' + path }
+    const id = previewTabId(target)
+    $previewTabs.set([{ id, target }])
+    const { container } = render(<PreviewTilePane tabId={id} />)
+    await waitFor(() => expect(container.querySelector('iframe')?.srcdoc).toContain(html))
+    expect(container.querySelector('webview')).toBeNull()
+  })
+
   it('renders authenticated remote HTML safely and honors source mode', async () => {
     const dataUrl = `data:text/html;base64,${btoa('<h1>remote</h1>')}`
 

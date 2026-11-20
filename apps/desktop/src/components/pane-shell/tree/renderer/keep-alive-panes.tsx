@@ -17,6 +17,7 @@ import { ContribBoundary, ContribRender } from '@/contrib/react/boundary'
 import { useContributions } from '@/contrib/react/use-contributions'
 import type { Contribution } from '@/contrib/types'
 import { useResizeObserver } from '@/hooks/use-resize-observer'
+import { isWenjingEmbeddedDesktop } from '@/lib/platform'
 import { cn } from '@/lib/utils'
 
 import { $layoutEditMode } from '../../edit-mode'
@@ -80,6 +81,12 @@ export function KeepAlivePanes({ children }: { children: ReactNode }) {
       return retained.length === previous.size ? previous : new Map(retained)
     })
   }, [panes])
+
+  // Electron 30 in Wenjing cannot position a detached host over its slot.
+  // The tree's inline pane path keeps the preview inside the actual split.
+  if (isWenjingEmbeddedDesktop() && !CSS.supports('width', 'anchor-size(width)')) {
+    return <>{children}</>
+  }
 
   return (
     <PlacementContext value={place}>
