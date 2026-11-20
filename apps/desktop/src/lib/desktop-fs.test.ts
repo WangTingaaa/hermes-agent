@@ -15,7 +15,8 @@ import {
   readDesktopFileDataUrlLocalFirst,
   readDesktopFileText,
   selectDesktopPaths,
-  setDesktopFsRemotePicker
+  setDesktopFsRemotePicker,
+  writeDesktopFileText
 } from './desktop-fs'
 import { isBrowserHostedDesktop } from './platform'
 
@@ -25,7 +26,7 @@ const readFileDataUrl = vi.fn(async (): Promise<unknown> => 'data:text/plain;bas
 const gitRoot = vi.fn(async () => '/local')
 const selectPaths = vi.fn(async () => ['/local'])
 
-const api = vi.fn(async ({ path }: { path: string }) => {
+const api = vi.fn(async ({ path }: { path: string }): Promise<unknown> => {
   if (path.startsWith('/api/fs/list?')) {
     return { entries: [{ name: 'remote', path: '/remote', isDirectory: true }] }
   }
@@ -104,6 +105,28 @@ describe('desktop filesystem facade', () => {
     expect(gitRoot).toHaveBeenCalledWith('/work')
     expect(selectPaths).toHaveBeenCalledWith({ directories: true, profile: 'team-local' })
     expect(api).not.toHaveBeenCalled()
+  })
+
+  it('reads the Wenjing file tree and edits its preview through the gateway in local mode', async () => {
+    Object.assign(window.hermesDesktop, { hostAppearance: {} })
+    $connection.set({ mode: 'local', profile: 'team' } as never)
+    const path = '/work/你好.md'
+    const entries = [{ name: '子目录', path: '/work/子目录', isDirectory: true }]
+    api.mockResolvedValueOnce({ entries })
+    await expect(readDesktopDir('/work')).resolves.toEqual({ entries })
+    expect(api).toHaveBeenCalledWith({ path: '/api/fs/list?path=%2Fwork&profile=team', profile: 'team' })
+    await expect(readDesktopFileText(path)).resolves.toMatchObject({ text: 'remote', byteSize: 6 })
+    api.mockResolvedValueOnce({ path })
+    await expect(writeDesktopFileText(path, '修改')).resolves.toEqual({ path })
+    expect(api).toHaveBeenLastCalledWith({
+      path: '/api/fs/write-text?profile=team',
+      profile: 'team',
+      method: 'POST',
+      body: { path, content: '修改' }
+    })
+    expect(readDir).not.toHaveBeenCalled()
+    expect(readFileText).not.toHaveBeenCalled()
+    await expect(selectDesktopPaths({ directories: true })).resolves.toEqual(['/local'])
   })
 
   it('treats browser-hosted local Desktop as backend filesystem mode', async () => {

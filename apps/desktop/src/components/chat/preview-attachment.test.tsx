@@ -3,6 +3,7 @@ import { atom } from 'nanostores'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { PreviewAttachment } from '@/components/chat/preview-attachment'
+import { DEFAULT_LOCALE, TRANSLATIONS } from '@/i18n'
 import type * as PreviewStore from '@/store/preview'
 
 // #101683 regression coverage: the delivered-file card must branch on the
@@ -33,6 +34,7 @@ vi.mock('@/store/preview', async importOriginal => ({
   openPreview
 }))
 
+const t = TRANSLATIONS[DEFAULT_LOCALE]
 const previousDesktop = window.hermesDesktop
 
 function fileTarget(path: string, previewKind = 'text') {
@@ -79,8 +81,8 @@ describe('PreviewAttachment local target classification (#101683)', () => {
 
     render(<PreviewAttachment target="file:///C:/Users/E/reports/historical" />)
 
-    const open = await screen.findByRole('button', { name: 'Open containing folder' })
-    expect(await buttons()).toEqual(['Open containing folder'])
+    const open = await screen.findByRole('button', { name: t.fileMenu.revealFileManager })
+    expect(await buttons()).toEqual([t.fileMenu.revealFileManager])
 
     await act(async () => {
       fireEvent.click(open)
@@ -96,7 +98,7 @@ describe('PreviewAttachment local target classification (#101683)', () => {
 
     render(<PreviewAttachment target="/work/reports/historical" />)
 
-    const open = await screen.findByRole('button', { name: 'Open containing folder' })
+    const open = await screen.findByRole('button', { name: t.fileMenu.revealFileManager })
 
     await act(async () => {
       fireEvent.click(open)
@@ -111,11 +113,11 @@ describe('PreviewAttachment local target classification (#101683)', () => {
 
     render(<PreviewAttachment target="/work/report.md" />)
 
-    await screen.findByRole('button', { name: 'Open containing folder' })
-    expect(await buttons()).toEqual(['Open containing folder', 'Open preview'])
+    await screen.findByRole('button', { name: t.fileMenu.revealFileManager })
+    expect(await buttons()).toEqual([t.fileMenu.revealFileManager, t.preview.openPreview])
 
     await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: 'Open containing folder' }))
+      fireEvent.click(screen.getByRole('button', { name: t.fileMenu.revealFileManager }))
     })
 
     expect(revealPath).toHaveBeenCalledWith('/work/report.md')
@@ -128,10 +130,10 @@ describe('PreviewAttachment local target classification (#101683)', () => {
 
     render(<PreviewAttachment target="/srv/report.md" />)
 
-    expect(await buttons()).toEqual(['Download', 'Open preview'])
+    expect(await buttons()).toEqual([t.fileMenu.download, t.preview.openPreview])
 
     await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: 'Open preview' }))
+      fireEvent.click(screen.getByRole('button', { name: t.preview.openPreview }))
     })
 
     // The remote path is not on this machine: no native folder action fires.
@@ -144,7 +146,7 @@ describe('PreviewAttachment local target classification (#101683)', () => {
 
     render(<PreviewAttachment target="/work/gone.md" />)
 
-    const preview = await screen.findByRole('button', { name: 'Preview unavailable' })
+    const preview = await screen.findByRole('button', { name: t.preview.unavailable })
 
     await act(async () => {
       fireEvent.click(preview)

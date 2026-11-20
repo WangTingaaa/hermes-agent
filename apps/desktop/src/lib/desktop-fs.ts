@@ -8,6 +8,7 @@ import type {
 } from '@/global'
 import { translateNow } from '@/i18n'
 import { hostHas } from '@/lib/host-capabilities'
+import { isWenjingEmbeddedDesktop } from '@/lib/platform'
 import { $connection } from '@/store/session'
 
 export interface DesktopFsRemotePicker {
@@ -46,6 +47,12 @@ export function desktopFsCacheKey(connection: HermesConnection | null = $connect
 
 export function isDesktopFsRemoteMode() {
   return $connection.get()?.mode === 'remote' || !hostHas('nativeHostFiles')
+}
+
+// Wenjing has native dialogs, but its legacy file bridge only lists leaf files and
+// returns bare strings for text. The gateway provides the structured file contract.
+function usesGatewayFileAccess() {
+  return isDesktopFsRemoteMode() || isWenjingEmbeddedDesktop()
 }
 
 // Active profile for FS/git REST calls. Without it the Electron api bridge
@@ -92,6 +99,13 @@ function bridge() {
 }
 
 function remoteFsApi<T>(path: string, body?: Record<string, unknown>, owner = fsRoute().owner): Promise<T> {
+  // Wenjing forwards request.path verbatim to one gateway. Put the file owner's
+  // profile on the wire, as the browser transport does for these same routes.
+  if (isWenjingEmbeddedDesktop() && owner.profile) {
+    const separator = path.includes('?') ? '&' : '?'
+    path += separator + 'profile=' + encodeURIComponent(owner.profile)
+  }
+
   return hermesApi<T>(body ? { ...owner, body, method: 'POST', path } : { ...owner, path })
 }
 
@@ -124,7 +138,7 @@ export class DesktopFileMissingError extends Error {
 }
 
 export async function readDesktopDir(path: string): Promise<HermesReadDirResult> {
-  if (!isDesktopFsRemoteMode()) {
+  if (!usesGatewayFileAccess()) {
     return bridge().readDir(path)
   }
 
@@ -135,7 +149,7 @@ export async function readDesktopFileText(
   path: string,
   scope?: DesktopFsSessionScope
 ): Promise<HermesReadFileTextResult> {
-  if (!isDesktopFsRemoteMode()) {
+  if (!usesGatewayFileAccess()) {
     const result = await bridge().readFileText(path)
 
     if (isReadFileErrorResult(result)) {
@@ -162,7 +176,7 @@ export async function writeDesktopFileText(
 ): Promise<{ path: string }> {
   const desktop = bridge()
 
-  if (!isDesktopFsRemoteMode()) {
+  if (!usesGatewayFileAccess()) {
     if (!desktop.writeTextFile) {
       throw new Error('Saving is not available')
     }
@@ -190,7 +204,7 @@ export async function createRemoteDir(path: string): Promise<string> {
 }
 
 export async function readDesktopFileDataUrl(path: string, scope?: DesktopFsSessionScope): Promise<string> {
-  if (!isDesktopFsRemoteMode()) {
+  if (!usesGatewayFileAccess()) {
     const result = await bridge().readFileDataUrl(path)
 
     if (isReadFileErrorResult(result)) {

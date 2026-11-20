@@ -17,7 +17,8 @@ vi.mock('@/lib/desktop-fs', () => ({
   readDesktopFileText: vi.fn()
 }))
 
-import { normalizeOrLocalPreviewTarget } from './local-preview'
+import { readDesktopFileDataUrl } from './desktop-fs'
+import { normalizeOrLocalPreviewTarget, remoteHtmlPreviewDocument } from './local-preview'
 
 const previousDesktop = window.hermesDesktop
 
@@ -35,6 +36,18 @@ describe('normalizeOrLocalPreviewTarget non-previewable results', () => {
 
   afterEach(() => {
     window.hermesDesktop = previousDesktop
+  })
+
+  it('opens local Wenjing HTML as a sandbox document even with the legacy normalizer', async () => {
+    const path = '/work/你好.html'
+    stubNormalization({ target: path, baseDir: '/work' })
+    Object.assign(window.hermesDesktop, { hostAppearance: {} })
+    const html = '<h1>你好</h1>'
+    const dataUrl = 'data:text/html;base64,' + btoa(String.fromCharCode(...new TextEncoder().encode(html)))
+    vi.mocked(readDesktopFileDataUrl).mockResolvedValueOnce(dataUrl)
+    const target = await normalizeOrLocalPreviewTarget(path)
+    expect(target).toMatchObject({ path, previewKind: 'html', dataUrl })
+    expect(remoteHtmlPreviewDocument(target!.dataUrl!)).toContain(html)
   })
 
   it('returns null for a directory in local mode instead of fabricating a text tab', async () => {

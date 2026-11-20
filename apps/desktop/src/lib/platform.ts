@@ -56,6 +56,11 @@ export function hasBrowserHostBootstrap(): boolean {
   return win.__HERMES_AUTH_REQUIRED__ === true || win.__HERMES_UI_SURFACE__ === 'webapp'
 }
 
+/** Wenjing exposes its appearance bridge even when the embedded renderer uses another skin. */
+export function isWenjingEmbeddedDesktop(): boolean {
+  return Boolean(window.hermesDesktop?.hostAppearance)
+}
+
 /** Renderer host, independent of the OS or the gateway's connection mode. */
 export function isBrowserHostedDesktop() {
   if (typeof document === 'undefined') {

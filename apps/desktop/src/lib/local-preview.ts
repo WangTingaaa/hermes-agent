@@ -8,6 +8,7 @@ import {
   readDesktopFileText
 } from '@/lib/desktop-fs'
 import { isWindowsAbsolutePath } from '@/lib/path-compare'
+import { isWenjingEmbeddedDesktop } from '@/lib/platform'
 import type { PreviewTarget } from '@/store/preview'
 
 const HTML_EXTENSIONS = new Set(['.htm', '.html'])
@@ -297,12 +298,17 @@ export function localPreviewTarget(rawTarget: string, cwd?: string | null): Prev
 
 async function enrichPreviewTarget(target: PreviewTarget | null, scope?: DesktopFsSessionScope): Promise<PreviewTarget | null> {
   if (
-    !isDesktopFsRemoteMode() ||
     !target ||
     target.kind !== 'file' ||
     target.previewKind === 'image' ||
     target.previewKind === 'pdf'
   ) {
+    return target
+  }
+
+  // Wenjing mounts Mira inside a webview. Its local HTML uses the same sandboxed
+  // document surface as gateway HTML because it cannot mount another guest.
+  if (!isDesktopFsRemoteMode() && !(target.previewKind === 'html' && isWenjingEmbeddedDesktop())) {
     return target
   }
 

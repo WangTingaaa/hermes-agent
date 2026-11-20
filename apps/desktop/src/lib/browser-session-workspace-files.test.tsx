@@ -11,6 +11,7 @@ import { PreviewTilePane } from '@/app/chat/right-rail/preview'
 import { LocalFilePreview } from '@/app/chat/right-rail/preview-file'
 import { SessionViewProvider } from '@/app/chat/session-view'
 import { MarkdownImage } from '@/components/assistant-ui/markdown-text'
+import { DEFAULT_LOCALE, TRANSLATIONS } from '@/i18n'
 import { $previewTabs } from '@/store/preview'
 import { $connection, _resetSessionOwnerHintsForTests, setSessionOwnerHint } from '@/store/session'
 import { clearWebappSession, seedWebappSession } from '@/test/webapp-session'
@@ -195,10 +196,11 @@ describe('Save in a session sandbox', () => {
         />
       )
 
-      fireEvent.click(await screen.findByRole('button', { name: 'Edit' }))
+      const t = TRANSLATIONS[DEFAULT_LOCALE]
+      fireEvent.click(await screen.findByRole('button', { name: t.preview.edit }))
       const editor = EditorView.findFromDOM(rendered.container.querySelector('.cm-content')!)!
       act(() => editor.dispatch({ changes: { from: 0, to: editor.state.doc.length, insert: 'edited' } }))
-      fireEvent.click(screen.getByRole('button', { name: /Save/ }))
+      fireEvent.click(screen.getByRole('button', { name: t.common.save }))
 
       await waitFor(() => expect(readsOf('/api/fs/write-text')).toHaveLength(1))
       expect(readsOf('/api/fs/write-text')[0].body).toEqual({ content: 'edited', path: NOTE, session_id: 'stored-1' })
