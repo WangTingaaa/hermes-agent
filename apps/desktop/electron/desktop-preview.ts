@@ -174,8 +174,7 @@ export function installDesktopPreview(target: Session, trusted: (contents: WebCo
 
 export function installDesktopMediaPermissions(
   target: Session,
-  trusted: (contents: WebContents) => boolean,
-  clipboardAllowed: (contents: WebContents | null) => boolean
+  trusted: (contents: WebContents) => boolean
 ) {
   const captureAllowed = installDesktopPreview(target, trusted)
   target.setPermissionRequestHandler((contents, permission, callback, details) => {
@@ -185,21 +184,11 @@ export function installDesktopMediaPermissions(
       return
     }
 
-    if ((permission as string) === 'clipboard-sanitized-write') {
-      callback(clipboardAllowed(contents))
-
-      return
-    }
-
     callback(isMediaCapturePermission(permission, details))
   })
   target.setPermissionCheckHandler((contents, permission) => {
     if (permission === 'display-capture') {
       return captureAllowed(contents)
-    }
-
-    if ((permission as string) === 'clipboard-sanitized-write') {
-      return clipboardAllowed(contents)
     }
 
     return isMediaCapturePermission(permission, undefined)

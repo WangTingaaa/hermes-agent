@@ -12,6 +12,7 @@ import type { ArtifactFileActionCopy } from './artifact-files/type'
 import type { DesktopControlCopy } from './desktop-control/type'
 import type { MiraWorkspaceCopy } from './mira-workspace/type'
 import type { AppTourTranslations } from './types_app_tour'
+import type { BackupTransferTranslations } from './types_backup_transfer'
 import type { BillingTranslations } from './types_billing'
 import type { BootTranslations } from './types_boot'
 import type { CatalogTranslations } from './types_catalog'
@@ -30,7 +31,7 @@ import type { NoticeTranslations } from './types_notices'
 import type { NotificationSettingsTranslations } from './types_notifications'
 import type { OnboardingTranslations } from './types_onboarding'
 import type { PluginPreviewAccessTranslations } from './types_plugin_preview_access'
-import type { PluginUpdateTranslations } from './types_plugin_update'
+import type { PluginUpdateAllTranslations, PluginUpdateTranslations } from './types_plugin_update'
 import type { SidebarProjectsTranslations } from './types_projects'
 import type { RightSidebarTranslations } from './types_right_sidebar'
 import type { SharedMetricsTranslations } from './types_shared_metrics'
@@ -630,6 +631,8 @@ export interface Translations extends NoticeTranslations {
       mcp: string
       archivedChats: string
       sessions: string
+      backup: string
+      backupOnly: string
       about: string
       billing: string
       notifications: string
@@ -930,6 +933,7 @@ export interface Translations extends NoticeTranslations {
     fieldLabels: Record<string, string>
     fieldDescriptions: Record<string, string>
     uninstallSection: UninstallSectionTranslations
+    backup: BackupTransferTranslations
     memoryLayers: MemoryLayersTranslations
     customEndpoints: {
       active: string
@@ -1046,6 +1050,8 @@ export interface Translations extends NoticeTranslations {
       attachmentSizeLabel: string
       voiceShortcutHintTitle: string
       voiceShortcutHintDesc: string
+      desktopReadAloudTitle: string
+      desktopReadAloudDesc: string
       showOptions: string
     }
     hudModifier: {
@@ -1422,6 +1428,7 @@ export interface Translations extends NoticeTranslations {
       activePill: string
       updateTitle: string
       updateDetail: (next: string, current: string) => string
+      updateSameBuildDetail: (tag: string) => string
       updateAction: string
       updating: string
       upToDateTitle: string
@@ -1874,6 +1881,11 @@ export interface Translations extends NoticeTranslations {
         disabledTitle: string
         disabledMessage: string
         failedSave: string
+        reimportSignins: string
+        signinsImportedTitle: string
+        signinsImported: (count: number) => string
+        signinsRemote: string
+        signinsFailed: string
         prompt: {
           title: string
           body: string
@@ -1946,6 +1958,7 @@ export interface Translations extends NoticeTranslations {
     skillArchivedMessage: string
     tabPlugins: string
     plugins: PluginUpdateTranslations &
+      PluginUpdateAllTranslations &
       PluginPreviewAccessTranslations & {
         agentTitle: string
         agentBlurb: string
@@ -2059,10 +2072,6 @@ export interface Translations extends NoticeTranslations {
       openLog: string
       actionLog: string
       alreadyInstalled: (name: string) => string
-      pickerTitle: string
-      pickerBrowse: string
-      pickerHide: string
-      pickerHint: string
       loadFailed: string
       previewFailed: string
       scanFailed: string
@@ -2282,6 +2291,8 @@ export interface Translations extends NoticeTranslations {
       backupDesc: string
       debugShare: string
       debugShareDesc: string
+      debugShareConfirm: string
+      debugShareConfirmDesc: string
       debugShareRunning: string
       debugShareLinks: string
       debugShareFailed: string
@@ -2384,6 +2395,32 @@ export interface Translations extends NoticeTranslations {
     restartFailedManualDetail: string
     restartAgain: string
     openLogs: string
+    relayLink: {
+      title: string
+      badge: string
+      intro: (platform: string) => string
+      link: (platform: string) => string
+      linkAnother: (platform: string) => string
+      linkedAccounts: string
+      unlink: string
+      unlinkFailed: string
+      stepOpen: (platform: string) => string
+      stepSend: string
+      open: (platform: string) => string
+      copy: string
+      copied: string
+      copyFailed: (command: string) => string
+      waiting: string
+      linked: (platform: string) => string
+      expired: string
+      refused: (platform: string) => string
+      qrAlt: (platform: string) => string
+      managed: string
+      managedNote: (platform: string) => string
+      managedIntro: string
+      openPortal: string
+      noNewAccount: (platform: string) => string
+    }
     telegramQr: {
       title: string
       subtitle: string
@@ -2463,6 +2500,9 @@ export interface Translations extends NoticeTranslations {
     fieldSkillsPlaceholder: string
     fieldDeliver: string
     fieldDeliverOnly: string
+    fieldSignature: string
+    fieldSignatureHint: string
+    signatureOptions: Record<string, string>
     fieldPrompt: string
     fieldPromptPlaceholder: string
     nameRequired: string
@@ -3579,6 +3619,8 @@ export interface Translations extends NoticeTranslations {
       sendsOnRoute: (level: string) => string
       updateFailed: string
       fastFailed: string
+      daybreak: string
+      daybreakFailed: string
     }
     gatewayMenu: {
       gateway: string
@@ -3694,6 +3736,15 @@ export interface Translations extends NoticeTranslations {
           subagent_definitions: string
           system_prompt: string
           tool_definitions: string
+        }
+        compact: {
+          action: string
+          busyHint: string
+          confirm: string
+          hint: string
+          question: string
+          questionNamed: (title: string) => string
+          working: string
         }
         empty: string
         loading: string
@@ -3828,6 +3879,16 @@ export interface Translations extends NoticeTranslations {
       commentTitle: (n: number) => string
       saveComment: string
       cancelComment: string
+      vaultFill: string
+      vaultTitle: (site: string) => string
+      vaultLoading: string
+      vaultEmpty: string
+      vaultUnlock: (name: string) => string
+      vaultOpenSettings: string
+      vaultFilled: (label: string) => string
+      vaultFillFailed: string
+      vaultLoadFailed: string
+      vaultPageNotReady: string
     }
   }
 
@@ -3937,6 +3998,9 @@ export interface Translations extends NoticeTranslations {
       react: string
       dismissError: string
       responseStopped: string
+      /** Greyed notice on a safety-refused turn kept for display, used when the
+       *  backend sent none in display_metadata.content_refused.notice. */
+      contentRefusedNotice: string
       /** Layer titles for the structured error card (agent/error_surface.py).
        *  `generic` is the fallback when the backend sent no descriptor. */
       errorLayers: {
@@ -4081,6 +4145,11 @@ export interface Translations extends NoticeTranslations {
       authorized: (server: string) => string
       failed: (server: string) => string
       toolCount: (count: number) => string
+      launchCommand: (target: string) => string
+      launchRemote: (target: string) => string
+      /** The env var names a stdio server adds (comma-joined); values never reach the card. */
+      launchEnv: (keys: string) => string
+      launchCwd: (dir: string) => string
       envRequired: string
       sendFailed: string
       reloadFailed: string

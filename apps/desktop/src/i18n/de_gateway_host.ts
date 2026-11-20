@@ -6,7 +6,14 @@ export const deGatewayHost: GatewayHostTranslations = {
   unavailableDesc: 'Die Desktop-IPC-Brücke stellt keine Gateway-Einstellungen bereit.',
   webappHostTitle: 'Mira-Host',
   webappHostDesc:
-    'Die Webapp nutzt immer den Mira-Host, der sie ausliefert. Um das Gateway zu wechseln, sich bei Mira Cloud anzumelden oder gespeicherte Verbindungen zu verwalten, verwenden Sie die Mira-Desktop-App.',
+    'Die Webapp läuft immer auf dem Mira-Host, der sie bereitstellt. Die gespeicherten Verbindungen unten sind die Liste dieses Rechners, geteilt mit der Mira-Desktop-App; andere Gateways werden über diesen Host erreicht.',
+  webappOauthPaste: {
+    title: 'Anmeldung abschließen',
+    description: 'Wenn der Anmelde-Tab auf einer Adresse endete, die nicht lädt (dieser Browser läuft nicht auf dem Rechner des Gateways), füge diese Adresse hier ein.',
+    placeholder: 'http://127.0.0.1:…/webapp/gateway-connections/oauth/callback?…',
+    finish: 'Abschließen',
+    failed: 'Anmeldung konnte nicht abgeschlossen werden'
+  },
   webAccess: {
     title: 'Webzugriff',
     intro:
@@ -32,6 +39,13 @@ export const deGatewayHost: GatewayHostTranslations = {
     restartFailedBecause: reason => `Das Gateway konnte nicht neu starten: ${reason}`,
     startTimedOut: 'Das Gateway hat die Web-App nicht innerhalb von 90 Sekunden bereitgestellt.',
     stopTimedOut: 'Das Gateway hat die Bereitstellung der Web-App nicht innerhalb von 90 Sekunden beendet.',
+    startStages: {
+      preparing: 'Die Web-App wird vorbereitet. Das Erstellen kann einige Minuten dauern.',
+      building: 'Die Web-App wird erstellt. Das kann einige Minuten dauern.',
+      registering: 'Die Nous-Anmeldung wird für diese Adresse eingerichtet.',
+      restarting: 'Das Gateway wird neu gestartet, um die Web-App bereitzustellen.'
+    },
+    startElapsed: time => `Verstrichene Zeit: ${time}`,
     start: 'Starten',
     stop: 'Stoppen',
     restartGateway: 'Gateway neu starten',

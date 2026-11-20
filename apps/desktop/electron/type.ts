@@ -2,6 +2,7 @@ import type { App, BrowserWindow, IpcMain, Shell } from 'electron'
 import type { GatewayFileSaveResult } from './gateway-file-download'
 
 export interface GatewayFileSavePayload {
+  downloadPath?: unknown
   sessionId?: string
   connectionId?: unknown
   path?: unknown

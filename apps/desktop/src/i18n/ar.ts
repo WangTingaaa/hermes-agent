@@ -16,6 +16,12 @@ import { miraWorkspaceCopy } from './mira-workspace'
 
 export const arOverrides = {
   desktopControl: desktopControlCopy['ar'],
+  gatewayGroupOpen: {
+    opening: "جارٍ فتح محادثة المجموعة…",
+    lookupFailed: "تعذّر العثور على هذه المجموعة على البوابة. حاول مجددًا.",
+    missing: "لم تعد محادثة المجموعة هذه موجودة."
+  },
+
   catalog: {
     add: 'إضافة',
     added: 'تمت الإضافة',
@@ -26,6 +32,9 @@ export const arOverrides = {
     mostStarred: 'الأكثر حصولًا على نجوم',
     newest: 'الأحدث',
     recentlyUpdated: 'المحدثة مؤخرًا',
+    mostUsed: 'الأكثر استخدامًا',
+    updateAvailable: 'تحديث',
+    updatesAvailable: (count: number) => `التحديثات · ${count}`,
     alphabetical: 'الاسم',
     sortBy: 'ترتيب حسب',
     seeAll: 'عرض الكل',
