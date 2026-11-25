@@ -48,6 +48,8 @@ export interface PetOverlayStatePayload {
   awaiting: boolean
   /** Drives the overlay's mail icon: a finish landed while you were away. */
   unread: boolean
+  /** Omitted on routine state updates; null clears a previous conversation's reply. */
+  reply?: string | null
   /** Latest reaction — bumping its id forwards a burst to the overlay. */
   reaction: PetReaction | null
   /** Live plugin bubble lines (`ctx.pet.say`); this renderer owns their expiry. */
@@ -157,6 +159,26 @@ function currentPayload(): PetOverlayStatePayload {
   }
 }
 
+let latestReply: string | null = null
+
+export function showPetOverlayReply(text: string): void {
+  if (!stateUnsubs.length || !text.trim()) {
+    return
+  }
+
+  latestReply = text
+  pushReply()
+}
+
+function pushReply(): void {
+  window.hermesDesktop?.petOverlay?.pushState({ ...currentPayload(), reply: latestReply })
+}
+
+function clearReply(): void {
+  latestReply = null
+  pushReply()
+}
+
 function pushNow(): void {
   window.hermesDesktop?.petOverlay?.pushState(currentPayload())
 }
@@ -185,6 +207,7 @@ function openOverlay(request: PetOverlayOpenRequest): void {
   // Mirror live state into the overlay. subscribe() fires immediately, so the
   // overlay also gets a first frame the moment it's ready (it asks via 'ready').
   stateUnsubs = [
+    PRIMARY_SESSION_VIEW.$runtimeId.listen(clearReply),
     $displayPetInfo.subscribe(pushNow),
     $petActivity.subscribe(pushNow),
     PRIMARY_SESSION_VIEW.$busy.subscribe(pushNow),
@@ -252,6 +275,7 @@ export function popInPet(): void {
   }
 
   stateUnsubs = []
+  latestReply = null
   $petOverlayActive.set(false)
   void window.hermesDesktop?.petOverlay?.close()
 }
@@ -288,8 +312,8 @@ export function initPetOverlayBridge(): () => void {
     } else if (payload?.type === 'pop-in') {
       popInPet()
     } else if (payload?.type === 'ready') {
-      // The overlay just mounted — hand it the current frame.
-      pushNow()
+      // Replay a completion that arrived while the overlay was mounting.
+      pushReply()
     } else if (payload?.type === 'submit' && typeof payload.text === 'string') {
       submitHandler?.(payload.text)
     } else if (payload?.type === 'bounds' && payload.bounds) {

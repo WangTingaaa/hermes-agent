@@ -3,7 +3,7 @@ import { type BillingBlock, mergeUsage } from '@hermes/shared'
 import { noteTurnSettled } from '@/app/session/hooks/use-session-actions/settled-turns'
 import { burstVibeHearts } from '@/components/chat/vibe-hearts'
 import { translateNow } from '@/i18n'
-import { type GatewayEventPayload, markQueuedPromptStarted } from '@/lib/chat-messages'
+import { type GatewayEventPayload, lastTextPartText, markQueuedPromptStarted } from '@/lib/chat-messages'
 import { coerceGatewayText, coerceThinkingText } from '@/lib/chat-runtime'
 import { playCompletionSound } from '@/lib/completion-sound'
 import { parseErrorSurface } from '@/lib/error-surface'
@@ -14,6 +14,7 @@ import { setSessionCompacting } from '@/store/compaction'
 import { noteFreeTierTurnComplete } from '@/store/free-tier-sign-in'
 import { notify } from '@/store/notifications'
 import { flashPetActivity, markPetUnread, setPetActivity } from '@/store/pet'
+import { $petOverlayActive, showPetOverlayReply } from '@/store/pet-overlay'
 import { clearAllPrompts } from '@/store/prompts'
 import { providerWaitText, setSessionProviderWait } from '@/store/provider-wait'
 import { setCurrentUsage, setTurnStartedAt } from '@/store/session'
@@ -464,6 +465,19 @@ export function handleMessageStreamEvent(ctx: GatewayEventContext): boolean {
 
     if (isActiveEvent) {
       setTurnStartedAt(null)
+
+      if ($petOverlayActive.get() && (!payload?.status || payload.status === 'complete')) {
+        const reply = sessionStateByRuntimeIdRef.current
+          .get(sessionId)
+          ?.messages.findLast(
+            message =>
+              message.role === 'assistant' && message.completedAt === occurredAt && !message.hidden && !message.error
+          )
+
+        if (reply) {
+          showPetOverlayReply(lastTextPartText(reply))
+        }
+      }
 
       // Pet beat: a finished turn always celebrates — go straight to the
       // jump, never linger on the run/reason pose. One atom update (clears

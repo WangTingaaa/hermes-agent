@@ -164,7 +164,9 @@ floating pet, and the pop-out overlay — react off the same signal.
 
 **Shift-click** the floating pet to pop it out into its own transparent,
 always-on-top desktop window. Out there it stays visible while Hermes is
-minimized (Codex-style), so a glance tells you what the agent is doing.
+minimized. When the current conversation finishes a reply, its text appears
+above the pet. Scroll to read a long reply or use the close button to dismiss it.
+You can send a follow-up from the pet without opening the main window.
 
 Gestures once it's popped out:
 

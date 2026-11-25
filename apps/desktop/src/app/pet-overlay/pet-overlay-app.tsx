@@ -1,3 +1,5 @@
+import './pet-overlay.css'
+
 import { useStore } from '@nanostores/react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
@@ -5,7 +7,8 @@ import { PetHeartField, playVibeHearts } from '@/components/chat/vibe-hearts'
 import { PetBubble } from '@/components/pet/pet-bubble'
 import { PetSprite } from '@/components/pet/pet-sprite'
 import { type PetZoomAnchor, usePetZoomGesture } from '@/components/pet/use-pet-zoom-gesture'
-import { Mail } from '@/lib/icons'
+import { translateNow } from '@/i18n'
+import { Mail, X } from '@/lib/icons'
 import { isSubmitEnter } from '@/lib/ime'
 import { $petActivity, $petInfo, hasPetArt, setPetInfo } from '@/store/pet'
 import { overlayWindowSize } from '@/store/pet-overlay'
@@ -66,6 +69,8 @@ export function PetOverlayApp() {
   const info = useStore($petInfo)
   const active = info.enabled && hasPetArt(info)
   const [composerOpen, setComposerOpen] = useState(false)
+  const [reply, setReply] = useState<string | null>(null)
+  const replyRef = useRef<HTMLDivElement>(null)
   const [draft, setDraft] = useState('')
   // Mirrored from the main renderer: a finish landed while you were away.
   const [unread, setUnread] = useState(false)
@@ -98,6 +103,12 @@ export function PetOverlayApp() {
       setBusy(Boolean(payload.busy))
       setAwaitingResponse(Boolean(payload.awaiting))
       setUnread(Boolean(payload.unread))
+
+      if (payload.reply !== undefined) {
+        setReply(payload.reply)
+        replyRef.current?.scrollTo({ top: 0 })
+      }
+
       mirrorPetPluginMessages(payload.pluginMessages)
 
       // Play a reaction on a new id (ignore the first sync, which just primes it).
@@ -136,6 +147,10 @@ export function PetOverlayApp() {
     const isInteractiveAt = (x: number, y: number): boolean => {
       const pet = petRef.current
       const target = document.elementFromPoint(x, y)
+
+      if (target?.closest('[data-pet-reply]')) {
+        return true
+      }
 
       if (!pet || !target || !pet.contains(target)) {
         return false
@@ -390,6 +405,16 @@ export function PetOverlayApp() {
         width: '100vw'
       }}
     >
+      {reply && (
+        <div className="pet-overlay-reply" data-pet-reply="">
+          <button aria-label={translateNow('common.close')} onClick={() => setReply(null)} type="button">
+            <X aria-hidden="true" size={14} />
+          </button>
+          <div aria-live="polite" className="pet-overlay-reply-text" ref={replyRef} tabIndex={0}>
+            {reply}
+          </div>
+        </div>
+      )}
       {composerOpen && (
         <input
           onChange={e => setDraft(e.target.value)}
